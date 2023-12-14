@@ -163,5 +163,27 @@
             <DropShadow color="WHITE" spread="0.91" />
          </effect>
       </Label>
+      <Button fx:id="btnClose" layoutX="626.0" layoutY="14.0" minHeight="-Infinity" minWidth="50.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="20.0" style="-fx-background-radius: 10; -fx-font-size: 20; -fx-font-weight: bold; -fx-background-color: #FD6D84;" text="X" textFill="WHITE">
+         <font>
+            <Font name="Franklin Gothic Demi Cond" size="43.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+         <effect>
+            <DropShadow color="#fff7f7" spread="0.69" />
+         </effect>
+      </Button>
+      <Button fx:id="btnMin" layoutX="557.0" layoutY="14.0" minHeight="-Infinity" minWidth="50.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="20.0" style="-fx-background-radius: 10; -fx-font-size: 20; -fx-font-weight: bold; -fx-background-color: #FD6D84;" text="-" textAlignment="JUSTIFY" textFill="WHITE" textOverrun="CLIP">
+         <font>
+            <Font name="Franklin Gothic Demi Cond" size="43.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+         <effect>
+            <DropShadow color="#fff7f7" spread="0.69" />
+         </effect>
+      </Button>
    </children>
 </AnchorPane>

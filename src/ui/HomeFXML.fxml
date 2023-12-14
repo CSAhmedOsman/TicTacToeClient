@@ -14,8 +14,8 @@
 
 <AnchorPane fx:id="AnchorID" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffbdbd" height="607.0" layoutX="-3.0" layoutY="-6.0" smooth="false" stroke="BLACK" strokeType="INSIDE" width="708.0" />
-      <Label layoutX="168.0" layoutY="31.0" text="Tic-Tac-Toe" textFill="#43115b">
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffbdbd" height="607.0" layoutX="-8.0" layoutY="-3.0" smooth="false" stroke="BLACK" strokeType="INSIDE" width="708.0" />
+      <Label layoutX="164.0" layoutY="73.0" text="Tic-Tac-Toe" textFill="#43115b">
          <font>
             <Font name="Franklin Gothic Demi Cond" size="96.0" />
          </font>
@@ -74,6 +74,28 @@
                </children>
             </Pane>
          </graphic>
+      </Button>
+      <Button fx:id="btnClose" layoutX="616.0" layoutY="23.0" minHeight="-Infinity" minWidth="50.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="20.0" style="-fx-background-radius: 10; -fx-font-size: 20; -fx-font-weight: bold; -fx-background-color: #FD6D84;" text="X" textFill="WHITE">
+         <font>
+            <Font name="Franklin Gothic Demi Cond" size="43.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+         <effect>
+            <DropShadow color="#fff7f7" spread="0.69" />
+         </effect>
+      </Button>
+      <Button fx:id="btnMin" layoutX="547.0" layoutY="23.0" minHeight="-Infinity" minWidth="50.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="20.0" style="-fx-background-radius: 10; -fx-font-size: 20; -fx-font-weight: bold; -fx-background-color: #FD6D84;" text="-" textAlignment="JUSTIFY" textFill="WHITE" textOverrun="CLIP">
+         <font>
+            <Font name="Franklin Gothic Demi Cond" size="43.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+         <effect>
+            <DropShadow color="#fff7f7" spread="0.69" />
+         </effect>
       </Button>
    </children>
 </AnchorPane>
