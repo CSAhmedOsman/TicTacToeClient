@@ -1,5 +1,9 @@
 package ui;
 
+import client.ClientApp;
+import client.data.Player;
+import java.io.File;
+import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -69,8 +73,7 @@ public class GameBoard extends BorderPane {
     protected int counter;
     protected Stage stage;
 
-    public GameBoard(Stage s) {
-
+    {
         pane = new Pane();
         backgroundET = new Ellipse();
         backgroundRTX = new Rectangle();
@@ -116,6 +119,38 @@ public class GameBoard extends BorderPane {
         dropShadow3 = new DropShadow();
         btnMin = new Button();
         dropShadow4 = new DropShadow();
+        //---------------ahmed work------------
+        isRunning = false;
+        isXTurn = true;
+        counter = 0;
+    }
+
+    public GameBoard() {
+        init();
+        startLocalGame();
+    }
+
+    /*
+    public GameBoard(Player or Robot) {
+        init();
+        //------ add function name for handling the gamming aginst robot
+    }
+    */
+    
+    // show recorded games ---
+    public GameBoard(File file) {
+        init();
+        //--------add function name for handling the read files
+        // -------- don't forget to disable -- buttons with using forloop -- position[i].setDisable(true);
+    }
+
+    // playing online game ---
+    public GameBoard(Player player1, Socket player2) {
+        init();
+        //--------add function name for handling the online gamming
+    }
+
+    public void init() {
 
         setMaxHeight(USE_PREF_SIZE);
         setMaxWidth(USE_PREF_SIZE);
@@ -362,7 +397,7 @@ public class GameBoard extends BorderPane {
 
         paneCount.setLayoutX(25.0);
         paneCount.setLayoutY(23.0);
-        paneCount.setOpacity(1.0);
+        paneCount.setOpacity(0.0);
         paneCount.setPrefHeight(90.0);
         paneCount.setPrefWidth(300.0);
 
@@ -525,16 +560,17 @@ public class GameBoard extends BorderPane {
         pane.getChildren().add(pane0);
         pane.getChildren().add(btnClose);
         pane.getChildren().add(btnMin);
+    }
 
+    public void startLocalGame() {
         //---------------ahmed work------------
         isRunning = true;
+        paneCount.setOpacity(1.0);
         counter = 30;
-        isXTurn = true;
-        stage = s;
 
+        //------------Handlers------
         addEventHandlers();
-
-        //----------counter thread
+        //----------Game Limits counter thread
         new Thread(() -> {
             while (isRunning && winIndex()[0] == -1) {
                 try {
@@ -633,11 +669,8 @@ public class GameBoard extends BorderPane {
     }
 
     private void addEventHandlers() {
-        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent event) {
-                isRunning = false;
-            }
+        ClientApp.stage.setOnCloseRequest((e) -> {
+            isRunning = false;
         });
 
         //X-O-Draws

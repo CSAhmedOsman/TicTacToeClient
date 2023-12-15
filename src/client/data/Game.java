@@ -67,5 +67,5 @@ public class Game {
 
     public void setWinner(int winner) {
         this.winner = winner;
-    }    
+    }   
 }

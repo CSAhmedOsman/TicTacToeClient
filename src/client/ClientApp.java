@@ -19,9 +19,11 @@ import ui.GameBoard;
  */
 public class ClientApp extends Application {
 
+    public static Stage stage;
     @Override
-    public void start(Stage stage) throws Exception {
-        Parent root = new GameBoard(stage);
+    public void start(Stage s) throws Exception {
+        stage = s;
+        Parent root = new GameBoard();
         //stage.initStyle(StageStyle.UNDECORATED); //Hide bar of the stage
         Scene scene = new Scene(root);
 
