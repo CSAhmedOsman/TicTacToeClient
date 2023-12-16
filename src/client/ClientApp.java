@@ -24,7 +24,7 @@ public class ClientApp extends Application {
     public void start(Stage s) throws Exception {
         stage = s;
         Parent root = new GameBoard();
-        //stage.initStyle(StageStyle.UNDECORATED); //Hide bar of the stage
+        stage.initStyle(StageStyle.UNDECORATED); //Hide bar of the stage
         Scene scene = new Scene(root);
 
         stage.setScene(scene);

@@ -7,14 +7,20 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
+import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
@@ -25,6 +31,7 @@ import javafx.stage.WindowEvent;
 public class GameBoard extends BorderPane {
 
     protected final Pane pane;
+    protected final Pane win;
     protected final Ellipse backgroundET;
     protected final Rectangle backgroundRTX;
     protected final Rectangle backgroundRTX2;
@@ -70,11 +77,14 @@ public class GameBoard extends BorderPane {
     //--------------ahmed work-----------
     protected boolean isXTurn;
     protected boolean isRunning;
-    protected int counter;
+    protected int countDownLimit;
     protected Stage stage;
+    protected MediaPlayer mediaPlayer;
+    protected int playedKey;
 
     {
         pane = new Pane();
+        win = new Pane();
         backgroundET = new Ellipse();
         backgroundRTX = new Rectangle();
         backgroundRTX2 = new Rectangle();
@@ -122,7 +132,8 @@ public class GameBoard extends BorderPane {
         //---------------ahmed work------------
         isRunning = false;
         isXTurn = true;
-        counter = 0;
+        countDownLimit = 0;
+        playedKey = 0;
     }
 
     public GameBoard() {
@@ -135,8 +146,7 @@ public class GameBoard extends BorderPane {
         init();
         //------ add function name for handling the gamming aginst robot
     }
-    */
-    
+     */
     // show recorded games ---
     public GameBoard(File file) {
         init();
@@ -427,6 +437,14 @@ public class GameBoard extends BorderPane {
         paneGame.setPrefHeight(300.0);
         paneGame.setPrefWidth(300.0);
 
+        win.setLayoutX(75.0);
+        win.setLayoutY(25.0);
+        win.setPrefHeight(550.0);
+        win.setPrefWidth(550.0);
+        win.setOpacity(0.0);
+        win.setDisable(true);
+        win.setStyle("-fx-background-radius: 10; -fx-background-color: #FD6D84;");
+
         backgroundPosition.setArcHeight(20.0);
         backgroundPosition.setArcWidth(20.0);
         backgroundPosition.setFill(javafx.scene.paint.Color.valueOf("#e4e4e4"));
@@ -560,31 +578,35 @@ public class GameBoard extends BorderPane {
         pane.getChildren().add(pane0);
         pane.getChildren().add(btnClose);
         pane.getChildren().add(btnMin);
+        pane.getChildren().add(win);
     }
 
     public void startLocalGame() {
+        for (int i = 0; i < 9; i++) {
+            position[i].setText("");
+            position[i].setDisable(false);
+            position[i].setStyle("-fx-background-radius: 10; -fx-background-color: #c7c7c7;");
+        }
+
         //---------------ahmed work------------
+        playedKey = 0;
         isRunning = true;
+        isXTurn = true;
         paneCount.setOpacity(1.0);
-        counter = 30;
+        countDownLimit = 30;
 
         //------------Handlers------
         addEventHandlers();
-        //----------Game Limits counter thread
+        //----------Game Limits countDownLimit thread
         new Thread(() -> {
             while (isRunning && winIndex()[0] == -1) {
                 try {
-                    if (counter > 1) {
-                        if (isXTurn) {
-                            Platform.runLater(() -> labelCount.setText("Player 1 Turn"));
-                        } else {
-                            Platform.runLater(() -> labelCount.setText("Player 2 Turn"));
-                        }
-                        Platform.runLater(() -> labelCountNum.setText("00:" + (--counter)));
-                        Thread.sleep(1000);
+                    if (countDownLimit > 1) {
+                        drawCount();
                     } else {
                         changeTern();
                     }
+                    Thread.sleep(1000);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(GameBoard.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -594,14 +616,17 @@ public class GameBoard extends BorderPane {
 
     private void changeTern() {
         int[] winIndexes = winIndex();
-        if (winIndexes[0] == -1) {
-            counter = 30;
+        if (playedKey < 9 && winIndexes[0] == -1) {
+            countDownLimit = 30;
             isXTurn = !isXTurn;
-        } else {
+            drawCount();
+        } else if (winIndexes[0] != -1) {
             for (int i = 0; i < 9; i++) {
                 position[i].setDisable(true);
             }
             winner(winIndexes);
+        } else {
+            drawer();
         }
     }
 
@@ -652,8 +677,9 @@ public class GameBoard extends BorderPane {
     }
 
     private void winner(int[] winIndexes) {
+        isRunning = false;
         for (int i = 0; i < 3; i++) {
-            position[winIndexes[i]].setStyle("-fx-background-radius: 10; -fx-font-weight: bold; -fx-background-color: #FD6D84;");
+            position[winIndexes[i]].setStyle("-fx-background-radius: 10; -fx-background-color: #FD6D84;");
             position[winIndexes[i]].setEffect(dropShadow1);
         }
         paneCount.setOpacity(0.0);
@@ -664,13 +690,35 @@ public class GameBoard extends BorderPane {
             int name = Integer.valueOf(labelPlayerONum.getText()) + 1;
             labelPlayerONum.setText("" + name);
         }
-        //media palyer here...
-        System.out.println("win " + position[winIndexes[0]].getText());
+        String fileName = "/src/ui/video/win.mp4";
+        String directory = System.getProperty("user.dir");
+        String path = directory + fileName;
+        Media media = new Media(new File(path).toURI().toString());
+        mediaPlayer = new MediaPlayer(media);
+        MediaView mediaView = new MediaView(mediaPlayer);
+        mediaPlayer.setAutoPlay(true);
+        mediaView.setLayoutX(5.0);
+        mediaView.setLayoutY(5.0);
+        win.setOpacity(1.0);
+        win.getChildren().add(mediaView);
+        win.setDisable(false);
     }
 
     private void addEventHandlers() {
-        ClientApp.stage.setOnCloseRequest((e) -> {
+        //ClientApp.stage.
+        btnClose.setOnAction((e) -> {
             isRunning = false;
+            Platform.exit();
+        });
+
+        btnMin.setOnAction((e) -> {
+            ClientApp.stage.setIconified(true);
+        });
+
+        win.setOnMouseClicked((e) -> {
+            mediaPlayer.pause();
+            win.setOpacity(0.0);
+            win.setDisable(true);
         });
 
         //X-O-Draws
@@ -679,8 +727,34 @@ public class GameBoard extends BorderPane {
             position[i].setOnAction((e) -> {
                 position[index].setText(isXTurn ? "X" : "O");
                 position[index].setDisable(true);
+                playedKey++;
                 changeTern();
             });
         }
+
+        //new game btn
+        btnNewGame.setOnAction((e) -> {
+            startLocalGame();
+        });
+    }
+
+    private void drawCount() {
+        if (isXTurn) {
+            Platform.runLater(() -> labelCount.setText("Player 1 Turn"));
+        } else {
+            Platform.runLater(() -> labelCount.setText("Player 2 Turn"));
+        }
+        if (countDownLimit > 10) {
+            Platform.runLater(() -> labelCountNum.setText("00:" + (--countDownLimit)));
+        } else {
+            Platform.runLater(() -> labelCountNum.setText("00:0" + (--countDownLimit)));
+        }
+    }
+
+    private void drawer() {
+        isRunning = false;
+        paneCount.setOpacity(0.0);
+        int name = Integer.valueOf(labelDrawNum.getText()) + 1;
+        labelDrawNum.setText("" + name);
     }
 }
