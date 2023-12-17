@@ -34,6 +34,7 @@
             <DropShadow color="#757575" spread="0.82" />
          </effect></ListView>
       <Button fx:id="back" layoutX="21.0" layoutY="16.0" mnemonicParsing="false" prefHeight="49.0" prefWidth="64.0" style="-fx-background-color: f8baba;" textFill="#f8baba" />
+
       <Button fx:id="btnBack" layoutX="28.0" layoutY="20.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="51.0" style="-fx-background-color: #ffbdbd;" textFill="#da0a0a">
          <graphic>
             <Pane prefHeight="45.0" prefWidth="51.0">
@@ -175,7 +176,10 @@
             <DropShadow color="#fff7f7" spread="0.69" />
          </effect>
       </Button>
+
       <Button fx:id="btnMin" layoutX="559.0" layoutY="16.0" minHeight="-Infinity" minWidth="50.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="20.0" style="-fx-background-radius: 10; -fx-font-size: 20; -fx-font-weight: bold; -fx-background-color: #FD6D84;" text="-" textAlignment="JUSTIFY" textFill="WHITE" textOverrun="CLIP">
+
+  
          <font>
             <Font name="Franklin Gothic Demi Cond" size="43.0" />
          </font>
@@ -195,5 +199,6 @@
             <DropShadow color="#5a5a5e" spread="0.71" />
          </effect>
       </Label>
+
    </children>
 </AnchorPane>

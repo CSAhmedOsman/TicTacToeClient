@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package client.data;
+package data;
 
 /**
  *
  * @author w
  */
 public class Player {
-    private final int id;
+    private int id;
     private String name;
     private String email;//Maybe Validation On Pass
     private String password;// Maybe Validation On Pass
@@ -22,9 +22,13 @@ public class Player {
         isPlaying= isOnline= false;
         score= 0;
     }
+
+    public Player(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
     
-    public Player(int id, String name, String email, String password) {
-        this.id = id;
+    public Player(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;

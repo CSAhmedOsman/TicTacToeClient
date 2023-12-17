@@ -13,5 +13,9 @@ public class Constants {
     // ip, port, DB username, DB pass, etc...
     // public static final CAPITAL
     public static final int PORT= 5005;
+    public static final String IP_ADDRESS= "127.0.0.1";
+    
+    public static final int REGISTER = 1;
+    public static final int LOGIN = 2;
     
 }
