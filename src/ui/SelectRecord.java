@@ -13,6 +13,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.scene.Cursor;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -21,10 +22,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import static javafx.scene.layout.Region.USE_PREF_SIZE;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class SelectRecord extends AnchorPane {
@@ -79,11 +82,12 @@ public class SelectRecord extends AnchorPane {
     private int playerOScore = 0;
     private StringBuilder movesRecord = new StringBuilder();
     private int gameCounter = 1;
-    private List<String> gameRecords = new ArrayList<>(); // List to store game records
+    private List<Button> gameRecords = new ArrayList<>(); // List to store game records
     private int currentMoveIndex = 0;
     private Timeline timeline;
     final long numberOfSeconds = 1L;
     private Button[][] buttons = new Button[3][3];
+    private Thread simulationThread;
 
     public SelectRecord() {
 
@@ -253,7 +257,7 @@ public class SelectRecord extends AnchorPane {
         imageView.setFitWidth(40.0);
         imageView.setLayoutX(1.0);
         imageView.setLayoutY(-4.0);
-        imageView.setImage(new Image(getClass().getResource("images/back.png").toExternalForm()));
+//        imageView.setImage(new Image(getClass().getResource("images/back.png").toExternalForm()));
         btnBack.setGraphic(pane);
 
         label0.setLayoutX(426.0);
@@ -498,7 +502,13 @@ public class SelectRecord extends AnchorPane {
         getChildren().add(btnMin);
         getChildren().add(circle0);
         getChildren().add(lableTurnPlayer);
-
+        btnMin.setOnAction(e -> {
+            Stage stage = (Stage) btnMin.getScene().getWindow();
+            stage.setIconified(true); // This will minimize the window
+        });
+        btnClose.setOnAction(e -> {
+            System.exit(0);
+        });
         lableTurnPlayer.setText("Turn: Player X");
         buttons[0][0] = btnPosition1;
         buttons[0][1] = btnPosition2;
@@ -511,23 +521,12 @@ public class SelectRecord extends AnchorPane {
         buttons[2][2] = btnPosition9;
         Button backButton = new Button("Clear");
         backButton.setOnAction(e -> clearBoard());
-
-
         String directoryPath = "E:\\ITI\\Java\\Project\\GUI\\gameLogic";
         addTextFilesToListView(directoryPath);
-       
-        recordsListView.setOnMouseClicked(event -> {
-            Button selectedButton = recordsListView.getSelectionModel().getSelectedItem();
-            if (selectedButton != null) {
-                String fileName = selectedButton.getText();
-                displayFileContent(directoryPath + File.separator + fileName);
-            }
-        });
 
-
-        
     }
- private void addTextFilesToListView(String path) {
+
+    private void addTextFilesToListView(String path) {
         File directory = new File(path);
 
         if (directory.exists() && directory.isDirectory()) {
@@ -536,22 +535,33 @@ public class SelectRecord extends AnchorPane {
             if (files != null) {
                 for (File file : files) {
                     Button button = new Button(file.getName());
+                    button.setStyle("-fx-background-radius: 100; -fx-background-color: #EAD3D7;");
+                    button.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
+                    button.setFont(new Font("Franklin Gothic Demi Cond", 22.0));
+                    button.setCursor(Cursor.HAND);
+                    button.setOnAction((event) -> {
+                        displayFileContent(file.getAbsolutePath());
+                        int index = recordsListView.getItems().indexOf(button);
+                        recordsListView.getSelectionModel().select(index);
+                    });
                     recordsListView.getItems().add(button);
+
                 }
             }
         } else {
             System.out.println("The specified path either doesn't exist or is not a directory.");
         }
     }
- private void displayFileContent(String filePath) {
+
+    private void displayFileContent(String filePath) {
+        recordsListView.setDisable(true);
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             StringBuilder content = new StringBuilder();
             String line;
             while ((line = br.readLine()) != null) {
                 content.append(line).append("\n");
             }
-          //  textArea.setText(content.toString());
-          updateRecordsListView(content);
+            simulateMovesFromRecord(content.toString());
         } catch (IOException e) {
             System.out.println("Error reading file: " + e.getMessage());
         }
@@ -568,24 +578,11 @@ public class SelectRecord extends AnchorPane {
         movesRecord.setLength(0);
     }
 
- 
-
-    private void updateRecordsListView(StringBuilder selectedRecord) {
-        recordsListView.setOnMouseClicked(e -> {
-            if (selectedRecord != null) {
-                clearBoard();
-                currentMoveIndex = 0; // Reset move index when a new record is selected
-                String contentString = selectedRecord.toString();
-                simulateMovesFromRecord(contentString);
-            }
-        });
-    }
-
     private void simulateMovesFromRecord(String record) {
         clearBoard(); // Clear the board before simulating moves
         String[] moves = record.split("\n");
         List<String> movesList = Arrays.asList(moves);
-        Thread simulationThread = new Thread(() -> {
+        simulationThread = new Thread(() -> {
             for (String move : movesList) {
                 String[] moveDetails = move.split(": ");
                 String[] coordinates = moveDetails[1].split(", ");
@@ -611,12 +608,16 @@ public class SelectRecord extends AnchorPane {
                     Thread.currentThread().interrupt();
                 }
             }
+            Platform.runLater(() -> recordsListView.setDisable(false));
         });
-
         simulationThread.start();
     }
 
     private void showAlert(String string) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Game Over");
+        alert.setHeaderText(null);
+        alert.setContentText(string);
+        alert.showAndWait();
     }
 }
