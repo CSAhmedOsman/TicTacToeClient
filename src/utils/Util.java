@@ -5,7 +5,10 @@
  */
 package utils;
 
+import client.ClientApp;
 import javafx.application.Platform;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 
 /**
@@ -13,8 +16,9 @@ import javafx.scene.control.Alert;
  * @author w
  */
 public class Util {
-    public static void showDialog(Alert.AlertType type,String title,String content){
-        Platform.runLater(()->{
+
+    public static void showDialog(Alert.AlertType type, String title, String content) {
+        Platform.runLater(() -> {
             Alert a = new Alert(type);
             a.setTitle(title);
             a.setHeaderText(title);
@@ -22,5 +26,15 @@ public class Util {
             a.setContentText(content);
             a.showAndWait();
         });
+    }
+
+    public static void displayScreen(Parent root) {
+        
+        Scene scene = new Scene(root);
+        Platform.runLater(()->{
+            ClientApp.stage.setScene(scene);
+            ClientApp.stage.show();
+        });
+        
     }
 }
