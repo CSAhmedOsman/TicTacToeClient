@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
@@ -7,6 +8,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
@@ -14,27 +16,156 @@
 <AnchorPane fx:id="AnchorID" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f8baba" height="607.0" layoutX="-4.0" layoutY="-3.0" smooth="false" stroke="BLACK" strokeType="INSIDE" width="708.0" />
-      <Label layoutX="209.0" prefHeight="120.0" prefWidth="326.0" text="Tic-Tac-Toe" textFill="#43115b">
+      <Label layoutX="216.0" layoutY="7.0" prefHeight="86.0" prefWidth="269.0" text="Tic-Tac-Toe" textFill="#43115b">
          <font>
-            <Font name="Franklin Gothic Demi Cond" size="67.0" />
+            <Font name="Franklin Gothic Demi Cond" size="60.0" />
          </font>
          <effect>
             <DropShadow color="WHITE" spread="0.91" />
          </effect>
       </Label>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#141414" height="188.0" layoutX="66.0" layoutY="492.0" opacity="0.2" rotate="-35.5" stroke="BLACK" strokeType="INSIDE" width="29.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#141414" height="188.0" layoutX="66.0" layoutY="494.0" opacity="0.2" rotate="-35.5" stroke="BLACK" strokeType="INSIDE" width="29.0" />
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#141414" height="188.0" layoutX="66.0" layoutY="492.0" opacity="0.2" rotate="-126.9" stroke="BLACK" strokeType="INSIDE" width="29.0" />
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#141414" height="188.0" layoutX="616.0" layoutY="-7.0" opacity="0.2" rotate="-50.2" stroke="BLACK" strokeType="INSIDE" width="29.0" />
       <Rectangle fx:id="btnLogin" arcHeight="5.0" arcWidth="5.0" fill="#141414" height="188.0" layoutX="616.0" layoutY="-7.0" opacity="0.2" rotate="-138.0" stroke="BLACK" strokeType="INSIDE" width="29.0" />
       <Circle fill="#00000078" layoutX="676.0" layoutY="600.0" opacity="0.2" radius="71.0" stroke="#d0cbcb" strokeType="INSIDE" />
-      <ListView fx:id="myListView" layoutX="65.0" layoutY="120.0" opacity="0.68" prefHeight="434.0" prefWidth="571.0" style="-fx-font-size: 24;" />
+      <ListView fx:id="myListView" layoutX="379.0" layoutY="155.0" opacity="0.68" prefHeight="415.0" prefWidth="300.0" style="-fx-font-size: 24; -fx-background-radius: 30; -fx-background-color: #43115b;">
+         <effect>
+            <DropShadow color="#757575" spread="0.82" />
+         </effect></ListView>
       <Button fx:id="back" layoutX="21.0" layoutY="16.0" mnemonicParsing="false" prefHeight="49.0" prefWidth="64.0" style="-fx-background-color: f8baba;" textFill="#f8baba" />
-      <ImageView fitHeight="57.0" fitWidth="51.0" layoutX="28.0" layoutY="12.0">
-         <image>
-            <Image url="@../../../../../Downloads/back.png" />
-         </image>
-      </ImageView>
-      <Button fx:id="btnClose" layoutX="616.0" layoutY="23.0" minHeight="-Infinity" minWidth="50.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="20.0" style="-fx-background-radius: 10; -fx-font-size: 20; -fx-font-weight: bold; -fx-background-color: #FD6D84;" text="X" textFill="WHITE">
+
+      <Button fx:id="btnBack" layoutX="28.0" layoutY="20.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="51.0" style="-fx-background-color: #ffbdbd;" textFill="#da0a0a">
+         <graphic>
+            <Pane prefHeight="45.0" prefWidth="51.0">
+               <children>
+                  <ImageView fitHeight="45.0" fitWidth="40.0" layoutX="1.0" layoutY="-4.0">
+                     <image>
+                        <Image url="@images/back.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </Pane>
+         </graphic>
+      </Button>
+      <Label layoutX="426.0" layoutY="93.0" prefHeight="58.0" prefWidth="207.0" text="Game Records" textFill="#43115b">
+         <font>
+            <Font name="Franklin Gothic Demi Cond" size="36.0" />
+         </font>
+         <effect>
+            <DropShadow color="WHITE" spread="0.91" />
+         </effect>
+      </Label>
+      <Rectangle fx:id="backgroundGame" arcHeight="25.0" arcWidth="25.0" fill="#ca4b62" height="415.0" layoutX="20.0" layoutY="158.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="327.0">
+         <effect>
+            <DropShadow color="WHITE" spread="0.33" />
+         </effect>
+      </Rectangle>
+      <Rectangle fx:id="backgroundPosition" arcHeight="20.0" arcWidth="20.0" fill="#e4e4e4" height="300.0" layoutX="33.0" layoutY="259.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="300.0">
+         <effect>
+            <DropShadow />
+         </effect>
+      </Rectangle>
+      <Button fx:id="btnPosition1" alignment="CENTER" layoutX="40.0" layoutY="266.0" mnemonicParsing="false" prefHeight="85.0" prefWidth="85.0" style="-fx-background-radius: 10;" textFill="#030040">
+         <font>
+            <Font name="Arial Rounded MT Bold" size="36.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+         <effect>
+            <DropShadow />
+         </effect>
+      </Button>
+      <Button fx:id="btnPosition2" alignment="CENTER" layoutX="141.0" layoutY="266.0" mnemonicParsing="false" prefHeight="85.0" prefWidth="85.0" style="-fx-background-radius: 10;" textFill="#030040">
+         <font>
+            <Font name="Arial Rounded MT Bold" size="36.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+         <effect>
+            <DropShadow />
+         </effect>
+      </Button>
+      <Button fx:id="btnPosition3" alignment="CENTER" layoutX="241.0" layoutY="266.0" mnemonicParsing="false" prefHeight="85.0" prefWidth="85.0" style="-fx-background-radius: 10;" textFill="#030040">
+         <font>
+            <Font name="Arial Rounded MT Bold" size="36.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+         <effect>
+            <DropShadow />
+         </effect>
+      </Button>
+      <Button fx:id="btnPosition4" alignment="CENTER" layoutX="40.0" layoutY="367.0" mnemonicParsing="false" prefHeight="85.0" prefWidth="85.0" style="-fx-background-radius: 10;" textFill="#030040">
+         <font>
+            <Font name="Arial Rounded MT Bold" size="36.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+         <effect>
+            <DropShadow />
+         </effect>
+      </Button>
+      <Button fx:id="btnPosition5" alignment="CENTER" layoutX="141.0" layoutY="367.0" mnemonicParsing="false" prefHeight="85.0" prefWidth="85.0" style="-fx-background-radius: 10;" textFill="#030040">
+         <font>
+            <Font name="Arial Rounded MT Bold" size="36.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+         <effect>
+            <DropShadow />
+         </effect>
+      </Button>
+      <Button fx:id="btnPosition6" alignment="CENTER" layoutX="241.0" layoutY="367.0" mnemonicParsing="false" prefHeight="85.0" prefWidth="85.0" style="-fx-background-radius: 10;" textFill="#030040">
+         <font>
+            <Font name="Arial Rounded MT Bold" size="36.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+         <effect>
+            <DropShadow />
+         </effect>
+      </Button>
+      <Button fx:id="btnPosition7" alignment="CENTER" layoutX="40.0" layoutY="467.0" mnemonicParsing="false" prefHeight="85.0" prefWidth="85.0" style="-fx-background-radius: 10;" textFill="#030040">
+         <font>
+            <Font name="Arial Rounded MT Bold" size="36.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+         <effect>
+            <DropShadow />
+         </effect>
+      </Button>
+      <Button fx:id="btnPosition8" alignment="CENTER" layoutX="141.0" layoutY="467.0" mnemonicParsing="false" prefHeight="85.0" prefWidth="85.0" style="-fx-background-radius: 10;" textFill="#030040">
+         <font>
+            <Font name="Arial Rounded MT Bold" size="36.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+         <effect>
+            <DropShadow />
+         </effect>
+      </Button>
+      <Button fx:id="btnPosition9" alignment="CENTER" layoutX="241.0" layoutY="467.0" mnemonicParsing="false" prefHeight="85.0" prefWidth="85.0" style="-fx-background-radius: 10;" textFill="#030040">
+         <font>
+            <Font name="Arial Rounded MT Bold" size="36.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+         <effect>
+            <DropShadow />
+         </effect>
+      </Button>
+      <Button fx:id="btnClose" layoutX="628.0" layoutY="16.0" minHeight="-Infinity" minWidth="50.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="20.0" style="-fx-background-radius: 10; -fx-font-size: 20; -fx-font-weight: bold; -fx-background-color: #FD6D84;" text="X" textFill="WHITE">
          <font>
             <Font name="Franklin Gothic Demi Cond" size="43.0" />
          </font>
@@ -45,7 +176,10 @@
             <DropShadow color="#fff7f7" spread="0.69" />
          </effect>
       </Button>
-      <Button fx:id="btnMin" layoutX="547.0" layoutY="23.0" minHeight="-Infinity" minWidth="50.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="20.0" style="-fx-background-radius: 10; -fx-font-size: 20; -fx-font-weight: bold; -fx-background-color: #FD6D84;" text="-" textAlignment="JUSTIFY" textFill="WHITE" textOverrun="CLIP">
+
+      <Button fx:id="btnMin" layoutX="559.0" layoutY="16.0" minHeight="-Infinity" minWidth="50.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="20.0" style="-fx-background-radius: 10; -fx-font-size: 20; -fx-font-weight: bold; -fx-background-color: #FD6D84;" text="-" textAlignment="JUSTIFY" textFill="WHITE" textOverrun="CLIP">
+
+  
          <font>
             <Font name="Franklin Gothic Demi Cond" size="43.0" />
          </font>
@@ -56,5 +190,15 @@
             <DropShadow color="#fff7f7" spread="0.69" />
          </effect>
       </Button>
+      <Circle fill="#00000078" layoutX="63.0" layoutY="36.0" opacity="0.2" radius="120.0" stroke="#d0cbcb" strokeType="INSIDE" />
+      <Label fx:id="lableTurnPlayer" layoutX="32.0" layoutY="174.0" prefHeight="74.0" prefWidth="300.0" style="-fx-alignment: center; -fx-background-color: #f4d741; -fx-background-radius: 10;" text="Label" textAlignment="CENTER" textFill="#43115b">
+         <font>
+            <Font name="Franklin Gothic Demi Cond" size="42.0" />
+         </font>
+         <effect>
+            <DropShadow color="#5a5a5e" spread="0.71" />
+         </effect>
+      </Label>
+
    </children>
 </AnchorPane>
