@@ -15,12 +15,14 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import static javafx.scene.layout.Region.USE_PREF_SIZE;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -28,10 +30,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
-public class GameBoard extends BorderPane {
+public abstract class GameBoard extends BorderPane {
 
     protected final Pane pane;
     protected final Pane win;
@@ -81,12 +81,15 @@ public class GameBoard extends BorderPane {
     protected boolean isXTurn;
     protected boolean isRunning;
     protected int countDownLimit;
-    protected Stage stage;
     protected MediaPlayer mediaPlayer;
     protected int playedKey;
+    protected String recordedGame;
+    protected boolean isRecord;
 
     //-----------Elham work
     protected int robotLevel;
+    protected String player1Name;
+    protected String player2Name;
 
     {
         pane = new Pane();
@@ -140,30 +143,41 @@ public class GameBoard extends BorderPane {
         isXTurn = true;
         countDownLimit = 0;
         playedKey = 0;
+        player1Name = "Player1";
+        player2Name = "Player2";
+        recordedGame = "";
+        isRecord = false;
     }
 
     public GameBoard(int mode) {
+        player2Name = "Robot";
         robotLevel = mode;
         init();
-        startRobotGame();
     }
 
     public GameBoard() {
         init();
-        startLocalGame();
-        
     }
-    
+
+    public GameBoard(String p2) {
+        player2Name = p2;
+        init();
+    }
+
+    public GameBoard(String p1, String p2) {
+        player1Name = p1;
+        player2Name = p2;
+        init();
+    }
+
     // show recorded games ---
     public GameBoard(File file) {
-        init();
         //--------add function name for handling the read files
         // -------- don't forget to disable -- buttons with using forloop -- position[i].setDisable(true);
     }
 
     // playing online game ---
     public GameBoard(Player player1, Socket player2) {
-        init();
         //--------add function name for handling the online gamming
     }
 
@@ -346,7 +360,8 @@ public class GameBoard extends BorderPane {
 
         labelPlayerX.setLayoutX(9.0);
         labelPlayerX.setLayoutY(11.0);
-        labelPlayerX.setText("Player X");
+        labelPlayerX.setMaxWidth(80.0);
+        labelPlayerX.setText(player1Name + " X");
         labelPlayerX.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
         labelPlayerX.setTextFill(javafx.scene.paint.Color.WHITE);
         labelPlayerX.setFont(new Font("Arial Rounded MT Bold", 18.0));
@@ -400,7 +415,8 @@ public class GameBoard extends BorderPane {
 
         labelPlayerO.setLayoutX(8.0);
         labelPlayerO.setLayoutY(11.0);
-        labelPlayerO.setText("Player O");
+        labelPlayerO.setText(player2Name + " O");
+        labelPlayerO.setMaxWidth(80.0);
         labelPlayerO.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
         labelPlayerO.setTextFill(javafx.scene.paint.Color.WHITE);
         labelPlayerO.setFont(new Font("Arial Rounded MT Bold", 18.0));
@@ -588,176 +604,17 @@ public class GameBoard extends BorderPane {
         pane.getChildren().add(win);
     }
 
-    public void startLocalGame() {
-        for (int i = 0; i < 9; i++) {
-            position[i].setText("");
-            position[i].setDisable(false);
-            position[i].setStyle("-fx-background-radius: 10; -fx-background-color: #c7c7c7;");
-        }
+    protected abstract void nextTern();
 
-        //---------------ahmed work------------
-        playedKey = 0;
-        isRunning = true;
-        isXTurn = true;
-        paneCount.setOpacity(1.0);
+    protected abstract void addHandlers();
+
+    protected void changeTern() {
         countDownLimit = 30;
-
-        //------------Handlers------
-        addEventHandlers();
-        //----------Game Limits countDownLimit thread
-        new Thread(() -> {
-            while (isRunning && winIndex()[0] == -1) {
-                try {
-                    if (countDownLimit > 1) {
-                        drawCount();
-                    } else {
-                        changeTern();
-                    }
-                    Thread.sleep(1000);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(GameBoard.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }).start();
+        isXTurn = !isXTurn;
+        drawCount();
     }
 
-    private int findBestMove() {
-        System.out.println("Finding best move for the robot");
-        int bestMove = -1;
-        int bestScore = Integer.MIN_VALUE, score;
-
-        List<Integer> availableMoves = new ArrayList<>();
-
-        for (int i = 0; i < 9; i++) {
-            if (position[i].getText().equals("")) {
-                availableMoves.add(i);
-            }
-        }
-
-        Collections.shuffle(availableMoves);
-
-        for (int i : availableMoves) {
-            position[i].setText("O");
-            score = minimax(position, 1, false);
-            position[i].setText("");
-
-            if (score == 1) {
-                return i;
-            } else if (score > bestScore) {
-                bestScore = score;
-                bestMove = i;
-            }
-        }
-
-        return bestMove;
-    }
-
-    private int minimax(Button[] board, int depth, boolean isMaximizing) {
-        int result = evaluate(board);
-
-        if (result != 0) {
-            return result;
-        }
-
-        if (isMaximizing) {
-            int bestScore = Integer.MIN_VALUE;
-            for (int i = 0; i < 9; i++) {
-                if (board[i].getText().equals("")) {
-                    board[i].setText("O");
-                    bestScore = Math.max(bestScore, minimax(board, depth + 1, true));
-                    board[i].setText("");
-                }
-            }
-            return bestScore;
-        } else {
-            int bestScore = Integer.MAX_VALUE;
-            for (int i = 0; i < 9; i++) {
-                if (board[i].getText().equals("")) {
-                    board[i].setText("X");
-                    bestScore = Math.max(bestScore, minimax(board, depth + 1, true));
-                    board[i].setText("");
-                }
-            }
-            return bestScore;
-        }
-    }
-
-    private int evaluate(Button[] board) {
-        int[] winIndexes = winIndex();
-        if (winIndexes[0] != -1) {
-
-            if (board[winIndexes[0]].getText().equals("O")) {
-                return 1;
-            } else if (board[winIndexes[0]].getText().equals("X")) {
-                return -1;
-            }
-        }
-
-        return 0;
-    }
-
-    public void startRobotGame() {
-        //---------------ahmed work------------
-        System.out.println("startRobotGame****************");
-        isRunning = true;
-        paneCount.setOpacity(1.0);
-        counter = 30;
-
-        //------------Handlers------
-        changeTern();
-        addREventHandlers();
-
-        //----------Game Limits counter thread
-        new Thread(() -> {
-            while (isRunning && winIndex()[0] == -1) {
-                try {
-                    if (counter > 1) {
-                        if (isXTurn) {
-                            Platform.runLater(() -> labelCount.setText("Player 1 Turn"));
-                        } else {
-                            Platform.runLater(() -> labelCount.setText("Robot 2 Turn"));
-                        }
-                        Platform.runLater(() -> labelCountNum.setText("00:" + (--counter)));
-                        Thread.sleep(1000);
-                    } else {
-
-                    }
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(GameBoard.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }).start();
-    }
-
-    private void changeTern() {
-        int[] winIndexes = winIndex();
-        if (playedKey < 9 && winIndexes[0] == -1) {
-            countDownLimit = 30;
-            isXTurn = !isXTurn;
-             << << << < HEAD
-            
-            drawCount();
-        } else if (winIndexes[0] != -1) {
-             == == ==
-                    = System.out.println("isXTurn changeTern1=" + isXTurn);
-        } else {
-             >>> >>> > GameBoardRobot
-            for (int i = 0; i < 9; i++) {
-                position[i].setDisable(true);
-                System.out.println("isXTurn changeTern 2 =" + isXTurn);
-            }
-
-            winner(winIndexes);
-             << << << < HEAD
-        
-        }else {
-                    drawer();
-                     == == ==
-                    =  >>> >>> > GameBoardRobot
-                }
-    }
-
-    private int[] winIndex() {
+    protected int[] winIndex() {
         int[] indexes = {-1, -1, -1};
         if ((position[0].getText() != "" && position[1].getText() != "" && position[2].getText() != "")
                 && (position[0].getText() == position[1].getText() && position[1].getText() == position[2].getText())) {
@@ -803,7 +660,7 @@ public class GameBoard extends BorderPane {
         return indexes;
     }
 
-    private void winner(int[] winIndexes) {
+    protected void winner(int[] winIndexes) {
         isRunning = false;
         for (int i = 0; i < 3; i++) {
             position[winIndexes[i]].setStyle("-fx-background-radius: 10; -fx-background-color: #FD6D84;");
@@ -811,14 +668,13 @@ public class GameBoard extends BorderPane {
         }
         paneCount.setOpacity(0.0);
         if (position[winIndexes[0]].getText() == "X") {
-            int name = Integer.valueOf(labelPlayerXNum.getText()) + 1;
-            labelPlayerXNum.setText("" + name);
+            labelPlayerXNum.setText("" + (Integer.valueOf(labelPlayerXNum.getText()) + 1));
         } else if (position[winIndexes[0]].getText() == "O") {
-            int name = Integer.valueOf(labelPlayerONum.getText()) + 1;
-            labelPlayerONum.setText("" + name);
+            labelPlayerONum.setText("" + (Integer.valueOf(labelPlayerONum.getText()) + 1));
         }
-         << << << < HEAD
-        
+    }
+
+    protected void playWinVideo() {
         String fileName = "/src/ui/video/win.mp4";
         String directory = System.getProperty("user.dir");
         String path = directory + fileName;
@@ -831,21 +687,9 @@ public class GameBoard extends BorderPane {
         win.setOpacity(1.0);
         win.getChildren().add(mediaView);
         win.setDisable(false);
-         == == == =
-        else{
-           int name1 = Integer.valueOf(labelPlayerXNum.getText()) ;
-            labelPlayerXNum.setText("" + name1);
-       
-            int name2 = Integer.valueOf(labelPlayerONum.getText());
-            labelPlayerONum.setText("" + name2);
-        }
-        //media palyer here...
-        System.out.println("win " + position[winIndexes[0]].getText());
-         >>> >>> > GameBoardRobot
     }
 
-    private void addEventHandlers() {
-        //ClientApp.stage.
+    protected void addEventHandlers() {
         btnClose.setOnAction((e) -> {
             isRunning = false;
             Platform.exit();
@@ -860,56 +704,26 @@ public class GameBoard extends BorderPane {
             win.setOpacity(0.0);
             win.setDisable(true);
         });
-
-        //X-O-Draws
-        for (int i = 0; i < 9; i++) {
-            final int index = i;
-            position[i].setOnAction((e) -> {
-                position[index].setText(isXTurn ? "X" : "O");
-                position[index].setDisable(true);
-                playedKey++;
-                changeTern();
-            });
-        }
-    }
-
-    private void addREventHandlers() {
-        ClientApp.stage.setOnCloseRequest((e) -> {
-            isRunning = false;
-        });
-        // X-O-Draws With Robot
-        for (int i = 0; i < 9; i++) {
-            final int index = i;
-            position[i].setOnAction((e) -> {
-                if (isXTurn && position[index].getText().equals("")) {
-                    position[index].setText("X");
-                    position[index].setDisable(true);
-                    changeTern();
-                    System.out.println("isXTurn =" + isXTurn);
-                } else {
-                    int robotMove = findBestMove();
-                    if (robotMove != -1) {
-                        position[robotMove].setText("O");
-                        position[robotMove].setDisable(true);
-                        changeTern();
-                        System.out.println("isXTurn =" + isXTurn);
-                    }
-                }
-            });
-        }
-         << << << < HEAD
-        //new game btn
         
         btnNewGame.setOnAction((e) -> {
-            startLocalGame();
+            startGame();
         });
+        
+        btnExitGame.setOnAction((e) -> {
+            isRunning = false;
+            Parent root = new SelectPlayMode();
+            Scene scene = new Scene(root);
+            ClientApp.stage.setScene(scene);
+            ClientApp.stage.show();
+        });
+
     }
 
-    private void drawCount() {
+    protected void drawCount() {
         if (isXTurn) {
-            Platform.runLater(() -> labelCount.setText("Player 1 Turn"));
+            Platform.runLater(() -> labelCount.setText(player1Name + " Turn"));
         } else {
-            Platform.runLater(() -> labelCount.setText("Player 2 Turn"));
+            Platform.runLater(() -> labelCount.setText(player2Name + " Turn"));
         }
         if (countDownLimit > 10) {
             Platform.runLater(() -> labelCountNum.setText("00:" + (--countDownLimit)));
@@ -918,12 +732,11 @@ public class GameBoard extends BorderPane {
         }
     }
 
-    private void drawer() {
+    protected void drawer() {
         isRunning = false;
         paneCount.setOpacity(0.0);
-        int name = Integer.valueOf(labelDrawNum.getText()) + 1;
-        labelDrawNum.setText("" + name);
-         == == ==
-                =  >>> >>> > GameBoardRobot
+        labelDrawNum.setText("" + (Integer.valueOf(labelDrawNum.getText()) + 1));
     }
+
+    protected abstract void startGame();
 }

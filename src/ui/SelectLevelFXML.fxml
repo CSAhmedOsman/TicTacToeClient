@@ -24,6 +24,9 @@
          </effect>
       </Label>
       <Circle fill="#00000078" layoutX="54.0" layoutY="571.0" opacity="0.2" radius="111.0" stroke="#d0cbcb" strokeType="INSIDE" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#141414" height="188.0" layoutX="626.0" layoutY="169.0" opacity="0.2" rotate="-50.2" stroke="BLACK" strokeType="INSIDE" width="29.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#141414" height="188.0" layoutX="626.0" layoutY="169.0" opacity="0.2" rotate="-138.0" stroke="BLACK" strokeType="INSIDE" width="29.0" />
+      <Circle fill="#00000078" layoutX="651.0" layoutY="548.0" opacity="0.2" radius="71.0" stroke="#d0cbcb" strokeType="INSIDE" />
       <Button fx:id="btnLow" layoutX="206.0" layoutY="208.0" mnemonicParsing="false" prefHeight="82.0" prefWidth="305.0" style="-fx-background-radius: 100; -fx-background-color: #BC5FEA; -fx-font: Ferdoka One;" text="Low" textFill="#43115b">
          <font>
             <Font name="Gill Sans Ultra Bold Condensed" size="39.0" />
@@ -35,9 +38,6 @@
             <DropShadow height="35.83" radius="17.415" width="35.83" />
          </effect>
       </Button>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#141414" height="188.0" layoutX="626.0" layoutY="169.0" opacity="0.2" rotate="-50.2" stroke="BLACK" strokeType="INSIDE" width="29.0" />
-      <Rectangle fx:id="btnLogin" arcHeight="5.0" arcWidth="5.0" fill="#141414" height="188.0" layoutX="626.0" layoutY="169.0" opacity="0.2" rotate="-138.0" stroke="BLACK" strokeType="INSIDE" width="29.0" />
-      <Circle fill="#00000078" layoutX="651.0" layoutY="548.0" opacity="0.2" radius="71.0" stroke="#d0cbcb" strokeType="INSIDE" />
       <Button fx:id="btnMiddle" layoutX="206.0" layoutY="310.0" mnemonicParsing="false" prefHeight="82.0" prefWidth="305.0" style="-fx-background-radius: 100; -fx-background-color: #EAD3D7;" text="Middle" textFill="#43115b">
          <font>
             <Font name="Gill Sans Ultra Bold Condensed" size="39.0" />
