@@ -34,7 +34,7 @@
             <Image url="@../../../../../Downloads/back.png" />
          </image>
       </ImageView>
-<Button fx:id="btnClose" layoutX="616.0" layoutY="23.0" minHeight="-Infinity" minWidth="50.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="20.0" style="-fx-background-radius: 10; -fx-font-size: 20; -fx-font-weight: bold; -fx-background-color: #FD6D84;" text="X" textFill="WHITE">
+      <Button fx:id="btnClose" layoutX="616.0" layoutY="23.0" minHeight="-Infinity" minWidth="50.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="20.0" style="-fx-background-radius: 10; -fx-font-size: 20; -fx-font-weight: bold; -fx-background-color: #FD6D84;" text="X" textFill="WHITE">
          <font>
             <Font name="Franklin Gothic Demi Cond" size="43.0" />
          </font>
