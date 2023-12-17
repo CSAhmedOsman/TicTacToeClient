@@ -23,7 +23,7 @@ public class ClientApp extends Application {
     @Override
     public void start(Stage s) throws Exception {
         stage = s;
-        Parent root = new GameBoard();
+        Parent root = new GameBoard("robot");
         //stage.initStyle(StageStyle.UNDECORATED); //Hide bar of the stage
         Scene scene = new Scene(root);
 

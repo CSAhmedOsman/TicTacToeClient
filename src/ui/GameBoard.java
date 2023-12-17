@@ -4,6 +4,9 @@ import client.ClientApp;
 import client.data.Player;
 import java.io.File;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -125,14 +128,21 @@ public class GameBoard extends BorderPane {
         counter = 0;
     }
 
-    public GameBoard() {
-        init();
-        startLocalGame();
+    public GameBoard(String mode) {
+        if(mode.equalsIgnoreCase("robot")){
+            init();
+            startRobotGame();
+        }
+        else if(mode.equalsIgnoreCase("local")){
+            init();
+            startLocalGame();
+        }
     }
 
     /*
-    public GameBoard(Player or Robot) {
+    public GameBoard() {
         init();
+        startRobotGame();
         //------ add function name for handling the gamming aginst robot
     }
     */
@@ -592,16 +602,133 @@ public class GameBoard extends BorderPane {
         }).start();
     }
 
+    
+    private int findBestMove() {
+        System.out.println("Finding best move for the robot");
+        int bestMove = -1;
+        int bestScore = Integer.MIN_VALUE, score;
+
+        List<Integer> availableMoves = new ArrayList<>();
+
+        for (int i = 0; i < 9; i++) {
+            if (position[i].getText().equals("")) {
+                availableMoves.add(i);
+            }
+        }
+
+        Collections.shuffle(availableMoves);  
+
+        for (int i : availableMoves) {
+            position[i].setText("O"); 
+            score = minimax(position, 1, false);
+            position[i].setText("");  
+
+            if (score == 1) {
+                return i;
+            } else if (score > bestScore) {
+                bestScore = score;
+                bestMove = i;
+            }
+        }
+
+        return bestMove;
+ }
+
+        
+       private int minimax(Button[] board, int depth, boolean isMaximizing) {
+            int result = evaluate(board);
+
+            if (result != 0) {
+                return result;
+            }
+
+            if (isMaximizing) {
+                int bestScore = Integer.MIN_VALUE;
+                for (int i = 0; i < 9; i++) {
+                    if (board[i].getText().equals("")) {
+                        board[i].setText("O");
+                        bestScore = Math.max(bestScore, minimax(board, depth+1, true));
+                        board[i].setText("");
+                    }
+                }
+                return bestScore;
+            } else {
+                int bestScore = Integer.MAX_VALUE;
+                for (int i = 0; i < 9; i++) {
+                    if (board[i].getText().equals("")) {
+                        board[i].setText("X");
+                        bestScore = Math.max(bestScore, minimax(board, depth+1, true));
+                        board[i].setText("");
+                    }
+                }
+                return bestScore;
+            }
+        }
+
+    private int evaluate(Button[] board) {
+        int[] winIndexes = winIndex();
+        if (winIndexes[0] != -1) {
+            
+            if (board[winIndexes[0]].getText().equals("O")) {
+                return 1; 
+            } else if (board[winIndexes[0]].getText().equals("X")) {
+                return -1; 
+            }
+        }
+
+        return 0;
+    }
+
+    public void startRobotGame() {
+        //---------------ahmed work------------
+        System.out.println("startRobotGame****************");
+        isRunning = true;
+        paneCount.setOpacity(1.0);
+        counter = 30;
+        
+        //------------Handlers------
+                         changeTern();
+                        addREventHandlers();
+        
+        //----------Game Limits counter thread
+        new Thread(() -> {
+            while (isRunning && winIndex()[0] == -1) {
+                try {
+                    if (counter > 1) {
+                        if (isXTurn) {
+                            Platform.runLater(() -> labelCount.setText("Player 1 Turn"));
+                        } else {
+                            Platform.runLater(() -> labelCount.setText("Robot 2 Turn"));
+                        }
+                        Platform.runLater(() -> labelCountNum.setText("00:" + (--counter)));
+                        Thread.sleep(1000);
+                    } else {
+                        
+                        
+                    }
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(GameBoard.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }).start();
+    }
+
+   
     private void changeTern() {
         int[] winIndexes = winIndex();
         if (winIndexes[0] == -1) {
             counter = 30;
             isXTurn = !isXTurn;
+            System.out.println("isXTurn changeTern1="+ isXTurn);
         } else {
             for (int i = 0; i < 9; i++) {
                 position[i].setDisable(true);
+                System.out.println("isXTurn changeTern 2 ="+ isXTurn);
             }
+        
             winner(winIndexes);
+            
+          
         }
     }
 
@@ -660,9 +787,16 @@ public class GameBoard extends BorderPane {
         if (position[winIndexes[0]].getText() == "X") {
             int name = Integer.valueOf(labelPlayerXNum.getText()) + 1;
             labelPlayerXNum.setText("" + name);
-        } else {
+        } else if (position[winIndexes[0]].getText() == "O") {
             int name = Integer.valueOf(labelPlayerONum.getText()) + 1;
             labelPlayerONum.setText("" + name);
+        }
+        else{
+           int name1 = Integer.valueOf(labelPlayerXNum.getText()) ;
+            labelPlayerXNum.setText("" + name1);
+       
+            int name2 = Integer.valueOf(labelPlayerONum.getText());
+            labelPlayerONum.setText("" + name2);
         }
         //media palyer here...
         System.out.println("win " + position[winIndexes[0]].getText());
@@ -672,7 +806,8 @@ public class GameBoard extends BorderPane {
         ClientApp.stage.setOnCloseRequest((e) -> {
             isRunning = false;
         });
-
+        
+         
         //X-O-Draws
         for (int i = 0; i < 9; i++) {
             final int index = i;
@@ -681,6 +816,32 @@ public class GameBoard extends BorderPane {
                 position[index].setDisable(true);
                 changeTern();
             });
+        }}
+     private void addREventHandlers() {
+        ClientApp.stage.setOnCloseRequest((e) -> {
+            isRunning = false;
+        });
+        // X-O-Draws With Robot
+        for (int i = 0; i < 9; i++) {
+            final int index = i;
+            position[i].setOnAction((e) -> {
+                if (isXTurn && position[index].getText().equals("")) {
+                    position[index].setText("X");
+                    position[index].setDisable(true);
+                    changeTern();
+                System.out.println("isXTurn ="+ isXTurn);
+                }
+                else{
+                    int robotMove = findBestMove();
+                    if (robotMove != -1) {
+                        position[robotMove].setText("O");
+                        position[robotMove].setDisable(true);
+                        changeTern();
+                        System.out.println("isXTurn ="+ isXTurn);
+                    }
+                }
+            });
         }
+
     }
 }
