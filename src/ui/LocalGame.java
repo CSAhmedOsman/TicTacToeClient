@@ -52,7 +52,7 @@ public class LocalGame extends GameBoard {
 
         //----------Game Limits countDownLimit thread
         countThread = new Thread(() -> {
-            while (isRunning && (winIndex()[boardSize-1][1] == -1)) {
+            while (isRunning && (winIndex()[boardSize - 1][1] == -1)) {
                 try {
                     if (countDownLimit > 1) {
                         drawCount();
@@ -71,18 +71,14 @@ public class LocalGame extends GameBoard {
     @Override
     protected void nextTern() {
         int[][] winIndexes = winIndex();
-        if ((playedKey < boardSize * boardSize) && winIndexes[boardSize-1][1] == -1) {
+        if ((playedKey < boardSize * boardSize) && winIndexes[boardSize - 1][1] == -1) {
             changeTern();
         } else {
-            if (winIndexes[boardSize-1][1] != -1) {
+            if (winIndexes[boardSize - 1][1] != -1) {
                 for (int i = 0; i < boardSize; i++) {
                     for (int j = 0; j < boardSize; j++) {
                         position[i][j].setDisable(true);
                     }
-                }
-                recordedGame += (isXTurn ? ("win " + player1Name + " X") : ("win " + player2Name + " O")) + "\n";
-                for (int i = 0; i < boardSize; i++) {
-                    recordedGame += (winIndexes[i][0]) + ", " + (winIndexes[i][1]) + "\n";
                 }
                 winner(winIndexes);
                 playWinVideo();
@@ -91,8 +87,9 @@ public class LocalGame extends GameBoard {
             }
             // save file if recorded ---
             if (isRecord) {
-                try (
-                        FileOutputStream outputStream = new FileOutputStream("movements_game_" + Math.random() + ".txt", true)) {
+                Date date = new Date();
+                try (FileOutputStream outputStream = new FileOutputStream("C:/files/Game Record at "
+                        + date.getDate() + "-" + (date.getMonth()+1) +"-" + (date.getYear()+1900) + "-" +date.getHours() + "=" +date.getMinutes() + ".bin", true)) {
                     try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream))) {
                         writer.write(recordedGame);
                         writer.flush();
@@ -117,7 +114,7 @@ public class LocalGame extends GameBoard {
                 position[i][j].setOnAction((e) -> {
                     position[indexi][indexj].setText(isXTurn ? "X" : "O");
                     position[indexi][indexj].setDisable(true);
-                    recordedGame += (isXTurn ? (player1Name + " X") : (player2Name + " O")) + " cell: " + indexi + ", " + indexj + "\n";
+                    recordedGame += (isXTurn ? (player1Name + ", X") : (player2Name + ", O")) + " cell: " + indexi + ", " + indexj + "\n";
                     playedKey++;
                     nextTern();
                 });

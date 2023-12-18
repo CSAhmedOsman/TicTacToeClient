@@ -8,7 +8,6 @@ import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
@@ -639,24 +638,34 @@ public abstract class GameBoard extends BorderPane {
         int[][] indexes = emptyIndex();
         // check rows
         for (int i = 0; i < boardSize; i++) {
-            String temp = position[i][i].getText();
+            String temp = position[i][0].getText();
             for (int j = 0; j < boardSize; j++) {
-                if (!position[i][j].getText().equals("") && position[i][j].getText().equals(temp)) {
-                    indexes[i][0] = i;
-                    indexes[i][1] = j;
+                if (!position[i][j].getText().equals("")) {
+                    if (position[i][j].getText().equals(temp)) {
+                        indexes[j][0] = i;
+                        indexes[j][1] = j;
+                    }
                 }
             }
             if (!hasWinner(indexes)) {
                 indexes = emptyIndex();
             }
-            for (int j = 0; j < boardSize; j++) {
-                if (!position[i][j].getText().equals("") && position[i][j].getText().equals(temp)) {
-                    indexes[i][0] = j;
-                    indexes[i][1] = i;
+        }
+        //check colomns
+        if (indexes[boardSize - 1][1] == -1) {
+            for (int i = 0; i < boardSize; i++) {
+                String temp = position[0][i].getText();
+                for (int j = 0; j < boardSize; j++) {
+                    if (!position[j][i].getText().equals("")) {
+                        if (position[j][i].getText().equals(temp)) {
+                            indexes[j][0] = j;
+                            indexes[j][1] = i;
+                        }
+                    }
                 }
-            }
-            if (!hasWinner(indexes)) {
-                indexes = emptyIndex();
+                if (!hasWinner(indexes)) {
+                    indexes = emptyIndex();
+                }
             }
         }
 
@@ -664,26 +673,26 @@ public abstract class GameBoard extends BorderPane {
         String temp = position[boardSize / 2][boardSize / 2].getText();
         if (indexes[boardSize - 1][1] == -1) {
             for (int i = 0; i < boardSize; i++) {
-                if (!position[i][i].getText().equals("") && position[i][i].getText().equals(temp)) {
-                    indexes[i][0] = i;
-                    indexes[i][1] = i;
-                } else {
-                    indexes = emptyIndex();
+                if (position[i][i].getText() != "") {
+                    if (position[i][i].getText() == temp) {
+                        indexes[i][0] = i;
+                        indexes[i][1] = i;
+                    }
                 }
             }
-        }
-        if (!hasWinner(indexes)) {
-            indexes = emptyIndex();
+            if (!hasWinner(indexes)) {
+                indexes = emptyIndex();
+            }
         }
 
         //check 2nd diagonals
         if (indexes[boardSize - 1][1] == -1) {
             for (int i = 0; i < boardSize; i++) {
-                if (!position[i][boardSize - 1 - i].getText().equals("") && position[i][boardSize - 1 - i].getText().equals(temp)) {
-                    indexes[i][0] = i;
-                    indexes[i][1] = boardSize - 1 - i;
-                } else {
-                    indexes = emptyIndex();
+                if (position[i][boardSize - 1 - i].getText() != "") {
+                    if (position[i][boardSize - 1 - i].getText() == temp) {
+                        indexes[i][0] = i;
+                        indexes[i][1] = boardSize - 1 - i;
+                    }
                 }
             }
             if (!hasWinner(indexes)) {
