@@ -28,7 +28,7 @@ public class Util {
         });
     }
 
-    public static void displayScreen(Parent root) {
+    public static void displayScreen(Parent root) {        
         
         Scene scene = new Scene(root);
         Platform.runLater(()->{

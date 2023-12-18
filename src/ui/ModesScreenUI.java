@@ -267,7 +267,7 @@ public class ModesScreenUI extends Pane {
         imageView5.setFitWidth(40.0);
         imageView5.setLayoutX(17.0);
         imageView5.setLayoutY(11.0);
-        imageView5.setImage(new Image(getClass().getResource("../../../../../Downloads/back.png").toExternalForm()));
+        imageView5.setImage(new Image(getClass().getResource("images/back.png").toExternalForm()));
 
         btnClose.setLayoutX(616.0);
         btnClose.setLayoutY(23.0);
