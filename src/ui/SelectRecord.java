@@ -13,7 +13,11 @@ import java.util.List;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Cursor;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -30,6 +34,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import utils.Util;
 
 public class SelectRecord extends AnchorPane {
 
@@ -244,7 +249,7 @@ public class SelectRecord extends AnchorPane {
         back.setTextFill(javafx.scene.paint.Color.valueOf("#f8baba"));
 
         btnBack.setLayoutX(28.0);
-        btnBack.setLayoutY(20.0);
+        btnBack.setLayoutY(50.0);
         btnBack.setMnemonicParsing(false);
         btnBack.setPrefHeight(45.0);
         btnBack.setPrefWidth(51.0);
@@ -520,11 +525,8 @@ public class SelectRecord extends AnchorPane {
         Button backButton = new Button("Clear");
         backButton.setOnAction(e -> clearBoard());
 
-        String directoryPath = getClass().getResource("files").toString();
-        System.out.println(directoryPath);
-     //   String directoryPath = "E:\\ITI\\Java\\Project\\GUI\\gameLogic";
+        String directoryPath = "C:\\files";
         addTextFilesToListView(directoryPath);
-
     }
 
     private void setListeners(Stage stage) {
@@ -534,18 +536,28 @@ public class SelectRecord extends AnchorPane {
         btnClose.setOnAction(e -> {
             System.exit(0);
         });
-
+        btnBack.setOnAction((ActionEvent event) -> {
+            Parent selectMode = new ModesScreenUI();
+            Util.displayScreen(selectMode);
+        });
     }
 
     private void addTextFilesToListView(String path) {
         File directory = new File(path);
 
         if (directory.exists() && directory.isDirectory()) {
-            File[] files = directory.listFiles((dir, name) -> name.toLowerCase().endsWith(".txt"));
-
+            File[] files = directory.listFiles((dir, name) -> name.toLowerCase().endsWith(".bin"));
             if (files != null) {
                 for (File file : files) {
-                    Button button = new Button(file.getName());
+                    String fileNameWithExtension = file.getName();
+                    int lastDotIndex = fileNameWithExtension.lastIndexOf('.');
+                    String fileNameWithoutExtension;
+                    if (lastDotIndex > 0) {
+                        fileNameWithoutExtension = fileNameWithExtension.substring(0, lastDotIndex);
+                    } else {
+                        fileNameWithoutExtension = fileNameWithExtension;
+                    }
+                    Button button = new Button(fileNameWithoutExtension);
                     button.setStyle("-fx-background-radius: 100; -fx-background-color: #EAD3D7;");
                     button.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
                     button.setFont(new Font("Franklin Gothic Demi Cond", 22.0));
@@ -556,7 +568,6 @@ public class SelectRecord extends AnchorPane {
                         recordsListView.getSelectionModel().select(index);
                     });
                     recordsListView.getItems().add(button);
-
                 }
             }
         } else {
@@ -577,7 +588,6 @@ public class SelectRecord extends AnchorPane {
             System.out.println("Error reading file: " + e.getMessage());
         }
     }
-
     private void clearBoard() {
         for (Button[] row : buttons) {
             for (Button button : row) {
@@ -598,14 +608,14 @@ public class SelectRecord extends AnchorPane {
             @Override
             public void run() {
                 for (String move : movesList) {
-                    String[]player = move.split(", ");
+                    String[] player = move.split(", ");
                     String[] moveDetails = move.split(": ");
                     String[] coordinates = moveDetails[1].split(", ");
                     int rowIndex = Integer.parseInt(coordinates[0]);
-                    int columnIndex= Integer.parseInt(coordinates[1]);
+                    int columnIndex = Integer.parseInt(coordinates[1]);
                     Button button = buttons[rowIndex][columnIndex];
                     Platform.runLater(() -> {
-                        lableTurnPlayer.setText("Turn: "+player[0]+" "+player[1]);
+                        lableTurnPlayer.setText("Turn: " + player[0] + " " + player[1]);
                         button.setText(player[1]);
                     });
 
@@ -631,7 +641,6 @@ public class SelectRecord extends AnchorPane {
             }
         });
         simulationThread.start();
-
     }
 
     private void showAlert(String string) {
@@ -661,7 +670,7 @@ public class SelectRecord extends AnchorPane {
             if (board[0][i].equals(board[1][i]) && board[0][i].equals(board[2][i]) && !board[0][i].isEmpty()) {
                 for (int j = 0; j < 3; j++) {
                     buttons[j][i].setStyle("-fx-background-color:  #FD6D84;");
-                     type = buttons[j][i].getText();
+                    type = buttons[j][i].getText();
                 }
             }
         }
@@ -677,7 +686,7 @@ public class SelectRecord extends AnchorPane {
             } else {
                 for (int i = 0; i < 3; i++) {
                     buttons[i][2 - i].setStyle("-fx-background-color:  #FD6D84;");
-                       type = buttons[i][2 - i].getText();
+                    type = buttons[i][2 - i].getText();
                 }
             }
         }
