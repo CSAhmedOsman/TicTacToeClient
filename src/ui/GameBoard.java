@@ -4,17 +4,9 @@ import client.ClientApp;
 import client.data.Player;
 import java.io.File;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.scene.Cursor;
-import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -30,6 +22,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javafx.util.Duration;
 
 public abstract class GameBoard extends BorderPane {
 
@@ -70,7 +63,7 @@ public abstract class GameBoard extends BorderPane {
     protected final Label labelCountNum;
     protected final Pane paneGame;
     protected final Rectangle backgroundPosition;
-    protected final Button[] position;
+    protected Button[][] position;
     protected final DropShadow dropShadow2;
     protected final Button btnClose;
     protected final DropShadow dropShadow3;
@@ -85,13 +78,16 @@ public abstract class GameBoard extends BorderPane {
     protected int playedKey;
     protected String recordedGame;
     protected boolean isRecord;
+    protected Thread countThread;
 
     //-----------Elham work
     protected int robotLevel;
     protected String player1Name;
     protected String player2Name;
+    protected int boardSize;
 
     {
+        boardSize = 3;
         pane = new Pane();
         win = new Pane();
         backgroundET = new Ellipse();
@@ -129,10 +125,6 @@ public abstract class GameBoard extends BorderPane {
         labelCountNum = new Label();
         paneGame = new Pane();
         backgroundPosition = new Rectangle();
-        position = new Button[9];
-        for (int i = 0; i < 9; i++) {
-            position[i] = new Button();
-        }
         dropShadow2 = new DropShadow();
         btnClose = new Button();
         dropShadow3 = new DropShadow();
@@ -173,7 +165,7 @@ public abstract class GameBoard extends BorderPane {
     // show recorded games ---
     public GameBoard(File file) {
         //--------add function name for handling the read files
-        // -------- don't forget to disable -- buttons with using forloop -- position[i].setDisable(true);
+        // -------- don't forget to disable -- buttons with using forloop -- position[i][j].setDisable(true);
     }
 
     // playing online game ---
@@ -303,6 +295,7 @@ public abstract class GameBoard extends BorderPane {
         btnRecordeGame.setMnemonicParsing(false);
         btnRecordeGame.setPrefHeight(44.0);
         btnRecordeGame.setPrefWidth(167.0);
+        btnRecordeGame.setDisable(false);
         btnRecordeGame.setStyle("-fx-background-radius: 10; -fx-font-size: 20; -fx-font-weight: bold; -fx-background-color: #FD6D84;");
         btnRecordeGame.setText("Recorde Game");
         btnRecordeGame.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
@@ -482,45 +475,53 @@ public abstract class GameBoard extends BorderPane {
         dropShadow1.setSpread(0.25);
         btnExitGame.setEffect(dropShadow1);
 
-        for (int i = 0; i < 9; i++) {
-            position[i].setAlignment(javafx.geometry.Pos.CENTER);
-            position[i].setMnemonicParsing(false);
-            position[i].setPrefHeight(85.0);
-            position[i].setPrefWidth(85.0);
-            position[i].setText("");
-            position[i].setStyle("-fx-background-radius: 10; -fx-background-color: #c7c7c7;");
-            position[i].setTextFill(javafx.scene.paint.Color.valueOf("#030040"));
-            position[i].setFont(new Font("Arial Rounded MT Bold", 36.0));
-            position[i].setCursor(Cursor.HAND);
-            if (i / 3 == 0) {
-                position[i].setLayoutY(11.0);
-                if (i % 3 == 0) {
-                    position[i].setLayoutX(11.0);
-                } else if (i % 3 == 1) {
-                    position[i].setLayoutX(107.0);
+        position = new Button[boardSize][boardSize];
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+                position[i][j] = new Button();
+            }
+        }
+
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+                position[i][j].setAlignment(javafx.geometry.Pos.CENTER);
+                position[i][j].setMnemonicParsing(false);
+                position[i][j].setPrefHeight(85.0);
+                position[i][j].setPrefWidth(85.0);
+                position[i][j].setText("");
+                position[i][j].setStyle("-fx-background-radius: 10; -fx-background-color: #c7c7c7;");
+                position[i][j].setTextFill(javafx.scene.paint.Color.valueOf("#030040"));
+                position[i][j].setFont(new Font("Arial Rounded MT Bold", 36.0));
+                position[i][j].setCursor(Cursor.HAND);
+                if (i == 0) {
+                    position[i][j].setLayoutY(11.0);
+                    if (j == 0) {
+                        position[i][j].setLayoutX(11.0);
+                    } else if (j == 1) {
+                        position[i][j].setLayoutX(107.0);
+                    } else {
+                        position[i][j].setLayoutX(203.0);
+                    }
+                } else if (i == 1) {
+                    position[i][j].setLayoutY(107.0);
+                    if (j == 0) {
+                        position[i][j].setLayoutX(11.0);
+                    } else if (j == 1) {
+                        position[i][j].setLayoutX(107.0);
+                    } else {
+                        position[i][j].setLayoutX(203.0);
+                    }
                 } else {
-                    position[i].setLayoutX(203.0);
-                }
-            } else if (i / 3 == 1) {
-                position[i].setLayoutY(107.0);
-                if (i % 3 == 0) {
-                    position[i].setLayoutX(11.0);
-                } else if (i % 3 == 1) {
-                    position[i].setLayoutX(107.0);
-                } else {
-                    position[i].setLayoutX(203.0);
-                }
-            } else {
-                position[i].setLayoutY(203.0);
-                if (i % 3 == 0) {
-                    position[i].setLayoutX(11.0);
-                } else if (i % 3 == 1) {
-                    position[i].setLayoutX(107.0);
-                } else {
-                    position[i].setLayoutX(203.0);
+                    position[i][j].setLayoutY(203.0);
+                    if (j == 0) {
+                        position[i][j].setLayoutX(11.0);
+                    } else if (j == 1) {
+                        position[i][j].setLayoutX(107.0);
+                    } else {
+                        position[i][j].setLayoutX(203.0);
+                    }
                 }
             }
-
         }
 
         dropShadow2.setColor(javafx.scene.paint.Color.valueOf("#fff7f7"));
@@ -594,8 +595,10 @@ public abstract class GameBoard extends BorderPane {
         paneCount.getChildren().add(labelCountNum);
         pane0.getChildren().add(paneCount);
         paneGame.getChildren().add(backgroundPosition);
-        for (int i = 0; i < 9; i++) {
-            paneGame.getChildren().add(position[i]);
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+                paneGame.getChildren().add(position[i][j]);
+            }
         }
         pane0.getChildren().add(paneGame);
         pane.getChildren().add(pane0);
@@ -614,79 +617,114 @@ public abstract class GameBoard extends BorderPane {
         drawCount();
     }
 
-    protected int[] winIndex() {
-        int[] indexes = {-1, -1, -1};
-        if ((position[0].getText() != "" && position[1].getText() != "" && position[2].getText() != "")
-                && (position[0].getText() == position[1].getText() && position[1].getText() == position[2].getText())) {
-            indexes[0] = 0;
-            indexes[1] = 1;
-            indexes[2] = 2;
-        } else if ((position[3].getText() != "" && position[4].getText() != "" && position[5].getText() != "")
-                && (position[3].getText() == position[4].getText() && position[4].getText() == position[5].getText())) {
-            indexes[0] = 3;
-            indexes[1] = 4;
-            indexes[2] = 5;
-        } else if ((position[6].getText() != "" && position[7].getText() != "" && position[8].getText() != "")
-                && (position[6].getText() == position[7].getText() && position[7].getText() == position[8].getText())) {
-            indexes[0] = 6;
-            indexes[1] = 7;
-            indexes[2] = 8;
-        } else if ((position[0].getText() != "" && position[3].getText() != "" && position[6].getText() != "")
-                && (position[0].getText() == position[3].getText() && position[3].getText() == position[6].getText())) {
-            indexes[0] = 0;
-            indexes[1] = 3;
-            indexes[2] = 6;
-        } else if ((position[1].getText() != "" && position[4].getText() != "" && position[7].getText() != "")
-                && (position[1].getText() == position[4].getText() && position[4].getText() == position[7].getText())) {
-            indexes[0] = 1;
-            indexes[1] = 4;
-            indexes[2] = 7;
-        } else if ((position[2].getText() != "" && position[5].getText() != "" && position[8].getText() != "")
-                && (position[2].getText() == position[5].getText() && position[5].getText() == position[8].getText())) {
-            indexes[0] = 2;
-            indexes[1] = 5;
-            indexes[2] = 8;
-        } else if ((position[0].getText() != "" && position[4].getText() != "" && position[8].getText() != "")
-                && (position[0].getText() == position[4].getText() && position[4].getText() == position[8].getText())) {
-            indexes[0] = 0;
-            indexes[1] = 4;
-            indexes[2] = 8;
-        } else if ((position[2].getText() != "" && position[4].getText() != "" && position[6].getText() != "")
-                && (position[2].getText() == position[4].getText() && position[4].getText() == position[6].getText())) {
-            indexes[0] = 2;
-            indexes[1] = 4;
-            indexes[2] = 6;
+    protected int[][] emptyIndex() {
+        int[][] indexes = new int[boardSize][2];
+        for (int i = 0; i < boardSize; i++) {
+            indexes[i][0] = indexes[i][1] = -1;
         }
         return indexes;
     }
 
-    protected void winner(int[] winIndexes) {
-        isRunning = false;
-        for (int i = 0; i < 3; i++) {
-            position[winIndexes[i]].setStyle("-fx-background-radius: 10; -fx-background-color: #FD6D84;");
-            position[winIndexes[i]].setEffect(dropShadow1);
+    protected boolean hasWinner(int[][] indexes) {
+        for (int i = 0; i < boardSize; i++) {
+            if (indexes[i][0] == -1 || indexes[i][1] == -1) {
+                return false;
+            }
         }
-        paneCount.setOpacity(0.0);
-        if (position[winIndexes[0]].getText() == "X") {
-            labelPlayerXNum.setText("" + (Integer.valueOf(labelPlayerXNum.getText()) + 1));
-        } else if (position[winIndexes[0]].getText() == "O") {
-            labelPlayerONum.setText("" + (Integer.valueOf(labelPlayerONum.getText()) + 1));
+        return true;
+    }
+
+    protected int[][] winIndex() {
+        int[][] indexes = emptyIndex();
+        // check rows
+        for (int i = 0; i < boardSize; i++) {
+            String temp = position[i][i].getText();
+            for (int j = 0; j < boardSize; j++) {
+                if (!position[i][j].getText().equals("") && position[i][j].getText().equals(temp)) {
+                    indexes[i][0] = i;
+                    indexes[i][1] = j;
+                }
+            }
+            if (!hasWinner(indexes)) {
+                indexes = emptyIndex();
+            }
+            for (int j = 0; j < boardSize; j++) {
+                if (!position[i][j].getText().equals("") && position[i][j].getText().equals(temp)) {
+                    indexes[i][0] = j;
+                    indexes[i][1] = i;
+                }
+            }
+            if (!hasWinner(indexes)) {
+                indexes = emptyIndex();
+            }
+        }
+
+        //check 1st diagonals
+        String temp = position[boardSize / 2][boardSize / 2].getText();
+        if (indexes[boardSize - 1][1] == -1) {
+            for (int i = 0; i < boardSize; i++) {
+                if (!position[i][i].getText().equals("") && position[i][i].getText().equals(temp)) {
+                    indexes[i][0] = i;
+                    indexes[i][1] = i;
+                } else {
+                    indexes = emptyIndex();
+                }
+            }
+        }
+        if (!hasWinner(indexes)) {
+            indexes = emptyIndex();
+        }
+
+        //check 2nd diagonals
+        if (indexes[boardSize - 1][1] == -1) {
+            for (int i = 0; i < boardSize; i++) {
+                if (!position[i][boardSize - 1 - i].getText().equals("") && position[i][boardSize - 1 - i].getText().equals(temp)) {
+                    indexes[i][0] = i;
+                    indexes[i][1] = boardSize - 1 - i;
+                } else {
+                    indexes = emptyIndex();
+                }
+            }
+            if (!hasWinner(indexes)) {
+                indexes = emptyIndex();
+            }
+        }
+        return indexes;
+    }
+
+    protected void winner(int[][] winIndexes) {
+        isRunning = false;
+        if (winIndexes[boardSize - 1][1] != -1) {
+            for (int i = 0; i < boardSize; i++) {
+                position[winIndexes[i][0]][winIndexes[i][1]].setStyle("-fx-background-radius: 10; -fx-background-color: #FD6D84;");
+                position[winIndexes[i][0]][winIndexes[i][1]].setEffect(dropShadow1);
+            }
+            paneCount.setOpacity(0.0);
+            if (position[winIndexes[boardSize - 1][0]][winIndexes[boardSize - 1][1]].getText() == "X") {
+                labelPlayerXNum.setText("" + (Integer.valueOf(labelPlayerXNum.getText()) + 1));
+            } else if (position[winIndexes[boardSize - 1][0]][winIndexes[boardSize - 1][1]].getText() == "O") {
+                labelPlayerONum.setText("" + (Integer.valueOf(labelPlayerONum.getText()) + 1));
+            }
         }
     }
 
     protected void playWinVideo() {
-        String fileName = "/src/ui/video/win.mp4";
-        String directory = System.getProperty("user.dir");
-        String path = directory + fileName;
-        Media media = new Media(new File(path).toURI().toString());
-        mediaPlayer = new MediaPlayer(media);
-        MediaView mediaView = new MediaView(mediaPlayer);
-        mediaPlayer.setAutoPlay(true);
-        mediaView.setLayoutX(5.0);
-        mediaView.setLayoutY(5.0);
-        win.setOpacity(1.0);
-        win.getChildren().add(mediaView);
-        win.setDisable(false);
+        PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
+        pause.setOnFinished(event -> {
+            String fileName = "/src/ui/video/win.mp4";
+            String directory = System.getProperty("user.dir");
+            String path = directory + fileName;
+            Media media = new Media(new File(path).toURI().toString());
+            mediaPlayer = new MediaPlayer(media);
+            MediaView mediaView = new MediaView(mediaPlayer);
+            mediaPlayer.setAutoPlay(true);
+            mediaView.setLayoutX(5.0);
+            mediaView.setLayoutY(5.0);
+            win.setOpacity(1.0);
+            win.getChildren().add(mediaView);
+            win.setDisable(false);
+        });
+        pause.play();
     }
 
     protected void addEventHandlers() {
@@ -704,11 +742,19 @@ public abstract class GameBoard extends BorderPane {
             win.setOpacity(0.0);
             win.setDisable(true);
         });
-        
+
         btnNewGame.setOnAction((e) -> {
             startGame();
+            if (countThread.isInterrupted()) {
+                countThread.interrupt();
+            }
         });
-        
+
+        btnRecordeGame.setOnAction((e) -> {
+            isRecord = true;
+            btnRecordeGame.setDisable(true);
+        });
+
         btnExitGame.setOnAction((e) -> {
             isRunning = false;
             Parent root = new SelectPlayMode();

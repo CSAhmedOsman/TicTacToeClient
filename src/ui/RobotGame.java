@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
@@ -35,8 +34,8 @@ public class RobotGame extends GameBoard {
 
         List<Integer> availableMoves = new ArrayList<>();
 
-        for (int i = 0; i < 9; i++) {
-            if (position[i].getText().equals("")) {
+        for (int i = 0; i < (boardSize * boardSize); i++) {
+            if (position[i / boardSize][i % boardSize].getText().equals("")) {
                 availableMoves.add(i);
             }
         }
@@ -44,9 +43,9 @@ public class RobotGame extends GameBoard {
         Collections.shuffle(availableMoves);
 
         for (int i : availableMoves) {
-            position[i].setText("O");
+            position[i / boardSize][i % boardSize].setText("O");
             score = minimax(position, 1, false);
-            position[i].setText("");
+            position[i / boardSize][i % boardSize].setText("");
 
             if (score == 1) {
                 return i;
@@ -58,7 +57,7 @@ public class RobotGame extends GameBoard {
         return bestMove;
     }
 
-    private int minimax(Button[] board, int depth, boolean isMaximizing) {
+    private int minimax(Button[][] board, int depth, boolean isMaximizing) {
         int result = evaluate(board);
 
         if (result != 0) {
@@ -67,57 +66,63 @@ public class RobotGame extends GameBoard {
 
         if (isMaximizing) {
             int bestScore = Integer.MIN_VALUE;
-            for (int i = 0; i < 9; i++) {
-                if (board[i].getText().equals("")) {
-                    board[i].setText("O");
-                    if (level == 1) {
-                        bestScore = Math.min(bestScore, minimax(board, 0, false)); // low
-                    } else if (level == 2) {
-                        bestScore = Math.max(bestScore, minimax(board, depth + 1, true)); // mid
-                    } else {
-                        bestScore = Math.max(bestScore, minimax(board,depth + 3, true)); // high
+            for (int i = 0; i < boardSize; i++) {
+                for (int j = 0; j < boardSize; j++) {
+                    if (board[i][j].getText().equals("")) {
+                        board[i][j].setText("O");
+                        if (level == 1) {
+                            bestScore = Math.min(bestScore, minimax(board, 0, false)); // low
+                        } else if (level == 2) {
+                            bestScore = Math.max(bestScore, minimax(board, depth + 1, true)); // mid
+                        } else {
+                            bestScore = Math.max(bestScore, minimax(board, depth + 3, true)); // high
+                        }
+                        board[i][j].setText("");
                     }
-                    board[i].setText("");
                 }
             }
             return bestScore;
         } else {
             int bestScore = Integer.MAX_VALUE;
-            for (int i = 0; i < 9; i++) {
-                if (board[i].getText().equals("")) {
-                    board[i].setText("X");
-                    if (level == 1) {
-                        bestScore = Math.max(bestScore, minimax(board, 0, false)); // low
-                    } else if (level == 2) {
-                        bestScore = Math.max(bestScore, minimax(board, depth + 1, true)); // mid
-                    } else {
-                        bestScore = Math.min(bestScore, minimax(board, depth + 3, true)); // high
+            for (int i = 0; i < boardSize; i++) {
+                for (int j = 0; j < boardSize; j++) {
+                    if (board[i][j].getText().equals("")) {
+                        board[i][j].setText("X");
+                        if (level == 1) {
+                            bestScore = Math.max(bestScore, minimax(board, 0, false)); // low
+                        } else if (level == 2) {
+                            bestScore = Math.max(bestScore, minimax(board, depth + 1, true)); // mid
+                        } else {
+                            bestScore = Math.min(bestScore, minimax(board, depth + 3, true)); // high
+                        }
+                        board[i][j].setText("");
                     }
-                    board[i].setText("");
                 }
             }
             return bestScore;
         }
     }
-    private int evaluate(Button[] board) {
-        int[] winIndexes = winIndex();
-        if (winIndexes[0] != -1) {
 
-            if (board[winIndexes[0]].getText().equals("O")) {
+    private int evaluate(Button[][] board) {
+        int[][] winIndexes = winIndex();
+        if (winIndexes[boardSize-1][1] != -1) {
+
+            if (board[winIndexes[boardSize-1][0]][winIndexes[boardSize-1][1]].getText().equals("O")) {
                 return 1;
-            } else if (board[winIndexes[0]].getText().equals("X")) {
+            } else if (board[winIndexes[boardSize-1][0]][winIndexes[boardSize-1][1]].getText().equals("X")) {
                 return -1;
             }
         }
-
         return 0;
     }
 
     public void startGame() {
-        for (int i = 0; i < 9; i++) {
-            position[i].setText("");
-            position[i].setDisable(false);
-            position[i].setStyle("-fx-background-radius: 10; -fx-background-color: #c7c7c7;");
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+                position[i][j].setText("");
+                position[i][j].setDisable(false);
+                position[i][j].setStyle("-fx-background-radius: 10; -fx-background-color: #c7c7c7;");
+            }
         }
 
         //---------------Elham work------------
@@ -126,14 +131,16 @@ public class RobotGame extends GameBoard {
         isXTurn = true;
         paneCount.setOpacity(1.0);
         countDownLimit = 30;
+        isRecord = false;
+        btnRecordeGame.setDisable(false);
 
         //------------Handlers------
         addEventHandlers();
         addHandlers();
 
         //----------Game Limits counter thread
-        new Thread(() -> {
-            while (isRunning && winIndex()[0] == -1) {
+        countThread = new Thread(() -> {
+            while (isRunning && winIndex()[boardSize-1][1] == -1) {
                 try {
                     if (countDownLimit > 1) {
                         drawCount();
@@ -146,61 +153,76 @@ public class RobotGame extends GameBoard {
                             .getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        }).start();
+        });
+        countThread.start();
     }
 
     @Override
     protected void nextTern() {
-        int[] winIndexes = winIndex();
-        if (playedKey < 9 && winIndexes[0] == -1) {
-
+        int[][] winIndexes = winIndex();
+        if ((playedKey < boardSize * boardSize) && winIndexes[boardSize-1][1] == -1) {
             changeTern();
-        } else if (winIndexes[0] != -1) {
-            for (int i = 0; i < 9; i++) {
-                position[i].setDisable(true);
-            }
-            winner(winIndexes);
-            if (isXTurn) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(RobotGame.class
-                            .getName()).log(Level.SEVERE, null, ex);
-                }
-                playWinVideo();
+            if (!isXTurn) {
+                robotTern();
             }
         } else {
-            drawer();
+            if (winIndexes[boardSize-1][1] != -1) {
+                for (int i = 0; i < boardSize; i++) {
+                    for (int j = 0; j < boardSize; j++) {
+                        position[i][j].setDisable(true);
+                    }
+                }
+                recordedGame += (isXTurn ? ("win " + player1Name + " X") : ("win " + player2Name + " O")) + "\n";
+                for (int i = 0; i < boardSize; i++) {
+                    recordedGame += (winIndexes[i][0]) + ", " + (winIndexes[i][1]) + "\n";
+                }
+                winner(winIndexes);
+                if (isXTurn) {
+                    playWinVideo();
+                }
+            } else {
+                drawer();
+            }
+            /*
+            if (isRecord) {}*/
         }
     }
 
     @Override
-
     protected void addHandlers() {
         // X-O-Draws With Robot
-        for (int i = 0; i < 9; i++) {
-            final int index = i;
-            position[i].setOnAction((e) -> {
-                if (isXTurn && position[index].getText().equals("")) {
-                    position[index].setText("X");
-                    position[index].setDisable(true);
-                    playedKey++;
-                    nextTern();
-
-                    PauseTransition pause = new PauseTransition(Duration.seconds(2));
-                    pause.setOnFinished(event -> {
-                        int robotMove = findBestMove();
-                        if (robotMove != -1) {
-                            position[robotMove].setText("O");
-                            position[robotMove].setDisable(true);
-                            playedKey++;
-                            nextTern();
-                        }
-                    });
-                    pause.play();
-                }
-            });
+        for (int i = 0; i < boardSize; i++) {
+            final int indexi = i;
+            for (int j = 0; j < boardSize; j++) {
+                final int indexj = j;
+                position[i][j].setOnAction((e) -> {
+                    if (isXTurn && position[indexi][indexj].getText().equals("")) {
+                        position[indexi][indexj].setText("X");
+                        position[indexi][indexj].setDisable(true);
+                        recordedGame += (isXTurn ? (player1Name + " X") : (player2Name + " O")) + " cell: " + indexi + ", " + indexj + "\n";
+                        playedKey++;
+                        nextTern();
+                    }
+                });
+            }
         }
     }
 
+    protected void robotTern() {
+        int[][] winIndexes = winIndex();
+        if ((playedKey < boardSize * boardSize) && winIndexes[boardSize-1][1] == -1) {
+            PauseTransition pause = new PauseTransition(Duration.seconds(1));
+            pause.setOnFinished(event -> {
+                int robotMove = findBestMove();
+                if (robotMove != -1) {
+                    position[robotMove / boardSize][robotMove % boardSize].setText("O");
+                    position[robotMove / boardSize][robotMove % boardSize].setDisable(true);
+                    recordedGame += player2Name + " O" + " cell: " + (robotMove / 3) + ", " + (robotMove % 3) + "\n";
+                    playedKey++;
+                    nextTern();
+                }
+            });
+            pause.play();
+        }
+    }
 }

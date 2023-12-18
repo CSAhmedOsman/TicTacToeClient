@@ -1,0 +1,10 @@
+Player1 X cell: 0, 1
+Player2 O cell: 1, 0
+Player1 X cell: 0, 0
+Player2 O cell: 1, 1
+Player1 X cell: 2, 1
+Player2 O cell: 2, 0
+win Player2 O
+1, 0
+1, 1
+2, 0
