@@ -299,23 +299,17 @@ public class SelectGameLevel extends AnchorPane {
 
         btnLow.setOnAction((e) -> {
             Parent root = new RobotGame(1);
-            Scene scene = new Scene(root);
-            ClientApp.stage.setScene(scene);
-            ClientApp.stage.show();
+            Util.displayScreen(root);
         });
 
         btnMiddle.setOnAction((e) -> {
             Parent root = new RobotGame(2);
-            Scene scene = new Scene(root);
-            ClientApp.stage.setScene(scene);
-            ClientApp.stage.show();
+            Util.displayScreen(root);
         });
 
         btnHigh.setOnAction((e) -> {
             Parent root = new RobotGame(3);
-            Scene scene = new Scene(root);
-            ClientApp.stage.setScene(scene);
-            ClientApp.stage.show();
+            Util.displayScreen(root);
         });
 
     }

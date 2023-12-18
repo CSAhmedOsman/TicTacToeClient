@@ -172,10 +172,6 @@ public class RobotGame extends GameBoard {
                         position[i][j].setDisable(true);
                     }
                 }
-                recordedGame += (isXTurn ? ("win " + player1Name + " X") : ("win " + player2Name + " O")) + "\n";
-                for (int i = 0; i < boardSize; i++) {
-                    recordedGame += (winIndexes[i][0]) + ", " + (winIndexes[i][1]) + "\n";
-                }
                 winner(winIndexes);
                 if (isXTurn) {
                     playWinVideo();
@@ -199,7 +195,7 @@ public class RobotGame extends GameBoard {
                     if (isXTurn && position[indexi][indexj].getText().equals("")) {
                         position[indexi][indexj].setText("X");
                         position[indexi][indexj].setDisable(true);
-                        recordedGame += (isXTurn ? (player1Name + " X") : (player2Name + " O")) + " cell: " + indexi + ", " + indexj + "\n";
+                        recordedGame += (isXTurn ? (player1Name + ", X") : (player2Name + ", O")) + " cell: " + indexi + ", " + indexj + "\n";
                         playedKey++;
                         nextTern();
                     }
