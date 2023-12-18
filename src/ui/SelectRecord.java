@@ -80,7 +80,6 @@ public class SelectRecord extends AnchorPane {
     protected final DropShadow dropShadow13;
     protected final Button btnMin;
     protected final DropShadow dropShadow14;
-    protected final Circle circle0;
     protected final Label lableTurnPlayer;
     protected final DropShadow dropShadow15;
     private boolean playerXTurn = true;
@@ -139,7 +138,6 @@ public class SelectRecord extends AnchorPane {
         dropShadow13 = new DropShadow();
         btnMin = new Button();
         dropShadow14 = new DropShadow();
-        circle0 = new Circle();
         lableTurnPlayer = new Label();
         dropShadow15 = new DropShadow();
 
@@ -459,14 +457,7 @@ public class SelectRecord extends AnchorPane {
         dropShadow14.setSpread(0.69);
         btnMin.setEffect(dropShadow14);
 
-        circle0.setFill(javafx.scene.paint.Color.valueOf("#00000078"));
-        circle0.setLayoutX(63.0);
-        circle0.setLayoutY(36.0);
-        circle0.setOpacity(0.2);
-        circle0.setRadius(120.0);
-        circle0.setStroke(javafx.scene.paint.Color.valueOf("#d0cbcb"));
-        circle0.setStrokeType(javafx.scene.shape.StrokeType.INSIDE);
-
+         
         lableTurnPlayer.setLayoutX(32.0);
         lableTurnPlayer.setLayoutY(174.0);
         lableTurnPlayer.setPrefHeight(74.0);
@@ -506,7 +497,6 @@ public class SelectRecord extends AnchorPane {
         getChildren().add(btnPosition9);
         getChildren().add(btnClose);
         getChildren().add(btnMin);
-        getChildren().add(circle0);
         getChildren().add(lableTurnPlayer);
 
         setListeners(ClientApp.stage);
@@ -536,10 +526,12 @@ public class SelectRecord extends AnchorPane {
         btnClose.setOnAction(e -> {
             System.exit(0);
         });
-        btnBack.setOnAction((ActionEvent event) -> {
+        btnBack.setOnAction((e) -> {
             Parent selectMode = new ModesScreenUI();
             Util.displayScreen(selectMode);
+
         });
+
     }
 
     private void addTextFilesToListView(String path) {
@@ -560,7 +552,7 @@ public class SelectRecord extends AnchorPane {
                     Button button = new Button(fileNameWithoutExtension);
                     button.setStyle("-fx-background-radius: 100; -fx-background-color: #EAD3D7;");
                     button.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
-                    button.setFont(new Font("Franklin Gothic Demi Cond", 22.0));
+                    button.setFont(new Font("Franklin Gothic Demi Cond", 18.0));
                     button.setCursor(Cursor.HAND);
                     button.setOnAction((event) -> {
                         displayFileContent(file.getAbsolutePath());
@@ -574,7 +566,6 @@ public class SelectRecord extends AnchorPane {
             System.out.println("The specified path either doesn't exist or is not a directory.");
         }
     }
-
     private void displayFileContent(String filePath) {
         recordsListView.setDisable(true);
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -588,6 +579,7 @@ public class SelectRecord extends AnchorPane {
             System.out.println("Error reading file: " + e.getMessage());
         }
     }
+
     private void clearBoard() {
         for (Button[] row : buttons) {
             for (Button button : row) {

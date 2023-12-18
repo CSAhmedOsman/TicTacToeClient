@@ -114,7 +114,7 @@ public class LocalGame extends GameBoard {
                 position[i][j].setOnAction((e) -> {
                     position[indexi][indexj].setText(isXTurn ? "X" : "O");
                     position[indexi][indexj].setDisable(true);
-                    recordedGame += (isXTurn ? (player1Name + ", X") : (player2Name + ", O")) + " cell: " + indexi + ", " + indexj + "\n";
+                    recordedGame += (isXTurn ? (player1Name + ", X,") : (player2Name + ", O,")) + " cell: " + indexi + ", " + indexj + "\n";
                     playedKey++;
                     nextTern();
                 });
