@@ -89,7 +89,7 @@ public class LocalGame extends GameBoard {
             if (isRecord) {
                 Date date = new Date();
                 try (FileOutputStream outputStream = new FileOutputStream("C:/files/Game Record at "
-                        + date.getDate() + "-" + (date.getMonth()+1) +"-" + (date.getYear()+1900) + "-" +date.getHours() + "=" +date.getMinutes() + ".bin", true)) {
+                        + date.getDate() + "-" + (date.getMonth() + 1) + "-" + (date.getYear() + 1900) + "-" + date.getHours() + "=" + date.getMinutes() + ".bin", true)) {
                     try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream))) {
                         writer.write(recordedGame);
                         writer.flush();
