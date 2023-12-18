@@ -257,6 +257,10 @@ public class LoginScreenUI extends Pane {
         client.connect();
 
         setListeners();
+        
+        Animation.setAnimatedNodeIn(btnLogin);
+        Animation.setAnimatedNodeIn(btnClose);
+        Animation.setAnimatedNodeIn(btnMinimize);
     }
 
     private void setListeners() {

@@ -6,10 +6,13 @@
 package utils;
 
 import client.ClientApp;
+import javafx.animation.FadeTransition;
+import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.util.Duration;
 
 /**
  *
@@ -37,7 +40,9 @@ public class Util {
         Platform.runLater(() -> {
             ClientApp.stage.setScene(scene);
             ClientApp.stage.show();
+            Animation.setAnimatedRootIn(root);
         });
+        
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
