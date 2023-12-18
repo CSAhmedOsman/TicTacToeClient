@@ -1,0 +1,5 @@
+Player X marked cell: 0, 0
+Player O marked cell: 1, 1
+Player X marked cell: 0, 1
+Player O marked cell: 1, 2
+Player X marked cell: 0, 2

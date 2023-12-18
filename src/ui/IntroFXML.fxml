@@ -23,7 +23,7 @@
          </effect>
       </Label>
       <Circle fill="#00000078" layoutX="48.0" layoutY="72.0" opacity="0.2" radius="111.0" stroke="#d0cbcb" strokeType="INSIDE" />
-      <Button fx:id="btnNext" layoutX="227.0" layoutY="471.0" mnemonicParsing="false" prefHeight="94.0" prefWidth="249.0" style="-fx-background-radius: 100; -fx-background-color: #FD6D84;" text="Start" textFill="WHITE">
+      <Button fx:id="btnNext" layoutX="226.0" layoutY="471.0" mnemonicParsing="false" prefHeight="94.0" prefWidth="249.0" style="-fx-background-radius: 100; -fx-background-color: #FD6D84;" text="Start" textFill="WHITE">
          <font>
             <Font name="Franklin Gothic Demi Cond" size="43.0" />
          </font>

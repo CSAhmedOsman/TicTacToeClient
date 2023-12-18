@@ -1,5 +1,6 @@
 package ui;
 
+import client.ClientApp;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -257,7 +258,7 @@ public class SelectRecord extends AnchorPane {
         imageView.setFitWidth(40.0);
         imageView.setLayoutX(1.0);
         imageView.setLayoutY(-4.0);
-//        imageView.setImage(new Image(getClass().getResource("images/back.png").toExternalForm()));
+        imageView.setImage(new Image(getClass().getResource("images/back.png").toExternalForm()));
         btnBack.setGraphic(pane);
 
         label0.setLayoutX(426.0);
@@ -502,13 +503,9 @@ public class SelectRecord extends AnchorPane {
         getChildren().add(btnMin);
         getChildren().add(circle0);
         getChildren().add(lableTurnPlayer);
-        btnMin.setOnAction(e -> {
-            Stage stage = (Stage) btnMin.getScene().getWindow();
-            stage.setIconified(true); // This will minimize the window
-        });
-        btnClose.setOnAction(e -> {
-            System.exit(0);
-        });
+
+        setListeners(ClientApp.stage);
+
         lableTurnPlayer.setText("Turn: Player X");
         buttons[0][0] = btnPosition1;
         buttons[0][1] = btnPosition2;
@@ -519,10 +516,24 @@ public class SelectRecord extends AnchorPane {
         buttons[2][0] = btnPosition7;
         buttons[2][1] = btnPosition8;
         buttons[2][2] = btnPosition9;
+        btnPosition1.setCancelButton(false);
         Button backButton = new Button("Clear");
         backButton.setOnAction(e -> clearBoard());
-        String directoryPath = "E:\\ITI\\Java\\Project\\GUI\\gameLogic";
+
+        String directoryPath = getClass().getResource("files").toString();
+        System.out.println(directoryPath);
+     //   String directoryPath = "E:\\ITI\\Java\\Project\\GUI\\gameLogic";
         addTextFilesToListView(directoryPath);
+
+    }
+
+    private void setListeners(Stage stage) {
+        btnMin.setOnAction(e -> {
+            stage.setIconified(true); // This will minimize the window
+        });
+        btnClose.setOnAction(e -> {
+            System.exit(0);
+        });
 
     }
 
@@ -571,6 +582,7 @@ public class SelectRecord extends AnchorPane {
         for (Button[] row : buttons) {
             for (Button button : row) {
                 button.setText("");
+                button.setStyle("-fx-background-color:  #e2e2e2;");
             }
         }
         playerXTurn = true;
@@ -582,35 +594,44 @@ public class SelectRecord extends AnchorPane {
         clearBoard(); // Clear the board before simulating moves
         String[] moves = record.split("\n");
         List<String> movesList = Arrays.asList(moves);
-        simulationThread = new Thread(() -> {
-            for (String move : movesList) {
-                String[] moveDetails = move.split(": ");
-                String[] coordinates = moveDetails[1].split(", ");
-                int columnIndex = Integer.parseInt(coordinates[0]);
-                int rowIndex = Integer.parseInt(coordinates[1]);
-                Button button = buttons[rowIndex][columnIndex];
+        simulationThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (String move : movesList) {
+                    String[]player = move.split(", ");
+                    String[] moveDetails = move.split(": ");
+                    String[] coordinates = moveDetails[1].split(", ");
+                    int rowIndex = Integer.parseInt(coordinates[0]);
+                    int columnIndex= Integer.parseInt(coordinates[1]);
+                    Button button = buttons[rowIndex][columnIndex];
+                    Platform.runLater(() -> {
+                        lableTurnPlayer.setText("Turn: "+player[0]+" "+player[1]);
+                        button.setText(player[1]);
+                    });
+
+                    try {
+                        Thread.sleep(1000); // Sleep for 2 seconds between moves
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        Thread.currentThread().interrupt();
+                    }
+                }
+                Platform.runLater(() -> recordsListView.setDisable(false));
                 Platform.runLater(() -> {
-                    if (moveDetails[0].equals("Player X marked cell")) {
-                        button.setText("X");
-                        playerXTurn = false;
-                        lableTurnPlayer.setText("Turn: Player O");
+                    String type;
+                    type = checkWin();
+                    if (type.equals("X")) {
+                        lableTurnPlayer.setText("You Win");
+                    } else if (type.equals("O")) {
+                        lableTurnPlayer.setText("You Lose");
                     } else {
-                        button.setText("O");
-                        playerXTurn = true;
-                        lableTurnPlayer.setText("Turn: Player X");
+                        lableTurnPlayer.setText("You Draw");
                     }
                 });
-
-                try {
-                    Thread.sleep(2000); // Sleep for 2 seconds between moves
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    Thread.currentThread().interrupt();
-                }
             }
-            Platform.runLater(() -> recordsListView.setDisable(false));
         });
         simulationThread.start();
+
     }
 
     private void showAlert(String string) {
@@ -619,5 +640,47 @@ public class SelectRecord extends AnchorPane {
         alert.setHeaderText(null);
         alert.setContentText(string);
         alert.showAndWait();
+    }
+
+    private String checkWin() {
+        String type = "Draw";
+        String[][] board = new String[3][3];
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                board[i][j] = buttons[i][j].getText();
+            }
+        }
+        // Check rows and columns for a win, set color of winning buttons
+        for (int i = 0; i < 3; i++) {
+            if (board[i][0].equals(board[i][1]) && board[i][0].equals(board[i][2]) && !board[i][0].isEmpty()) {
+                for (int j = 0; j < 3; j++) {
+                    buttons[i][j].setStyle("-fx-background-color:  #FD6D84;");
+                    type = buttons[i][j].getText(); // Corrected indices
+                }
+            }
+            if (board[0][i].equals(board[1][i]) && board[0][i].equals(board[2][i]) && !board[0][i].isEmpty()) {
+                for (int j = 0; j < 3; j++) {
+                    buttons[j][i].setStyle("-fx-background-color:  #FD6D84;");
+                     type = buttons[j][i].getText();
+                }
+            }
+        }
+
+        // Check diagonals for a win, set color of winning buttons
+        if ((board[0][0].equals(board[1][1]) && board[0][0].equals(board[2][2]) && !board[0][0].isEmpty())
+                || (board[0][2].equals(board[1][1]) && board[0][2].equals(board[2][0]) && !board[0][2].isEmpty())) {
+            if (board[0][0].equals(board[1][1])) {
+                for (int i = 0; i < 3; i++) {
+                    buttons[i][i].setStyle("-fx-background-color:  #FD6D84;");
+                    type = buttons[i][i].getText();
+                }
+            } else {
+                for (int i = 0; i < 3; i++) {
+                    buttons[i][2 - i].setStyle("-fx-background-color:  #FD6D84;");
+                       type = buttons[i][2 - i].getText();
+                }
+            }
+        }
+        return type;
     }
 }

@@ -1,5 +1,6 @@
 package ui;
 
+import utils.Util;
 import client.ClientApp;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -18,7 +19,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import utils.Util;
+import javafx.stage.StageStyle;
 
 public class ModesScreenUI extends Pane {
 
@@ -36,6 +37,7 @@ public class ModesScreenUI extends Pane {
     protected final Button btnWithPc;
     protected final Button btnOfline;
     protected final Button btnOnline;
+    protected final Button btnGamesHistory;
     protected final ImageView imageView;
     protected final ImageView imageView0;
     protected final ImageView imageView1;
@@ -65,6 +67,7 @@ public class ModesScreenUI extends Pane {
         btnWithPc = new Button();
         btnOfline = new Button();
         btnOnline = new Button();
+        btnGamesHistory = new Button();
         imageView = new ImageView();
         imageView0 = new ImageView();
         imageView1 = new ImageView();
@@ -77,7 +80,7 @@ public class ModesScreenUI extends Pane {
         dropShadow3 = new DropShadow();
         btnMin = new Button();
         dropShadow4 = new DropShadow();
-
+        
         setMaxHeight(USE_PREF_SIZE);
         setMaxWidth(USE_PREF_SIZE);
         setMinHeight(USE_PREF_SIZE);
@@ -225,6 +228,17 @@ public class ModesScreenUI extends Pane {
         btnOnline.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
         btnOnline.setFont(new Font("Arial Rounded MT Bold", 35.0));
 
+        btnGamesHistory.setLayoutX(227.0);
+        btnGamesHistory.setLayoutY(500.0);
+        btnGamesHistory.setMnemonicParsing(false);
+        btnGamesHistory.setPrefHeight(40.0);
+        btnGamesHistory.setPrefWidth(249.0);
+        btnGamesHistory.setStyle("-fx-background-radius: 100; -fx-background-color: #FD6D84;");
+        btnGamesHistory.setText("Games History");
+        btnGamesHistory.setTextFill(javafx.scene.paint.Color.WHITE);
+        btnGamesHistory.setFont(new Font("Franklin Gothic Demi Cond", 33.0));
+        btnGamesHistory.setCursor(Cursor.HAND);
+
         imageView.setFitHeight(60.0);
         imageView.setFitWidth(92.0);
         imageView.setLayoutX(133.0);
@@ -334,6 +348,7 @@ public class ModesScreenUI extends Pane {
         getChildren().add(btnLogout);
         getChildren().add(imageView5);
         getChildren().add(btnClose);
+        getChildren().add(btnGamesHistory);
         getChildren().add(btnMin);
 
         addEventHandlers();
@@ -357,13 +372,18 @@ public class ModesScreenUI extends Pane {
             Parent selectGame = new SelectGameLevel();
             Util.displayScreen(selectGame);
         });
-        
+
         btnOnline.setOnAction((e) -> {
             Util.showDialog(Alert.AlertType.INFORMATION, "Future work", "Will be Added Soon.");
         });
 
         btnLogout.setOnAction((e) -> {
             Parent homeScreen = new LoginScreenUI();
+            Util.displayScreen(homeScreen);
+        });
+
+        btnGamesHistory.setOnAction((event) -> {
+            Parent homeScreen = new SelectRecord();
             Util.displayScreen(homeScreen);
         });
     }
