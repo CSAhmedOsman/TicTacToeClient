@@ -6,9 +6,7 @@ import data.Player;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Cursor;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -18,7 +16,6 @@ import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import utils.*;
 
 public class LoginScreenUI extends Pane {
@@ -259,36 +256,32 @@ public class LoginScreenUI extends Pane {
         client = new Client();
         client.connect();
 
-        setListeners(ClientApp.stage);
+        setListeners();
     }
 
-    private void setListeners(Stage stage) {
+    private void setListeners() {
 
-        btnLogin.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                Player player = getCurrentPlayer();
-
-                if (player == null)
-                    return;
-
-                Gson gson = new Gson();
-                ArrayList jsonArr = new ArrayList();
-                jsonArr.add(Constants.LOGIN);
-                jsonArr.add(player);
-
-                String gsonRequest = gson.toJson(jsonArr);
-                client.sendRequest(gsonRequest);
-
-            }
+        btnLogin.setOnAction((ActionEvent event) -> {
+            Player player = getCurrentPlayer();
+            
+            if (player == null)
+                return;
+            
+            Gson gson = new Gson();
+            ArrayList jsonArr = new ArrayList();
+            jsonArr.add(Constants.LOGIN);
+            jsonArr.add(player);
+            
+            String gsonRequest = gson.toJson(jsonArr);
+            client.sendRequest(gsonRequest);
         });
 
         btnClose.setOnAction((ActionEvent event) -> {
-            stage.close();
+            ClientApp.stage.close();
         });
 
         btnMinimize.setOnAction((ActionEvent event) -> {
-            stage.setIconified(true);
+            ClientApp.stage.setIconified(true);
         });
     }
 

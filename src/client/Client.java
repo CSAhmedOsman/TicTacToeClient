@@ -6,7 +6,6 @@
 package client;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -64,7 +63,8 @@ public class Client {
             try {
                 while (mySocket != null && !(mySocket.isClosed())) {
                     String gsonResponse = in.readLine();
-                    handleResponse(gsonResponse);
+                    if(!gsonResponse.isEmpty())
+                        handleResponse(gsonResponse);
                 }
             } catch (IOException ex) {
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
@@ -78,8 +78,6 @@ public class Client {
         Gson gson = new Gson();
         responceData = gson.fromJson(gsonResponce, listType);
         double action= (double) responceData.get(0);
-        
-        System.out.println(action);
         
         switch ((int) action) {
             case Constants.REGISTER:
@@ -112,6 +110,8 @@ public class Client {
             case 10:
                 // TODO sendMessage();
                 break;
+            case 11:
+                //TODO getAvailablePlayer();
         }
     }
     
@@ -129,7 +129,7 @@ public class Client {
     
     private void login() {
         double userId = (double) responceData.get(1);
-        if(userId > 0) {
+        if(userId >= 0) {
             Parent modesScreen = new ModesScreenUI();
             Util.displayScreen(modesScreen);
         } else {
