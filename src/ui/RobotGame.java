@@ -12,6 +12,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.Button;
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
 
 /**
  *
@@ -28,7 +30,6 @@ public class RobotGame extends GameBoard {
     }
 
     private int findBestMove() {
-        System.out.println("Finding best move for the robot");
         int bestMove = -1;
         int bestScore = Integer.MIN_VALUE, score;
 
@@ -74,7 +75,7 @@ public class RobotGame extends GameBoard {
                     } else if (level == 2) {
                         bestScore = Math.max(bestScore, minimax(board, depth + 1, true)); // mid
                     } else {
-                        bestScore = Math.max(bestScore, minimax(board, 0, true)); // high
+                        bestScore = Math.max(bestScore, minimax(board,depth + 3, true)); // high
                     }
                     board[i].setText("");
                 }
@@ -90,7 +91,7 @@ public class RobotGame extends GameBoard {
                     } else if (level == 2) {
                         bestScore = Math.max(bestScore, minimax(board, depth + 1, true)); // mid
                     } else {
-                        bestScore = Math.min(bestScore, minimax(board, 0, false)); // high
+                        bestScore = Math.min(bestScore, minimax(board, depth + 3, true)); // high
                     }
                     board[i].setText("");
                 }
@@ -98,7 +99,6 @@ public class RobotGame extends GameBoard {
             return bestScore;
         }
     }
-
     private int evaluate(Button[] board) {
         int[] winIndexes = winIndex();
         if (winIndexes[0] != -1) {
@@ -119,6 +119,7 @@ public class RobotGame extends GameBoard {
             position[i].setDisable(false);
             position[i].setStyle("-fx-background-radius: 10; -fx-background-color: #c7c7c7;");
         }
+
         //---------------Elham work------------
         playedKey = 0;
         isRunning = true;
@@ -152,21 +153,7 @@ public class RobotGame extends GameBoard {
     protected void nextTern() {
         int[] winIndexes = winIndex();
         if (playedKey < 9 && winIndexes[0] == -1) {
-            if (!isXTurn) {
-                int robotMove = findBestMove();
-                if (robotMove != -1) {
-                    Platform.runLater(() -> {
-                        try {
-                            Thread.sleep(2000);
-                            position[robotMove].setText("O");
-                            position[robotMove].setDisable(true);
-                            nextTern();
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(RobotGame.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    });
-                }
-            }
+
             changeTern();
         } else if (winIndexes[0] != -1) {
             for (int i = 0; i < 9; i++) {
@@ -188,17 +175,32 @@ public class RobotGame extends GameBoard {
     }
 
     @Override
+
     protected void addHandlers() {
         // X-O-Draws With Robot
         for (int i = 0; i < 9; i++) {
             final int index = i;
             position[i].setOnAction((e) -> {
-                position[index].setText("X");
-                position[index].setDisable(true);
-                playedKey++;
-                changeTern();
-                nextTern();
+                if (isXTurn && position[index].getText().equals("")) {
+                    position[index].setText("X");
+                    position[index].setDisable(true);
+                    playedKey++;
+                    nextTern();
+
+                    PauseTransition pause = new PauseTransition(Duration.seconds(2));
+                    pause.setOnFinished(event -> {
+                        int robotMove = findBestMove();
+                        if (robotMove != -1) {
+                            position[robotMove].setText("O");
+                            position[robotMove].setDisable(true);
+                            playedKey++;
+                            nextTern();
+                        }
+                    });
+                    pause.play();
+                }
             });
         }
     }
+
 }
