@@ -636,7 +636,8 @@ public abstract class GameBoard extends BorderPane {
 
     protected int[][] winIndex() {
         int[][] indexes = emptyIndex();
-        // check rows
+
+        // Check rows
         for (int i = 0; i < boardSize; i++) {
             String temp = position[i][0].getText();
             for (int j = 0; j < boardSize; j++) {
@@ -647,59 +648,58 @@ public abstract class GameBoard extends BorderPane {
                     }
                 }
             }
-            if (!hasWinner(indexes)) {
-                indexes = emptyIndex();
-            }
-        }
-        //check colomns
-        if (indexes[boardSize - 1][1] == -1) {
-            for (int i = 0; i < boardSize; i++) {
-                String temp = position[0][i].getText();
-                for (int j = 0; j < boardSize; j++) {
-                    if (!position[j][i].getText().equals("")) {
-                        if (position[j][i].getText().equals(temp)) {
-                            indexes[j][0] = j;
-                            indexes[j][1] = i;
-                        }
-                    }
-                }
-                if (!hasWinner(indexes)) {
-                    indexes = emptyIndex();
-                }
-            }
-        }
-
-        //check 1st diagonals
-        String temp = position[boardSize / 2][boardSize / 2].getText();
-        if (indexes[boardSize - 1][1] == -1) {
-            for (int i = 0; i < boardSize; i++) {
-                if (position[i][i].getText() != "") {
-                    if (position[i][i].getText() == temp) {
-                        indexes[i][0] = i;
-                        indexes[i][1] = i;
-                    }
-                }
-            }
-            if (!hasWinner(indexes)) {
+            if (hasWinner(indexes)) {
+                return indexes;
+            } else {
                 indexes = emptyIndex();
             }
         }
 
-        //check 2nd diagonals
-        if (indexes[boardSize - 1][1] == -1) {
-            for (int i = 0; i < boardSize; i++) {
-                if (position[i][boardSize - 1 - i].getText() != "") {
-                    if (position[i][boardSize - 1 - i].getText() == temp) {
-                        indexes[i][0] = i;
-                        indexes[i][1] = boardSize - 1 - i;
+        // Check columns
+        for (int i = 0; i < boardSize; i++) {
+            String temp = position[0][i].getText();
+            for (int j = 0; j < boardSize; j++) {
+                if (!position[j][i].getText().equals("")) {
+                    if (position[j][i].getText().equals(temp)) {
+                        indexes[j][0] = j;
+                        indexes[j][1] = i;
                     }
                 }
             }
-            if (!hasWinner(indexes)) {
+            if (hasWinner(indexes)) {
+                return indexes;
+            } else {
                 indexes = emptyIndex();
             }
         }
-        return indexes;
+
+        // Check 1st diagonals
+        String tempDiagonal = position[boardSize / 2][boardSize / 2].getText();
+        for (int i = 0; i < boardSize; i++) {
+            if (position[i][i].getText() != "" && position[i][i].getText().equals(tempDiagonal)) {
+                indexes[i][0] = i;
+                indexes[i][1] = i;
+            }
+        }
+        if (hasWinner(indexes)) {
+            return indexes;
+        } else {
+            indexes = emptyIndex();
+        }
+
+        // Check 2nd diagonals
+        for (int i = 0; i < boardSize; i++) {
+            if (position[i][boardSize - 1 - i].getText() != ""
+                    && position[i][boardSize - 1 - i].getText().equals(tempDiagonal)) {
+                indexes[i][0] = i;
+                indexes[i][1] = boardSize - 1 - i;
+            }
+        }
+        if (hasWinner(indexes)) {
+            return indexes;
+        } else {
+            return emptyIndex();
+        }
     }
 
     protected void winner(int[][] winIndexes) {
