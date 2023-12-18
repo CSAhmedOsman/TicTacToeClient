@@ -1,7 +1,7 @@
 package ui;
 
 import client.ClientApp;
-import client.data.Player;
+import data.Player;
 import java.io.File;
 import java.net.Socket;
 import javafx.animation.PauseTransition;
@@ -23,6 +23,7 @@ import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
+import utils.Util;
 
 public abstract class GameBoard extends BorderPane {
 
@@ -757,10 +758,8 @@ public abstract class GameBoard extends BorderPane {
 
         btnExitGame.setOnAction((e) -> {
             isRunning = false;
-            Parent root = new SelectPlayMode();
-            Scene scene = new Scene(root);
-            ClientApp.stage.setScene(scene);
-            ClientApp.stage.show();
+            Parent root = new ModesScreenUI();
+            Util.displayScreen(root);
         });
 
     }

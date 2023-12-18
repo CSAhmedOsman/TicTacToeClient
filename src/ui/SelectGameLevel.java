@@ -15,6 +15,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import utils.Util;
 
 public class SelectGameLevel extends AnchorPane {
 
@@ -292,10 +293,8 @@ public class SelectGameLevel extends AnchorPane {
         });
 
         btnBack.setOnAction((e) -> {
-            Parent root = new SelectPlayMode();
-            Scene scene = new Scene(root);
-            ClientApp.stage.setScene(scene);
-            ClientApp.stage.show();
+            Parent root = new ModesScreenUI();
+            Util.displayScreen(root);
         });
 
         btnLow.setOnAction((e) -> {

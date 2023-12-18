@@ -17,6 +17,9 @@ import javafx.scene.control.Alert;
  */
 public class Util {
 
+    private static double xOffset;
+    private static double yOffset;
+
     public static void showDialog(Alert.AlertType type, String title, String content) {
         Platform.runLater(() -> {
             Alert a = new Alert(type);
@@ -29,12 +32,21 @@ public class Util {
     }
 
     public static void displayScreen(Parent root) {
-        
+
         Scene scene = new Scene(root);
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
             ClientApp.stage.setScene(scene);
             ClientApp.stage.show();
         });
-        
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+
+        root.setOnMouseDragged(event -> {
+            ClientApp.stage.setX(event.getScreenX() - xOffset);
+            ClientApp.stage.setY(event.getScreenY() - yOffset);
+        });
+
     }
 }

@@ -1,19 +1,24 @@
 package ui;
 
 import client.ClientApp;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import static javafx.scene.layout.Region.USE_PREF_SIZE;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import utils.Util;
 
 public class ModesScreenUI extends Pane {
 
@@ -30,21 +35,22 @@ public class ModesScreenUI extends Pane {
     protected final Text text2;
     protected final Button btnWithPc;
     protected final Button btnOfline;
-    protected final Button btnOnlie;
+    protected final Button btnOnline;
     protected final ImageView imageView;
     protected final ImageView imageView0;
     protected final ImageView imageView1;
     protected final ImageView imageView2;
     protected final ImageView imageView3;
     protected final ImageView imageView4;
-    protected final Button back;
+    protected final Button btnLogout;
     protected final ImageView imageView5;
     protected final Button btnClose;
-    protected final DropShadow dropShadow;
-    protected final Button btnMinimize;
-    protected final DropShadow dropShadow0;
+    protected final DropShadow dropShadow3;
+    protected final Button btnMin;
+    protected final DropShadow dropShadow4;
 
-    {
+    public ModesScreenUI() {
+
         ellipse = new Ellipse();
         ellipse0 = new Ellipse();
         rectangle = new Rectangle();
@@ -58,20 +64,20 @@ public class ModesScreenUI extends Pane {
         text2 = new Text();
         btnWithPc = new Button();
         btnOfline = new Button();
-        btnOnlie = new Button();
+        btnOnline = new Button();
         imageView = new ImageView();
         imageView0 = new ImageView();
         imageView1 = new ImageView();
         imageView2 = new ImageView();
         imageView3 = new ImageView();
         imageView4 = new ImageView();
-        back = new Button();
+        btnLogout = new Button();
         imageView5 = new ImageView();
         btnClose = new Button();
-        dropShadow = new DropShadow();
-        btnMinimize = new Button();
-        dropShadow0 = new DropShadow();
-        
+        dropShadow3 = new DropShadow();
+        btnMin = new Button();
+        dropShadow4 = new DropShadow();
+
         setMaxHeight(USE_PREF_SIZE);
         setMaxWidth(USE_PREF_SIZE);
         setMinHeight(USE_PREF_SIZE);
@@ -194,7 +200,7 @@ public class ModesScreenUI extends Pane {
         btnWithPc.setMnemonicParsing(false);
         btnWithPc.setPrefHeight(160.0);
         btnWithPc.setPrefWidth(181.0);
-        btnWithPc.setStyle("-fx-background-radius: 30; -fx-background-color: white;");
+        btnWithPc.setStyle("-fx-background-radius: 30; -fx-background-color: #fff7f7;");
         btnWithPc.setText("VS");
         btnWithPc.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
         btnWithPc.setFont(new Font("Arial Rounded MT Bold", 35.0));
@@ -204,73 +210,73 @@ public class ModesScreenUI extends Pane {
         btnOfline.setMnemonicParsing(false);
         btnOfline.setPrefHeight(160.0);
         btnOfline.setPrefWidth(181.0);
-        btnOfline.setStyle("-fx-background-radius: 30; -fx-background-color: white;");
+        btnOfline.setStyle("-fx-background-radius: 30; -fx-background-color: #fff7f7;");
         btnOfline.setText("VS");
         btnOfline.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
         btnOfline.setFont(new Font("Arial Rounded MT Bold", 34.0));
 
-        btnOnlie.setLayoutX(472.0);
-        btnOnlie.setLayoutY(256.0);
-        btnOnlie.setMnemonicParsing(false);
-        btnOnlie.setPrefHeight(160.0);
-        btnOnlie.setPrefWidth(181.0);
-        btnOnlie.setStyle("-fx-background-radius: 30; -fx-background-color: white;");
-        btnOnlie.setText("VS");
-        btnOnlie.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
-        btnOnlie.setFont(new Font("Arial Rounded MT Bold", 35.0));
+        btnOnline.setLayoutX(472.0);
+        btnOnline.setLayoutY(256.0);
+        btnOnline.setMnemonicParsing(false);
+        btnOnline.setPrefHeight(160.0);
+        btnOnline.setPrefWidth(181.0);
+        btnOnline.setStyle("-fx-background-radius: 30; -fx-background-color: #fff7f7;");
+        btnOnline.setText("VS");
+        btnOnline.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
+        btnOnline.setFont(new Font("Arial Rounded MT Bold", 35.0));
 
         imageView.setFitHeight(60.0);
         imageView.setFitWidth(92.0);
-        imageView.setLayoutX(119.0);
+        imageView.setLayoutX(133.0);
         imageView.setLayoutY(353.0);
-        imageView.setImage(new Image(getClass().getResource("../../../../../Downloads/WhatsApp%20Image%202023-12-12%20at%202.51.35%20PM%20(1).jpeg").toExternalForm()));
+        imageView.setImage(new Image(getClass().getResource("images/robot.png").toExternalForm()));
 
         imageView0.setFitHeight(60.0);
         imageView0.setFitWidth(64.0);
         imageView0.setLayoutX(274.0);
         imageView0.setLayoutY(264.0);
-        imageView0.setImage(new Image(getClass().getResource("../../../../../Downloads/WhatsApp%20Image%202023-12-12%20at%202.24.46%20PM.jpeg").toExternalForm()));
+        imageView0.setImage(new Image(getClass().getResource("images/boy.jpg").toExternalForm()));
 
         imageView1.setFitHeight(60.0);
         imageView1.setFitWidth(64.0);
-        imageView1.setLayoutX(60.0);
-        imageView1.setLayoutY(264.0);
-        imageView1.setImage(new Image(getClass().getResource("../../../../../Downloads/WhatsApp%20Image%202023-12-12%20at%202.24.46%20PM.jpeg").toExternalForm()));
+        imageView1.setLayoutX(46.0);
+        imageView1.setLayoutY(256.0);
+        imageView1.setImage(new Image(getClass().getResource("images/player.png").toExternalForm()));
 
         imageView2.setFitHeight(60.0);
-        imageView2.setFitWidth(73.0);
-        imageView2.setLayoutX(351.0);
+        imageView2.setFitWidth(64.0);
+        imageView2.setLayoutX(368.0);
         imageView2.setLayoutY(353.0);
-        imageView2.setImage(new Image(getClass().getResource("../../../../../Downloads/WhatsApp%20Image%202023-12-12%20at%202.24.45%20PM.jpeg").toExternalForm()));
+        imageView2.setImage(new Image(getClass().getResource("images/girl.jpg").toExternalForm()));
 
         imageView3.setFitHeight(60.0);
-        imageView3.setFitWidth(81.0);
-        imageView3.setLayoutX(556.0);
+        imageView3.setFitWidth(64.0);
+        imageView3.setLayoutX(581.0);
         imageView3.setLayoutY(353.0);
-        imageView3.setImage(new Image(getClass().getResource("../../../../../Downloads/WhatsApp%20Image%202023-12-12%20at%202.24.42%20PM%20(1).jpeg").toExternalForm()));
+        imageView3.setImage(new Image(getClass().getResource("images/world-grid.png").toExternalForm()));
 
         imageView4.setFitHeight(60.0);
         imageView4.setFitWidth(64.0);
-        imageView4.setLayoutX(481.0);
-        imageView4.setLayoutY(264.0);
-        imageView4.setImage(new Image(getClass().getResource("../../../../../Downloads/WhatsApp%20Image%202023-12-12%20at%202.24.46%20PM.jpeg").toExternalForm()));
+        imageView4.setLayoutX(480.0);
+        imageView4.setLayoutY(256.0);
+        imageView4.setImage(new Image(getClass().getResource("images/player.png").toExternalForm()));
 
-        back.setLayoutX(15.0);
-        back.setLayoutY(11.0);
-        back.setMnemonicParsing(false);
-        back.setPrefHeight(40.0);
-        back.setPrefWidth(55.0);
-        back.setStyle("-fx-background-color: F1AAAA;");
-        back.setTextFill(javafx.scene.paint.Color.valueOf("#f8baba"));
+        btnLogout.setLayoutX(15.0);
+        btnLogout.setLayoutY(11.0);
+        btnLogout.setMnemonicParsing(false);
+        btnLogout.setPrefHeight(40.0);
+        btnLogout.setPrefWidth(55.0);
+        btnLogout.setStyle("-fx-background-color: F1AAAA;");
+        btnLogout.setTextFill(javafx.scene.paint.Color.valueOf("#f8baba"));
 
         imageView5.setFitHeight(40.0);
         imageView5.setFitWidth(40.0);
         imageView5.setLayoutX(17.0);
         imageView5.setLayoutY(11.0);
-        imageView5.setImage(new Image(getClass().getResource("../../../../../Downloads/back.png").toExternalForm()));
+        imageView5.setImage(new Image(getClass().getResource("images/back.png").toExternalForm()));
 
-        btnClose.setLayoutX(616.0);
-        btnClose.setLayoutY(23.0);
+        btnClose.setLayoutX(636.0);
+        btnClose.setLayoutY(20.0);
         btnClose.setMinHeight(USE_PREF_SIZE);
         btnClose.setMinWidth(50.0);
         btnClose.setMnemonicParsing(false);
@@ -282,24 +288,28 @@ public class ModesScreenUI extends Pane {
         btnClose.setFont(new Font("Franklin Gothic Demi Cond", 43.0));
         btnClose.setCursor(Cursor.HAND);
 
-        btnClose.setEffect(dropShadow);
+        dropShadow3.setColor(javafx.scene.paint.Color.valueOf("#fff7f7"));
+        dropShadow3.setSpread(0.69);
+        btnClose.setEffect(dropShadow3);
 
-        btnMinimize.setLayoutX(547.0);
-        btnMinimize.setLayoutY(23.0);
-        btnMinimize.setMinHeight(USE_PREF_SIZE);
-        btnMinimize.setMinWidth(50.0);
-        btnMinimize.setMnemonicParsing(false);
-        btnMinimize.setPrefHeight(40.0);
-        btnMinimize.setPrefWidth(20.0);
-        btnMinimize.setStyle("-fx-background-radius: 10; -fx-font-size: 20; -fx-font-weight: bold; -fx-background-color: #FD6D84;");
-        btnMinimize.setText("-");
-        btnMinimize.setTextAlignment(javafx.scene.text.TextAlignment.JUSTIFY);
-        btnMinimize.setTextFill(javafx.scene.paint.Color.WHITE);
-        btnMinimize.setTextOverrun(javafx.scene.control.OverrunStyle.CLIP);
-        btnMinimize.setFont(new Font("Franklin Gothic Demi Cond", 43.0));
-        btnMinimize.setCursor(Cursor.HAND);
+        btnMin.setLayoutX(567.0);
+        btnMin.setLayoutY(20.0);
+        btnMin.setMinHeight(USE_PREF_SIZE);
+        btnMin.setMinWidth(50.0);
+        btnMin.setMnemonicParsing(false);
+        btnMin.setPrefHeight(40.0);
+        btnMin.setPrefWidth(20.0);
+        btnMin.setStyle("-fx-background-radius: 10; -fx-font-size: 20; -fx-font-weight: bold; -fx-background-color: #FD6D84;");
+        btnMin.setText("-");
+        btnMin.setTextAlignment(javafx.scene.text.TextAlignment.JUSTIFY);
+        btnMin.setTextFill(javafx.scene.paint.Color.WHITE);
+        btnMin.setTextOverrun(javafx.scene.control.OverrunStyle.CLIP);
+        btnMin.setFont(new Font("Franklin Gothic Demi Cond", 43.0));
+        btnMin.setCursor(Cursor.HAND);
 
-        btnMinimize.setEffect(dropShadow0);
+        dropShadow4.setColor(javafx.scene.paint.Color.valueOf("#fff7f7"));
+        dropShadow4.setSpread(0.69);
+        btnMin.setEffect(dropShadow4);
 
         getChildren().add(ellipse);
         getChildren().add(ellipse0);
@@ -314,36 +324,47 @@ public class ModesScreenUI extends Pane {
         getChildren().add(text2);
         getChildren().add(btnWithPc);
         getChildren().add(btnOfline);
-        getChildren().add(btnOnlie);
+        getChildren().add(btnOnline);
         getChildren().add(imageView);
         getChildren().add(imageView0);
         getChildren().add(imageView1);
         getChildren().add(imageView2);
         getChildren().add(imageView3);
         getChildren().add(imageView4);
-        getChildren().add(back);
+        getChildren().add(btnLogout);
         getChildren().add(imageView5);
         getChildren().add(btnClose);
-        getChildren().add(btnMinimize);
-        
-        //_____________________My Work_______________________
-        setListeners(ClientApp.stage);
-    }
-    
-    public ModesScreenUI(int playerId) {
-    }
-    
-    public ModesScreenUI() {
+        getChildren().add(btnMin);
+
+        addEventHandlers();
     }
 
-    private void setListeners(Stage stage) {
-        
-        btnClose.setOnAction((ActionEvent event) -> {
-            stage.close();
+    protected void addEventHandlers() {
+        btnClose.setOnAction((e) -> {
+            Platform.exit();
+        });
+
+        btnMin.setOnAction((e) -> {
+            ClientApp.stage.setIconified(true);
+        });
+
+        btnOfline.setOnAction((e) -> {
+            Parent localGame = new LocalGame();
+            Util.displayScreen(localGame);
+        });
+
+        btnWithPc.setOnAction((e) -> {
+            Parent selectGame = new SelectGameLevel();
+            Util.displayScreen(selectGame);
         });
         
-        btnMinimize.setOnAction((ActionEvent event) -> {
-            stage.setIconified(true);
+        btnOnline.setOnAction((e) -> {
+            Util.showDialog(Alert.AlertType.INFORMATION, "Future work", "Will be Added Soon.");
+        });
+
+        btnLogout.setOnAction((e) -> {
+            Parent homeScreen = new LoginScreenUI();
+            Util.displayScreen(homeScreen);
         });
     }
 }
