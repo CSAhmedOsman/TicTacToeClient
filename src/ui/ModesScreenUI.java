@@ -4,6 +4,7 @@ import client.ClientApp;
 import javafx.event.ActionEvent;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
@@ -14,6 +15,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class ModesScreenUI extends Pane {
 
@@ -31,6 +33,7 @@ public class ModesScreenUI extends Pane {
     protected final Button btnWithPc;
     protected final Button btnOfline;
     protected final Button btnOnlie;
+    protected final Button btnGamesHistory;
     protected final ImageView imageView;
     protected final ImageView imageView0;
     protected final ImageView imageView1;
@@ -58,6 +61,7 @@ public class ModesScreenUI extends Pane {
         text2 = new Text();
         btnWithPc = new Button();
         btnOfline = new Button();
+        btnGamesHistory = new Button();
         btnOnlie = new Button();
         imageView = new ImageView();
         imageView0 = new ImageView();
@@ -71,7 +75,7 @@ public class ModesScreenUI extends Pane {
         dropShadow = new DropShadow();
         btnMinimize = new Button();
         dropShadow0 = new DropShadow();
-        
+
         setMaxHeight(USE_PREF_SIZE);
         setMaxWidth(USE_PREF_SIZE);
         setMinHeight(USE_PREF_SIZE);
@@ -219,41 +223,52 @@ public class ModesScreenUI extends Pane {
         btnOnlie.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
         btnOnlie.setFont(new Font("Arial Rounded MT Bold", 35.0));
 
+        btnGamesHistory.setLayoutX(227.0);
+        btnGamesHistory.setLayoutY(500.0);
+        btnGamesHistory.setMnemonicParsing(false);
+        btnGamesHistory.setPrefHeight(40.0);
+        btnGamesHistory.setPrefWidth(249.0);
+        btnGamesHistory.setStyle("-fx-background-radius: 100; -fx-background-color: #FD6D84;");
+        btnGamesHistory.setText("Games History");
+        btnGamesHistory.setTextFill(javafx.scene.paint.Color.WHITE);
+        btnGamesHistory.setFont(new Font("Franklin Gothic Demi Cond", 33.0));
+        btnGamesHistory.setCursor(Cursor.HAND);
+
         imageView.setFitHeight(60.0);
         imageView.setFitWidth(92.0);
         imageView.setLayoutX(119.0);
         imageView.setLayoutY(353.0);
-        imageView.setImage(new Image(getClass().getResource("../../../../../Downloads/WhatsApp%20Image%202023-12-12%20at%202.51.35%20PM%20(1).jpeg").toExternalForm()));
+//        imageView.setImage(new Image(getClass().getResource("../../../../../Downloads/WhatsApp%20Image%202023-12-12%20at%202.51.35%20PM%20(1).jpeg").toExternalForm()));
 
         imageView0.setFitHeight(60.0);
         imageView0.setFitWidth(64.0);
         imageView0.setLayoutX(274.0);
         imageView0.setLayoutY(264.0);
-        imageView0.setImage(new Image(getClass().getResource("../../../../../Downloads/WhatsApp%20Image%202023-12-12%20at%202.24.46%20PM.jpeg").toExternalForm()));
+     //   imageView0.setImage(new Image(getClass().getResource("../../../../../Downloads/WhatsApp%20Image%202023-12-12%20at%202.24.46%20PM.jpeg").toExternalForm()));
 
         imageView1.setFitHeight(60.0);
         imageView1.setFitWidth(64.0);
         imageView1.setLayoutX(60.0);
         imageView1.setLayoutY(264.0);
-        imageView1.setImage(new Image(getClass().getResource("../../../../../Downloads/WhatsApp%20Image%202023-12-12%20at%202.24.46%20PM.jpeg").toExternalForm()));
+    //    imageView1.setImage(new Image(getClass().getResource("../../../../../Downloads/WhatsApp%20Image%202023-12-12%20at%202.24.46%20PM.jpeg").toExternalForm()));
 
         imageView2.setFitHeight(60.0);
         imageView2.setFitWidth(73.0);
         imageView2.setLayoutX(351.0);
         imageView2.setLayoutY(353.0);
-        imageView2.setImage(new Image(getClass().getResource("../../../../../Downloads/WhatsApp%20Image%202023-12-12%20at%202.24.45%20PM.jpeg").toExternalForm()));
+    //    imageView2.setImage(new Image(getClass().getResource("../../../../../Downloads/WhatsApp%20Image%202023-12-12%20at%202.24.45%20PM.jpeg").toExternalForm()));
 
         imageView3.setFitHeight(60.0);
         imageView3.setFitWidth(81.0);
         imageView3.setLayoutX(556.0);
         imageView3.setLayoutY(353.0);
-        imageView3.setImage(new Image(getClass().getResource("../../../../../Downloads/WhatsApp%20Image%202023-12-12%20at%202.24.42%20PM%20(1).jpeg").toExternalForm()));
+    //    imageView3.setImage(new Image(getClass().getResource("../../../../../Downloads/WhatsApp%20Image%202023-12-12%20at%202.24.42%20PM%20(1).jpeg").toExternalForm()));
 
         imageView4.setFitHeight(60.0);
         imageView4.setFitWidth(64.0);
         imageView4.setLayoutX(481.0);
         imageView4.setLayoutY(264.0);
-        imageView4.setImage(new Image(getClass().getResource("../../../../../Downloads/WhatsApp%20Image%202023-12-12%20at%202.24.46%20PM.jpeg").toExternalForm()));
+   //     imageView4.setImage(new Image(getClass().getResource("../../../../../Downloads/WhatsApp%20Image%202023-12-12%20at%202.24.46%20PM.jpeg").toExternalForm()));
 
         back.setLayoutX(15.0);
         back.setLayoutY(11.0);
@@ -267,7 +282,7 @@ public class ModesScreenUI extends Pane {
         imageView5.setFitWidth(40.0);
         imageView5.setLayoutX(17.0);
         imageView5.setLayoutY(11.0);
-        imageView5.setImage(new Image(getClass().getResource("../../../../../Downloads/back.png").toExternalForm()));
+  //      imageView5.setImage(new Image(getClass().getResource("../../../../../Downloads/back.png").toExternalForm()));
 
         btnClose.setLayoutX(616.0);
         btnClose.setLayoutY(23.0);
@@ -325,25 +340,36 @@ public class ModesScreenUI extends Pane {
         getChildren().add(imageView5);
         getChildren().add(btnClose);
         getChildren().add(btnMinimize);
-        
+        getChildren().add(btnGamesHistory);
+
         //_____________________My Work_______________________
         setListeners(ClientApp.stage);
     }
-    
+
     public ModesScreenUI(int playerId) {
     }
-    
+
     public ModesScreenUI() {
     }
 
     private void setListeners(Stage stage) {
-        
+
         btnClose.setOnAction((ActionEvent event) -> {
             stage.close();
         });
-        
+
         btnMinimize.setOnAction((ActionEvent event) -> {
             stage.setIconified(true);
+        });
+        btnGamesHistory.setOnAction((event) -> {
+        Stage newStage = new Stage();
+        newStage.initStyle(StageStyle.TRANSPARENT);
+        Parent root = new SelectRecord();
+        Scene scene = new Scene(root);
+ 
+        newStage.setScene(scene);
+        newStage.show();
+         stage.close();
         });
     }
 }
