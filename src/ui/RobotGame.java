@@ -195,7 +195,7 @@ public class RobotGame extends GameBoard {
                     if (isXTurn && position[indexi][indexj].getText().equals("")) {
                         position[indexi][indexj].setText("X");
                         position[indexi][indexj].setDisable(true);
-                        recordedGame += (isXTurn ? (player1Name + ", X") : (player2Name + ", O")) + " cell: " + indexi + ", " + indexj + "\n";
+                        recordedGame += (isXTurn ? (player1Name + ", X,") : (player2Name + ", O,")) + " cell: " + indexi + ", " + indexj + "\n";
                         playedKey++;
                         nextTern();
                     }

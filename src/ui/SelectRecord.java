@@ -560,7 +560,7 @@ public class SelectRecord extends AnchorPane {
                     Button button = new Button(fileNameWithoutExtension);
                     button.setStyle("-fx-background-radius: 100; -fx-background-color: #EAD3D7;");
                     button.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
-                    button.setFont(new Font("Franklin Gothic Demi Cond", 22.0));
+                    button.setFont(new Font("Franklin Gothic Demi Cond", 18.0));
                     button.setCursor(Cursor.HAND);
                     button.setOnAction((event) -> {
                         displayFileContent(file.getAbsolutePath());
@@ -574,7 +574,6 @@ public class SelectRecord extends AnchorPane {
             System.out.println("The specified path either doesn't exist or is not a directory.");
         }
     }
-
     private void displayFileContent(String filePath) {
         recordsListView.setDisable(true);
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -588,6 +587,7 @@ public class SelectRecord extends AnchorPane {
             System.out.println("Error reading file: " + e.getMessage());
         }
     }
+
     private void clearBoard() {
         for (Button[] row : buttons) {
             for (Button button : row) {
