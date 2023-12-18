@@ -754,10 +754,8 @@ public abstract class GameBoard extends BorderPane {
         });
 
         btnNewGame.setOnAction((e) -> {
+            countThread.stop();
             startGame();
-            if (countThread.isInterrupted()) {
-                countThread.interrupt();
-            }
         });
 
         btnRecordeGame.setOnAction((e) -> {
