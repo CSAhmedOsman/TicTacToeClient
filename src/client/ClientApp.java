@@ -6,10 +6,11 @@
 package client;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import ui.SplashScreenUI;
+import utils.Util;
 
 /**
  *
@@ -17,14 +18,18 @@ import javafx.stage.Stage;
  */
 public class ClientApp extends Application {
     
+    public static Stage stage;
+
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
+        ClientApp.stage = stage;
+        Parent splashScreen = new SplashScreenUI();
+
+        //Hide top bar of the stage
+        stage.initStyle(StageStyle.UNDECORATED);
         
-        Scene scene = new Scene(root);
-        
-        stage.setScene(scene);
-        stage.show();
+        Util.displayScreen(splashScreen);
+
     }
 
     /**
@@ -33,5 +38,5 @@ public class ClientApp extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-    
+
 }
