@@ -122,7 +122,7 @@ public class RegisterScreenUI extends Pane {
 
         text.setFill(javafx.scene.paint.Color.valueOf("#66188d"));
         text.setLayoutX(49.0);
-        text.setLayoutY(78.0);
+        text.setLayoutY(100.0);
         text.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);
         text.setStrokeWidth(0.0);
         text.setText("Hello! Register to get Started");

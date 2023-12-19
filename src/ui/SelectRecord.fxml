@@ -190,7 +190,6 @@
             <DropShadow color="#fff7f7" spread="0.69" />
          </effect>
       </Button>
-      <Circle fill="#00000078" layoutX="63.0" layoutY="36.0" opacity="0.2" radius="120.0" stroke="#d0cbcb" strokeType="INSIDE" />
       <Label fx:id="lableTurnPlayer" layoutX="32.0" layoutY="174.0" prefHeight="74.0" prefWidth="300.0" style="-fx-alignment: center; -fx-background-color: #f4d741; -fx-background-radius: 10;" text="Label" textAlignment="CENTER" textFill="#43115b">
          <font>
             <Font name="Franklin Gothic Demi Cond" size="42.0" />
