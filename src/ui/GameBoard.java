@@ -486,41 +486,15 @@ public abstract class GameBoard extends BorderPane {
             for (int j = 0; j < boardSize; j++) {
                 position[i][j].setAlignment(javafx.geometry.Pos.CENTER);
                 position[i][j].setMnemonicParsing(false);
-                position[i][j].setPrefHeight(85.0);
-                position[i][j].setPrefWidth(85.0);
+                position[i][j].setPrefHeight(250/boardSize);
+                position[i][j].setPrefWidth(250/boardSize);
                 position[i][j].setText("");
                 position[i][j].setStyle("-fx-background-radius: 10; -fx-background-color: #c7c7c7;");
                 position[i][j].setTextFill(javafx.scene.paint.Color.valueOf("#030040"));
-                position[i][j].setFont(new Font("Arial Rounded MT Bold", 36.0));
+                position[i][j].setFont(new Font("Arial Rounded MT Bold", (100/boardSize)));
                 position[i][j].setCursor(Cursor.HAND);
-                if (i == 0) {
-                    position[i][j].setLayoutY(11.0);
-                    if (j == 0) {
-                        position[i][j].setLayoutX(11.0);
-                    } else if (j == 1) {
-                        position[i][j].setLayoutX(107.0);
-                    } else {
-                        position[i][j].setLayoutX(203.0);
-                    }
-                } else if (i == 1) {
-                    position[i][j].setLayoutY(107.0);
-                    if (j == 0) {
-                        position[i][j].setLayoutX(11.0);
-                    } else if (j == 1) {
-                        position[i][j].setLayoutX(107.0);
-                    } else {
-                        position[i][j].setLayoutX(203.0);
-                    }
-                } else {
-                    position[i][j].setLayoutY(203.0);
-                    if (j == 0) {
-                        position[i][j].setLayoutX(11.0);
-                    } else if (j == 1) {
-                        position[i][j].setLayoutX(107.0);
-                    } else {
-                        position[i][j].setLayoutX(203.0);
-                    }
-                }
+                position[i][j].setLayoutY((50/(boardSize+1))+(i*((250/(boardSize))+(50/(boardSize+1)))));
+                position[i][j].setLayoutX((50/(boardSize+1))+(j*((250/(boardSize))+(50/(boardSize+1)))));
             }
         }
 
