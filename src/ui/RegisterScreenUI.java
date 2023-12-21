@@ -11,6 +11,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
@@ -18,6 +20,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import utils.Constants;
+import utils.PasswordEncryptor;
 import utils.Util;
 import utils.Validating;
 
@@ -203,6 +206,11 @@ public class RegisterScreenUI extends Pane {
         pfConfirmPassword.setPromptText("Confirm Password");
         pfConfirmPassword.setStyle("-fx-background-radius: 50;");
         pfConfirmPassword.setFont(new Font(23.0));
+        pfConfirmPassword.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.V && event.isShortcutDown()) {
+                event.consume();
+            }
+        });
 
         btnClose.setLayoutX(616.0);
         btnClose.setLayoutY(23.0);
@@ -252,6 +260,7 @@ public class RegisterScreenUI extends Pane {
         getChildren().add(btnClose);
         getChildren().add(btnMinimize);
         //______________My Work_______________
+        
         client= new Client();
         client.connect();
         
@@ -279,6 +288,8 @@ public class RegisterScreenUI extends Pane {
         
         if(player== null)
             return;
+        
+        player.setPassword(PasswordEncryptor.encryptPassword(player.getPassword()));
         
         Gson gson= new Gson();
         ArrayList jsonArr= new ArrayList();

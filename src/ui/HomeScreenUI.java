@@ -1,11 +1,8 @@
 package ui;
 
 import client.ClientApp;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -22,7 +19,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import utils.Animation;
-import utils.Util;
 
 public class HomeScreenUI extends AnchorPane {
 
@@ -289,79 +285,33 @@ public class HomeScreenUI extends AnchorPane {
         //______________My Work_______________
         setListeners(ClientApp.stage);
 
-        Animation.setAnimatedNodeIn(btnLogin);
-        Animation.setAnimatedNodeIn(btnClose);
-        Animation.setAnimatedNodeIn(btnMinimize);
-        Animation.setAnimatedNodeIn(btnSignUp);
-        Animation.setAnimatedNodeIn(btnOffLine);
+        Animation.setButtonHoverFunctionality(btnLogin);
+        Animation.setButtonHoverFunctionality(btnSignUp);
+        Animation.setButtonHoverFunctionality(btnOffLine);
+
+        animateIn();
     }
 
     private void setListeners(Stage stage) {
 
         btnLogin.setOnAction((ActionEvent event) -> {
-            Animation.setAnimatedRootOut(this);
-
-            Animation.setAnimatedNodeOut(btnLogin);
-            Animation.setAnimatedNodeOut(btnClose);
-            Animation.setAnimatedNodeOut(btnMinimize);
-            Animation.setAnimatedNodeOut(btnSignUp);
-            Animation.setAnimatedNodeOut(btnOffLine);
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(HomeScreenUI.class.getName()).log(Level.SEVERE, null, ex);
-            }
             Parent loginScreen = new LoginScreenUI();
-            Util.displayScreen(loginScreen);
+            animateOut(loginScreen);
         });
 
         btnSignUp.setOnAction((ActionEvent event) -> {
-            Animation.setAnimatedRootOut(this);
-            
-            Animation.setAnimatedNodeOut(btnLogin);
-            Animation.setAnimatedNodeOut(btnClose);
-            Animation.setAnimatedNodeOut(btnMinimize);
-            Animation.setAnimatedNodeOut(btnSignUp);
-            Animation.setAnimatedNodeOut(btnOffLine);
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(HomeScreenUI.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
             Parent registerScreen = new RegisterScreenUI();
-            Util.displayScreen(registerScreen);
+            animateOut(registerScreen);
         });
 
         btnOffLine.setOnAction((ActionEvent event) -> {
-            Animation.setAnimatedRootOut(this);
-            
-            Animation.setAnimatedNodeOut(btnLogin);
-            Animation.setAnimatedNodeOut(btnClose);
-            Animation.setAnimatedNodeOut(btnMinimize);
-            Animation.setAnimatedNodeOut(btnSignUp);
-            Animation.setAnimatedNodeOut(btnOffLine);
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(HomeScreenUI.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
             Parent modesScreen = new ModesScreenUI();
-            Util.displayScreen(modesScreen);
+            animateOut(modesScreen);
         });
 
         btnBack.setOnAction((ActionEvent event) -> {
-            Animation.setAnimatedRootOut(this);
-            
-            Animation.setAnimatedNodeOut(btnLogin);
-            Animation.setAnimatedNodeOut(btnClose);
-            Animation.setAnimatedNodeOut(btnMinimize);
-            Animation.setAnimatedNodeOut(btnSignUp);
-            Animation.setAnimatedNodeOut(btnOffLine);
-            
             Parent splashScreen = new SplashScreenUI();
-            Util.displayScreen(splashScreen);
+            animateOut(splashScreen);
         });
 
         btnClose.setOnAction((ActionEvent event) -> {
@@ -371,5 +321,24 @@ public class HomeScreenUI extends AnchorPane {
         btnMinimize.setOnAction((ActionEvent event) -> {
             stage.setIconified(true);
         });
+    }
+
+    private void animateIn() {
+        Animation.setAnimatedNodeIn(btnLogin);
+        Animation.setAnimatedNodeIn(btnClose);
+        Animation.setAnimatedNodeIn(btnMinimize);
+        Animation.setAnimatedNodeIn(btnSignUp);
+        Animation.setAnimatedNodeIn(btnOffLine);
+    }
+
+    private void animateOut(Parent destination) {
+
+        Animation.setAnimatedNodeOut(btnLogin);
+        Animation.setAnimatedNodeOut(btnClose);
+        Animation.setAnimatedNodeOut(btnMinimize);
+        Animation.setAnimatedNodeOut(btnSignUp);
+        Animation.setAnimatedNodeOut(btnOffLine);
+
+        Animation.setAnimatedRootOut(this, destination);
     }
 }

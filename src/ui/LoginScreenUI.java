@@ -258,6 +258,8 @@ public class LoginScreenUI extends Pane {
 
         setListeners();
         
+        Animation.setButtonHoverFunctionality(btnLogin);
+        
         Animation.setAnimatedNodeIn(btnLogin);
         Animation.setAnimatedNodeIn(btnClose);
         Animation.setAnimatedNodeIn(btnMinimize);
@@ -270,7 +272,8 @@ public class LoginScreenUI extends Pane {
             
             if (player == null)
                 return;
-            
+
+            player.setPassword(PasswordEncryptor.encryptPassword(player.getPassword()));
             Gson gson = new Gson();
             ArrayList jsonArr = new ArrayList();
             jsonArr.add(Constants.LOGIN);
