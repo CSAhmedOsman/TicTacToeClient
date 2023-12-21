@@ -517,6 +517,13 @@ public class SelectRecord extends AnchorPane {
 
         String directoryPath = "C:\\files";
         addTextFilesToListView(directoryPath);
+        btnBack.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Parent root= new ModesScreenUI();
+                Util.displayScreen(root);
+            }
+        });
     }
 
     private void setListeners(Stage stage) {
