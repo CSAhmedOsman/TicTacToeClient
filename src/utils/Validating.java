@@ -27,23 +27,23 @@ public class Validating {
     public static boolean validateRegister(String username, String email, String password, String confirmPassword) {
         
         if(!validateUsername(username)) {
-            Util.showDialog(Alert.AlertType.ERROR, "UserName", "Enter Valid UserName");
+            Util.showAlertDialog(Alert.AlertType.ERROR, "UserName", "Enter Valid UserName");
             return false;
         }
         
         if (!validateEmail(email)) {
-            Util.showDialog(Alert.AlertType.ERROR, "Email", "Enter Valid Email");
+            Util.showAlertDialog(Alert.AlertType.ERROR, "Email", "Enter Valid Email");
             return false;
         }
         
         if (!validateConfirmPassword(password, confirmPassword)) {
-            Util.showDialog(Alert.AlertType.ERROR, "Invalid Confirm Password", 
+            Util.showAlertDialog(Alert.AlertType.ERROR, "Invalid Confirm Password", 
                     "The password confirmation does not match the original password.");
             return false;
         }
         
         if (!validatePassword(password)) {
-            Util.showDialog(Alert.AlertType.ERROR, "Invalid Password", 
+            Util.showAlertDialog(Alert.AlertType.ERROR, "Invalid Password", 
                     "The password does not meet the required criteria.\nPlease use a stronger password.");
             return false;
         }
@@ -54,12 +54,12 @@ public class Validating {
     public static boolean validateLogin(String email, String password) {
         
         if (!validateEmail(email)) {
-            Util.showDialog(Alert.AlertType.ERROR, "Email", "Enter Valid Email");
+            Util.showAlertDialog(Alert.AlertType.ERROR, "Email", "Enter Valid Email");
             return false;
         }
         
         if (!validatePassword(password)) {
-            Util.showDialog(Alert.AlertType.ERROR, "Invalid Password", 
+            Util.showAlertDialog(Alert.AlertType.ERROR, "Invalid Password", 
                     "The password does not meet the required criteria.\nPlease use a stronger password.");
             return false;
         }

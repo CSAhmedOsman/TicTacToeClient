@@ -15,6 +15,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import ui.LoginScreenUI;
@@ -123,17 +124,19 @@ public class Client {
             Util.displayScreen(loginScreen);
         } else {
             // Maybe Throw
-            Util.showDialog(Alert.AlertType.ERROR, "Register Error", "SomeThing Wrong Happen. Check For The Network.");
+            Util.showAlertDialog(Alert.AlertType.ERROR, "Register Error", "SomeThing Wrong Happen. Check For The Network.");
         }
     }
     
     private void login() {
         double userId = (double) responceData.get(1);
         if(userId >= 0) {
-            Parent modesScreen = new ModesScreenUI();
+            Parent modesScreen = new ModesScreenUI((int) userId);
             Util.displayScreen(modesScreen);
         } else {
-            Util.showDialog(Alert.AlertType.ERROR, "Login Error", "Your Email Or Password is Incorrect.");
+            Platform.runLater(()-> {
+                Util.showAlertDialog(Alert.AlertType.ERROR, "Login Error", "Your Email Or Password is Incorrect.");
+            });
         }
     }
 }

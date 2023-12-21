@@ -3,10 +3,8 @@ package ui;
 import utils.Util;
 import client.ClientApp;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.effect.DropShadow;
@@ -18,8 +16,7 @@ import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
+import utils.Animation;
 
 public class ModesScreenUI extends Pane {
 
@@ -51,8 +48,7 @@ public class ModesScreenUI extends Pane {
     protected final Button btnMin;
     protected final DropShadow dropShadow4;
 
-    public ModesScreenUI() {
-
+    {
         ellipse = new Ellipse();
         ellipse0 = new Ellipse();
         rectangle = new Rectangle();
@@ -350,8 +346,19 @@ public class ModesScreenUI extends Pane {
         getChildren().add(btnClose);
         getChildren().add(btnGamesHistory);
         getChildren().add(btnMin);
-
+        
+        //___________________My Work________________________
         addEventHandlers();
+        
+        Animation.setButtonHoverFunctionality(btnGamesHistory);
+    }
+    
+    public ModesScreenUI(int playerId) {
+        
+    }
+    
+    public ModesScreenUI() {
+        
     }
 
     protected void addEventHandlers() {
@@ -365,26 +372,39 @@ public class ModesScreenUI extends Pane {
 
         btnOfline.setOnAction((e) -> {
             Parent localGame = new LocalGame();
-            Util.displayScreen(localGame);
+            animateOut(localGame);
         });
 
         btnWithPc.setOnAction((e) -> {
             Parent selectGame = new SelectGameLevel();
-            Util.displayScreen(selectGame);
+            animateOut(selectGame);
         });
 
         btnOnline.setOnAction((e) -> {
-            Util.showDialog(Alert.AlertType.INFORMATION, "Future work", "Will be Added Soon.");
+            Util.showAlertDialog(Alert.AlertType.INFORMATION, "Future work", "Will be Added Soon.");
         });
 
         btnLogout.setOnAction((e) -> {
             Parent homeScreen = new LoginScreenUI();
-            Util.displayScreen(homeScreen);
+            animateOut(homeScreen);
         });
 
         btnGamesHistory.setOnAction((event) -> {
             Parent homeScreen = new SelectRecord();
-            Util.displayScreen(homeScreen);
+            animateOut(homeScreen);
         });
+    }
+
+    private void animateOut(Parent destination) {
+        
+        Animation.setAnimatedNodeOut(btnGamesHistory);
+        Animation.setAnimatedNodeOut(btnClose);
+        Animation.setAnimatedNodeOut(btnLogout);
+        Animation.setAnimatedNodeOut(btnOfline);
+        Animation.setAnimatedNodeOut(btnOnline);
+        Animation.setAnimatedNodeOut(btnWithPc);
+        
+        Animation.setAnimatedRootOut(this, destination);
+        
     }
 }

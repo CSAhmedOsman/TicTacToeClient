@@ -3,7 +3,6 @@ package ui;
 import client.ClientApp;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -19,7 +18,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import utils.Util;
+import utils.Animation;
 
 public class HomeScreenUI extends AnchorPane {
 
@@ -285,30 +284,36 @@ public class HomeScreenUI extends AnchorPane {
 
         //______________My Work_______________
         setListeners(ClientApp.stage);
+
+        Animation.setButtonHoverFunctionality(btnLogin);
+        Animation.setButtonHoverFunctionality(btnSignUp);
+        Animation.setButtonHoverFunctionality(btnOffLine);
+
+        animateIn();
     }
 
     private void setListeners(Stage stage) {
 
         btnLogin.setOnAction((ActionEvent event) -> {
-            Parent loginScreen= new LoginScreenUI();
-            Util.displayScreen(loginScreen);
+            Parent loginScreen = new LoginScreenUI();
+            animateOut(loginScreen);
         });
-        
+
         btnSignUp.setOnAction((ActionEvent event) -> {
-            Parent registerScreen= new RegisterScreenUI() ;
-            Util.displayScreen(registerScreen);
+            Parent registerScreen = new RegisterScreenUI();
+            animateOut(registerScreen);
         });
-        
+
         btnOffLine.setOnAction((ActionEvent event) -> {
-            Parent modesScreen= new ModesScreenUI();
-            Util.displayScreen(modesScreen);
+            Parent modesScreen = new ModesScreenUI();
+            animateOut(modesScreen);
         });
-        
+
         btnBack.setOnAction((ActionEvent event) -> {
             Parent splashScreen = new SplashScreenUI();
-            Util.displayScreen(splashScreen);
+            animateOut(splashScreen);
         });
-        
+
         btnClose.setOnAction((ActionEvent event) -> {
             stage.close();
         });
@@ -316,5 +321,24 @@ public class HomeScreenUI extends AnchorPane {
         btnMinimize.setOnAction((ActionEvent event) -> {
             stage.setIconified(true);
         });
+    }
+
+    private void animateIn() {
+        Animation.setAnimatedNodeIn(btnLogin);
+        Animation.setAnimatedNodeIn(btnClose);
+        Animation.setAnimatedNodeIn(btnMinimize);
+        Animation.setAnimatedNodeIn(btnSignUp);
+        Animation.setAnimatedNodeIn(btnOffLine);
+    }
+
+    private void animateOut(Parent destination) {
+
+        Animation.setAnimatedNodeOut(btnLogin);
+        Animation.setAnimatedNodeOut(btnClose);
+        Animation.setAnimatedNodeOut(btnMinimize);
+        Animation.setAnimatedNodeOut(btnSignUp);
+        Animation.setAnimatedNodeOut(btnOffLine);
+
+        Animation.setAnimatedRootOut(this, destination);
     }
 }
