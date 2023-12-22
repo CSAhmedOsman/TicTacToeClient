@@ -119,6 +119,10 @@ public class Client {
                 break;
             case 11:
                 //TODO getAvailablePlayer();
+                break;
+            case Constants.BROADCAST_MESSAGE:
+                recieveBroadcastMessage();
+                break;
         }
     }
     
@@ -144,5 +148,14 @@ public class Client {
                 Util.showAlertDialog(Alert.AlertType.ERROR, "Login Error", "Your Email Or Password is Incorrect.");
             });
         }
+    }
+
+    private void recieveBroadcastMessage() {
+        String srcPlayerName = (String) responceData.get(1);
+        String message = (String) responceData.get(1);
+        
+        // Display The Message Here In Lobby.
+        // With Setter In LobbyScreen Or Static Var.
+        //Think About It.
     }
 }
