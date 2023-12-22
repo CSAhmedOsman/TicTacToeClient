@@ -7,6 +7,7 @@ package client;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import data.Player;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -17,6 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
+import ui.HomeOnlineScreenUI;
 import ui.LoginScreenUI;
 import ui.ModesScreenUI;
 import utils.Constants;
@@ -58,7 +60,7 @@ public class Client {
         out.println(gson);
     }
 
-    public void startListening() {
+    private void startListening() {
         new Thread(() -> {
             try {
                 while (mySocket != null && !(mySocket.isClosed())) {
@@ -72,7 +74,7 @@ public class Client {
         }).start();
     }
     
-    public void handleResponse(String gsonResponce) {
+    private void handleResponse(String gsonResponce) {
         
         Type listType = new TypeToken<ArrayList<Object>>() {}.getType();
         Gson gson = new Gson();
@@ -86,32 +88,33 @@ public class Client {
             case Constants.LOGIN:
                 login();
                 break;
-            case 3:
-                //TODO request();
+            case Constants.GET_AVAILIABLE_PLAYERS:
+                getAvailablePlayers();
                 break;
             case 4:
-                //TODO accept();
+                //TODO request();
                 break;
             case 5:
-                //TODO updateBoard();
+                //TODO accept();
                 break;
             case 6:
-                //TODO logout();
+                //TODO updateBoard();
                 break;
             case 7:
-                // TODO save();
+                //TODO logout();
                 break;
             case 8:
-                //TODO finish();
+                // TODO save();
                 break;
             case 9:
-                //TODO updateScore();
+                //TODO finish();
                 break;
             case 10:
-                // TODO sendMessage();
+                //TODO updateScore();
                 break;
             case 11:
-                //TODO getAvailablePlayer();
+                // TODO sendMessage();
+                break;
         }
     }
     
@@ -135,5 +138,16 @@ public class Client {
         } else {
             Util.showDialog(Alert.AlertType.ERROR, "Login Error", "Your Email Or Password is Incorrect.");
         }
+    }
+
+    private void getAvailablePlayers() {
+        ArrayList<Player> getAvailablePlayersStatus = (ArrayList) responceData.get(1);
+        
+        
+            Parent AvailablePlayersScreen= new HomeOnlineScreenUI(getAvailablePlayersStatus);
+            Util.displayScreen(AvailablePlayersScreen);
+        
+   
+        
     }
 }
