@@ -144,6 +144,6 @@ public class Client {
         String message = (String) responceData.get(1);
         String sourceplayerName = (String) responceData.get(2);
         
-        //Desplay Message On Screen
+        //Display Message On Screen
     }
 }
