@@ -5,9 +5,7 @@
  */
 package ui;
 
-import client.ClientApp;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;

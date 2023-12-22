@@ -108,8 +108,8 @@ public class Client {
             case 9:
                 //TODO updateScore();
                 break;
-            case 10:
-                // TODO sendMessage();
+            case Constants.SENDMESSAGE:
+                recieveMessage();
                 break;
             case 11:
                 //TODO getAvailablePlayer();
@@ -138,5 +138,12 @@ public class Client {
                 Util.showAlertDialog(Alert.AlertType.ERROR, "Login Error", "Your Email Or Password is Incorrect.");
             });
         }
+    }
+
+    private void recieveMessage() {
+        String message = (String) responceData.get(1);
+        String sourceplayerName = (String) responceData.get(2);
+        
+        //Desplay Message On Screen
     }
 }
