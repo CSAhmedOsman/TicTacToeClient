@@ -7,6 +7,7 @@ package client;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import exception.NotConnectedException;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -33,12 +34,14 @@ public class Client {
     DataInputStream in;
     PrintStream out;
     ArrayList responceData;
-
+    boolean isConnected;
+    
     public void connect() {
         try {
             mySocket = new Socket(Constants.IP_ADDRESS, Constants.PORT);
             in = new DataInputStream(mySocket.getInputStream());
             out = new PrintStream(mySocket.getOutputStream());
+            isConnected = true;
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -55,7 +58,10 @@ public class Client {
         }
     }
     
-    public void sendRequest(String gson) {
+    public void sendRequest(String gson) throws NotConnectedException {
+        if (!isConnected) {
+            throw new NotConnectedException("Client is not connected to the server");
+        }
         out.println(gson);
     }
 

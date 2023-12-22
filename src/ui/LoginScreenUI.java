@@ -4,7 +4,10 @@ import client.Client;
 import client.ClientApp;
 import data.Player;
 import com.google.gson.Gson;
+import exception.NotConnectedException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
@@ -280,7 +283,12 @@ public class LoginScreenUI extends Pane {
             jsonArr.add(player);
             
             String gsonRequest = gson.toJson(jsonArr);
-            client.sendRequest(gsonRequest);
+            try {
+                client.sendRequest(gsonRequest);
+            } catch (NotConnectedException ex) {
+                System.out.println(ex.getMessage());
+                ex.printStackTrace();
+            }
         });
 
         btnClose.setOnAction((ActionEvent event) -> {
