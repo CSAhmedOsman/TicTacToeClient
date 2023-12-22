@@ -18,6 +18,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import utils.Animation;
 import utils.Util;
 
 public class SplashScreenUI extends AnchorPane {
@@ -227,6 +228,7 @@ public class SplashScreenUI extends AnchorPane {
 
         //_____________________My Work_______________________
         setListeners(ClientApp.stage);
+        Animation.setButtonHoverFunctionality(btnNext);
     }
 
     private void setListeners(Stage stage) {
