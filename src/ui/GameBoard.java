@@ -12,6 +12,7 @@ import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
@@ -90,8 +91,6 @@ public abstract class GameBoard extends BorderPane {
     protected String player1Name;
     protected String player2Name;
     protected int boardSize;
-    
-    Client client;
 
     {
         boardSize = 3;
@@ -146,11 +145,9 @@ public abstract class GameBoard extends BorderPane {
         player2Name = "Player2";
         recordedGame = "";
         isRecord = false;
-        
+
         init();
-        
-        client = new Client();
-        client.connect();
+        ClientApp.currentDisplayedScreen = this;
     }
 
     public GameBoard(int mode) {
@@ -159,7 +156,7 @@ public abstract class GameBoard extends BorderPane {
     }
 
     public GameBoard() {
-        
+
     }
 
     public GameBoard(String p2) {
@@ -808,6 +805,12 @@ public abstract class GameBoard extends BorderPane {
         jsonRequest.add(message);
 
         String gsonRequest = gson.toJson(jsonRequest);
-        client.sendRequest(gsonRequest);
+        Client.getClient().sendRequest(gsonRequest);
+    }
+
+    public void displayMessage(String srcPlayerName, String message) {
+        Platform.runLater(() -> {
+            Util.showAlertDialog(Alert.AlertType.CONFIRMATION, srcPlayerName, message);
+        });
     }
 }

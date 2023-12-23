@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
+import ui.GameBoard;
 import ui.LoginScreenUI;
 import ui.ModesScreenUI;
 import utils.Constants;
@@ -34,6 +35,18 @@ public class Client {
     PrintStream out;
     ArrayList responceData;
 
+    private static Client singletonClient;
+    
+    private Client() {
+        singletonClient.connect();
+    }
+    
+    public static Client getClient() {
+        if(singletonClient== null)
+            singletonClient= new Client();
+        return singletonClient;
+    }
+    
     public void connect() {
         try {
             mySocket = new Socket(Constants.IP_ADDRESS, Constants.PORT);
@@ -144,6 +157,7 @@ public class Client {
         String message = (String) responceData.get(1);
         String sourceplayerName = (String) responceData.get(2);
         
-        //Display Message On Screen
+        GameBoard gameBoard= (GameBoard) ClientApp.currentDisplayedScreen;
+        gameBoard.displayMessage(sourceplayerName, message);
     }
 }

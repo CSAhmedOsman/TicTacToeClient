@@ -43,9 +43,6 @@ public class RegisterScreenUI extends Pane {
     protected final DropShadow dropShadow;
     protected final Button btnMinimize;
     protected final DropShadow dropShadow0;
-
-    //________________________My Work_________________________
-    Client client;
     
     // Button Click Behaviour
     int initWidth= 230;
@@ -259,10 +256,6 @@ public class RegisterScreenUI extends Pane {
         getChildren().add(pfConfirmPassword);
         getChildren().add(btnClose);
         getChildren().add(btnMinimize);
-        //______________My Work_______________
-        
-        client= new Client();
-        client.connect();
         
         setListeners(ClientApp.stage);
     }
@@ -296,8 +289,8 @@ public class RegisterScreenUI extends Pane {
         jsonArr.add(Constants.REGISTER);
         jsonArr.add(player);
         
-        String gsonRequest= gson.toJson(jsonArr);
-        client.sendRequest(gsonRequest);
+        String gsonRequest = gson.toJson(jsonArr);
+        Client.getClient().sendRequest(gsonRequest);
     }
     
     private Player makeNewPlayer() {

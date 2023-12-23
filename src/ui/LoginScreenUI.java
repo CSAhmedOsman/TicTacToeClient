@@ -39,9 +39,6 @@ public class LoginScreenUI extends Pane {
     protected final Button btnMinimize;
     protected final DropShadow dropShadow0;
 
-    //________________________My Work_________________________
-    Client client;
-
     public LoginScreenUI() {
 
         ellipse = new Ellipse();
@@ -252,10 +249,6 @@ public class LoginScreenUI extends Pane {
         getChildren().add(btnClose);
         getChildren().add(btnMinimize);
 
-        //______________My Work_______________
-        client = new Client();
-        client.connect();
-
         setListeners();
         
         Animation.setButtonHoverFunctionality(btnLogin);
@@ -280,7 +273,7 @@ public class LoginScreenUI extends Pane {
             jsonArr.add(player);
             
             String gsonRequest = gson.toJson(jsonArr);
-            client.sendRequest(gsonRequest);
+            Client.getClient().sendRequest(gsonRequest);
         });
 
         btnClose.setOnAction((ActionEvent event) -> {
