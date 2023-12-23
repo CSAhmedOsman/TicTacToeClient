@@ -504,7 +504,7 @@ public class LobbyScreenUI extends AnchorPane {
 
         String gsonRequest = gson.toJson(jsonRequest);
         try {
-            ClientApp.client.sendRequest(gsonRequest);
+            Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
             System.out.println(ex.getMessage());
             ex.printStackTrace();

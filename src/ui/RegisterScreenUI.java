@@ -259,7 +259,6 @@ public class RegisterScreenUI extends Pane {
         getChildren().add(pfConfirmPassword);
         getChildren().add(btnClose);
         getChildren().add(btnMinimize);
-        //______________My Work_______________
         
         setListeners(ClientApp.stage);
     }
@@ -293,12 +292,14 @@ public class RegisterScreenUI extends Pane {
         jsonArr.add(Constants.REGISTER);
         jsonArr.add(player);
         
-        String gsonRequest= gson.toJson(jsonArr);
+        String gsonRequest = gson.toJson(jsonArr);
+        
         try {
-            ClientApp.client.sendRequest(gsonRequest);
+            Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
             Logger.getLogger(RegisterScreenUI.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
     }
     
     private Player makeNewPlayer() {

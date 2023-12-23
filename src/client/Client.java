@@ -20,6 +20,7 @@ import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import ui.LobbyScreenUI;
+import ui.GameBoard;
 import ui.LoginScreenUI;
 import ui.ModesScreenUI;
 import utils.Constants;
@@ -36,6 +37,18 @@ public class Client {
     PrintStream out;
     ArrayList responceData;
     boolean isConnected;
+
+    private static Client singletonClient;
+    
+    private Client() {
+        singletonClient.connect();
+    }
+    
+    public static Client getClient() {
+        if(singletonClient== null)
+            singletonClient= new Client();
+        return singletonClient;
+    }
     
     public void connect() {
         try {
@@ -116,8 +129,8 @@ public class Client {
             case 9:
                 //TODO updateScore();
                 break;
-            case 10:
-                // TODO sendMessage();
+            case Constants.SENDMESSAGE:
+                recieveMessage();
                 break;
             case 11:
                 //TODO getAvailablePlayer();
@@ -153,11 +166,20 @@ public class Client {
         }
     }
 
+
     private void recieveBroadcastMessage() {
         String srcPlayerName = (String) responceData.get(1);
         String message = (String) responceData.get(2);
         System.out.println("RecieveBroadCastMessage");
         LobbyScreenUI lobbyScreen= (LobbyScreenUI) ClientApp.currentScreen;
         lobbyScreen.desplayMessage(srcPlayerName, message);
+    }
+    
+    private void recieveMessage() {
+        String message = (String) responceData.get(1);
+        String sourceplayerName = (String) responceData.get(2);
+        
+        GameBoard gameBoard= (GameBoard) ClientApp.currentDisplayedScreen;
+        gameBoard.displayMessage(sourceplayerName, message);
     }
 }
