@@ -46,9 +46,6 @@ public class RegisterScreenUI extends Pane {
     protected final DropShadow dropShadow;
     protected final Button btnMinimize;
     protected final DropShadow dropShadow0;
-
-    //________________________My Work_________________________
-    Client client;
     
     // Button Click Behaviour
     int initWidth= 230;
@@ -264,9 +261,6 @@ public class RegisterScreenUI extends Pane {
         getChildren().add(btnMinimize);
         //______________My Work_______________
         
-        client= new Client();
-        client.connect();
-        
         setListeners(ClientApp.stage);
     }
     
@@ -301,7 +295,7 @@ public class RegisterScreenUI extends Pane {
         
         String gsonRequest= gson.toJson(jsonArr);
         try {
-            client.sendRequest(gsonRequest);
+            ClientApp.client.sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
             Logger.getLogger(RegisterScreenUI.class.getName()).log(Level.SEVERE, null, ex);
         }

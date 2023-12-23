@@ -67,9 +67,6 @@ public class LobbyScreenUI extends AnchorPane {
     protected final DropShadow dropShadow11;
     protected final Button btnMin;
     protected final DropShadow dropShadow12;
-
-    //________________________My Work_________________________
-    Client client;
     
     public LobbyScreenUI(int playerId) {
 
@@ -492,12 +489,10 @@ public class LobbyScreenUI extends AnchorPane {
         getChildren().add(btnMin);
 
         //______________My Work_______________
-        client = new Client();
-        client.connect();
         
         ClientApp.currentScreen = this;
         
-        sendMessageToAll(2, "BroadCast Message To All Players");
+        sendMessageToAll(1, "BroadCast Message To All Players");
     }
 
     private void sendMessageToAll(int sourceId, String broadcastMessage) {
@@ -509,7 +504,7 @@ public class LobbyScreenUI extends AnchorPane {
 
         String gsonRequest = gson.toJson(jsonRequest);
         try {
-            client.sendRequest(gsonRequest);
+            ClientApp.client.sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
             System.out.println(ex.getMessage());
             ex.printStackTrace();
@@ -518,6 +513,7 @@ public class LobbyScreenUI extends AnchorPane {
     
     public void desplayMessage(String srcPlayerName, String message) {
         Platform.runLater(() -> {
+            System.out.println("Desplay Message");
             Util.showAlertDialog(Alert.AlertType.CONFIRMATION, srcPlayerName, message);
         });
     }

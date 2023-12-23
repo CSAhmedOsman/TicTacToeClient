@@ -156,7 +156,7 @@ public class Client {
     private void recieveBroadcastMessage() {
         String srcPlayerName = (String) responceData.get(1);
         String message = (String) responceData.get(2);
-        
+        System.out.println("RecieveBroadCastMessage");
         LobbyScreenUI lobbyScreen= (LobbyScreenUI) ClientApp.currentScreen;
         lobbyScreen.desplayMessage(srcPlayerName, message);
     }

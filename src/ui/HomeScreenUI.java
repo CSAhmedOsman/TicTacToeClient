@@ -1,5 +1,6 @@
 package ui;
 
+import client.Client;
 import client.ClientApp;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,6 +20,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import utils.Animation;
+import utils.Util;
 
 public class HomeScreenUI extends AnchorPane {
 
@@ -296,7 +298,7 @@ public class HomeScreenUI extends AnchorPane {
 
         btnLogin.setOnAction((ActionEvent event) -> {
             Parent loginScreen = new LoginScreenUI();
-            animateOut(loginScreen);
+            Util.displayScreen(loginScreen);
         });
 
         btnSignUp.setOnAction((ActionEvent event) -> {

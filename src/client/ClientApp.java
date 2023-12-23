@@ -18,10 +18,11 @@ import utils.Util;
  * @author w
  */
 public class ClientApp extends Application {
-    
+
     public static Stage stage;
     public static Pane currentScreen;
-    
+    public static Client client;
+
     @Override
     public void start(Stage stage) throws Exception {
         ClientApp.stage = stage;
@@ -29,8 +30,10 @@ public class ClientApp extends Application {
 
         //Hide top bar of the stage
         stage.initStyle(StageStyle.UNDECORATED);
-        
+
         Util.displayScreen(splashScreen);
+        ClientApp.client = new Client();
+        client.connect();
     }
 
     /**
