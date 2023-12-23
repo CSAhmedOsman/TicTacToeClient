@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
+import ui.LobbyScreenUI;
 import ui.LoginScreenUI;
 import ui.ModesScreenUI;
 import utils.Constants;
@@ -69,6 +70,7 @@ public class Client {
         new Thread(() -> {
             try {
                 while (mySocket != null && !(mySocket.isClosed())) {
+                    System.out.println("Call To StartListening");
                     String gsonResponse = in.readLine();
                     if(!gsonResponse.isEmpty())
                         handleResponse(gsonResponse);
@@ -121,6 +123,7 @@ public class Client {
                 //TODO getAvailablePlayer();
                 break;
             case Constants.BROADCAST_MESSAGE:
+                System.out.println("BroadCast Message");
                 recieveBroadcastMessage();
                 break;
         }
@@ -141,7 +144,7 @@ public class Client {
     private void login() {
         double userId = (double) responceData.get(1);
         if(userId >= 0) {
-            Parent modesScreen = new ModesScreenUI((int) userId);
+            Parent modesScreen = new LobbyScreenUI((int) userId);
             Util.displayScreen(modesScreen);
         } else {
             Platform.runLater(()-> {
@@ -152,10 +155,9 @@ public class Client {
 
     private void recieveBroadcastMessage() {
         String srcPlayerName = (String) responceData.get(1);
-        String message = (String) responceData.get(1);
+        String message = (String) responceData.get(2);
         
-        // Display The Message Here In Lobby.
-        // With Setter In LobbyScreen Or Static Var.
-        //Think About It.
+        LobbyScreenUI lobbyScreen= (LobbyScreenUI) ClientApp.currentScreen;
+        lobbyScreen.desplayMessage(srcPlayerName, message);
     }
 }

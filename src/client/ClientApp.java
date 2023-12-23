@@ -7,6 +7,7 @@ package client;
 
 import javafx.application.Application;
 import javafx.scene.Parent;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import ui.SplashScreenUI;
@@ -19,7 +20,8 @@ import utils.Util;
 public class ClientApp extends Application {
     
     public static Stage stage;
-
+    public static Pane currentScreen;
+    
     @Override
     public void start(Stage stage) throws Exception {
         ClientApp.stage = stage;

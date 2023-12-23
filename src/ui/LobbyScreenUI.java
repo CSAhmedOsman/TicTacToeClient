@@ -1,10 +1,13 @@
 package ui;
 
 import client.Client;
+import client.ClientApp;
 import com.google.gson.Gson;
 import exception.NotConnectedException;
 import java.util.ArrayList;
+import javafx.application.Platform;
 import javafx.scene.Cursor;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -16,8 +19,9 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import utils.Constants;
+import utils.Util;
 
-public abstract class LobbyScreenUI extends AnchorPane {
+public class LobbyScreenUI extends AnchorPane {
 
     protected final Rectangle rectangle;
     protected final Label label;
@@ -66,8 +70,8 @@ public abstract class LobbyScreenUI extends AnchorPane {
 
     //________________________My Work_________________________
     Client client;
-
-    public LobbyScreenUI() {
+    
+    public LobbyScreenUI(int playerId) {
 
         rectangle = new Rectangle();
         label = new Label();
@@ -490,6 +494,10 @@ public abstract class LobbyScreenUI extends AnchorPane {
         //______________My Work_______________
         client = new Client();
         client.connect();
+        
+        ClientApp.currentScreen = this;
+        
+        sendMessageToAll(2, "BroadCast Message To All Players");
     }
 
     private void sendMessageToAll(int sourceId, String broadcastMessage) {
@@ -506,5 +514,11 @@ public abstract class LobbyScreenUI extends AnchorPane {
             System.out.println(ex.getMessage());
             ex.printStackTrace();
         }
+    }
+    
+    public void desplayMessage(String srcPlayerName, String message) {
+        Platform.runLater(() -> {
+            Util.showAlertDialog(Alert.AlertType.CONFIRMATION, srcPlayerName, message);
+        });
     }
 }
