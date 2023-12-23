@@ -26,7 +26,7 @@ public class ClientApp extends Application {
         Parent splashScreen = new SplashScreenUI();
 
         //Hide top bar of the stage
-        stage.initStyle(StageStyle.UNDECORATED);
+        stage.initStyle(StageStyle.TRANSPARENT);
         
         Util.displayScreen(splashScreen);
     }
