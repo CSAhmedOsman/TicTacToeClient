@@ -7,18 +7,24 @@ package client;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import data.Player;
 import exception.NotConnectedException;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
 import java.net.Socket;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
+import javafx.stage.Stage;
 import ui.LobbyScreenUI;
 import ui.GameBoard;
 import ui.LoginScreenUI;
@@ -31,7 +37,7 @@ import utils.Util;
  * @author w
  */
 public class Client {
-    
+
     Socket mySocket;
     DataInputStream in;
     PrintStream out;
@@ -80,28 +86,30 @@ public class Client {
         out.println(gson);
     }
 
-    public void startListening() {
+    private void startListening() {
         new Thread(() -> {
             try {
                 while (mySocket != null && !(mySocket.isClosed())) {
                     System.out.println("Call To StartListening");
                     String gsonResponse = in.readLine();
-                    if(!gsonResponse.isEmpty())
+                    if (!gsonResponse.isEmpty()) {
                         handleResponse(gsonResponse);
+                    }
                 }
             } catch (IOException ex) {
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
             }
         }).start();
     }
-    
-    public void handleResponse(String gsonResponce) {
-        
-        Type listType = new TypeToken<ArrayList<Object>>() {}.getType();
+
+    private void handleResponse(String gsonResponce) {
+
+        Type listType = new TypeToken<ArrayList<Object>>() {
+        }.getType();
         Gson gson = new Gson();
         responceData = gson.fromJson(gsonResponce, listType);
-        double action= (double) responceData.get(0);
-        
+        double action = (double) responceData.get(0);
+
         switch ((int) action) {
             case Constants.REGISTER:
                 register();
@@ -109,29 +117,30 @@ public class Client {
             case Constants.LOGIN:
                 login();
                 break;
-            case 3:
-                //TODO request();
+            case Constants.GET_AVAILIABLE_PLAYERS:
+                getAvailablePlayers();
                 break;
-            case 4:
-                //TODO accept();
+            case Constants.REQUEST:
+                request();
                 break;
             case 5:
-                //TODO updateBoard();
+                //TODO accept();
                 break;
             case 6:
-                //TODO logout();
+                //TODO updateBoard();
                 break;
             case 7:
-                // TODO save();
+                //TODO logout();
                 break;
             case 8:
-                //TODO finish();
+                // TODO save();
                 break;
             case 9:
-                //TODO updateScore();
+                //TODO finish();
                 break;
             case Constants.SENDMESSAGE:
                 recieveMessage();
+
                 break;
             case 11:
                 //TODO getAvailablePlayer();
@@ -142,28 +151,53 @@ public class Client {
                 break;
         }
     }
-    
+
     private void register() {
         boolean registerStatus = (boolean) responceData.get(1);
-        
-        if(registerStatus) {
-            Parent loginScreen= new LoginScreenUI();
+
+        if (registerStatus) {
+            Parent loginScreen = new LoginScreenUI();
             Util.displayScreen(loginScreen);
         } else {
             // Maybe Throw
             Util.showAlertDialog(Alert.AlertType.ERROR, "Register Error", "SomeThing Wrong Happen. Check For The Network.");
         }
     }
-    
+
     private void login() {
         double userId = (double) responceData.get(1);
+        Platform.runLater(() -> {
+                Util.showAlertDialog(Alert.AlertType.ERROR, "Login Error", userId+" ");
+        });
         if(userId >= 0) {
             Parent modesScreen = new LobbyScreenUI((int) userId);
             Util.displayScreen(modesScreen);
         } else {
-            Platform.runLater(()-> {
+            Platform.runLater(() -> {
                 Util.showAlertDialog(Alert.AlertType.ERROR, "Login Error", "Your Email Or Password is Incorrect.");
             });
+        }
+    }
+
+
+    private void getAvailablePlayers() {
+        ArrayList<Player> getAvailablePlayers = (ArrayList) responceData.get(1);
+        
+       // LobbyScreenUI.setPlayers(getAvailablePlayers);
+        //Parent AvailablePlayersScreen = new LobbyScreenUI(getAvailablePlayersStatus);
+        //Util.displayScreen(AvailablePlayersScreen);
+
+    }
+
+    private void request() {
+        boolean isRequestHandled = (boolean) responceData.get(1);
+        if (isRequestHandled) {
+            System.out.println("Request handled successfully");
+        } else {
+            System.out.println("Failed to handle the request");
+            //Parent root = new LobbyScreenUI(responceData);
+            //Util.displayScreen(root);
+            
         }
     }
 
@@ -175,6 +209,7 @@ public class Client {
         LobbyScreenUI lobbyScreen= (LobbyScreenUI) ClientApp.currentScreen;
         lobbyScreen.desplayMessage(srcPlayerName, message);
     }
+
     
     private void recieveMessage() {
         String message = (String) responceData.get(1);
@@ -184,3 +219,4 @@ public class Client {
         gameBoard.displayMessage(sourceplayerName, message);
     }
 }
+
