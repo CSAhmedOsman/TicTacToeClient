@@ -41,12 +41,13 @@ public class Client {
     private static Client singletonClient;
     
     private Client() {
-        singletonClient.connect();
     }
     
     public static Client getClient() {
-        if(singletonClient== null)
+        if(singletonClient== null){
             singletonClient= new Client();
+                    singletonClient.connect();
+        }
         return singletonClient;
     }
     
