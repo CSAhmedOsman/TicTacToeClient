@@ -273,11 +273,11 @@ public class LoginScreenUI extends Pane {
 
             player.setPassword(PasswordEncryptor.encryptPassword(player.getPassword()));
             Gson gson = new Gson();
-            ArrayList jsonArr = new ArrayList();
-            jsonArr.add(Constants.LOGIN);
-            jsonArr.add(player);
+            ArrayList jsonRequest = new ArrayList();
+            jsonRequest.add(Constants.LOGIN);
+            jsonRequest.add(player);
 
-            String gsonRequest = gson.toJson(jsonArr);
+            String gsonRequest = gson.toJson(jsonRequest);
             try {
                 Client.getClient().sendRequest(gsonRequest);
             } catch (NotConnectedException ex) {

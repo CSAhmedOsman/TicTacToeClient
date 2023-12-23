@@ -68,8 +68,7 @@ public class LobbyScreenUI extends AnchorPane {
     protected final Button btnMin;
     protected final DropShadow dropShadow12;
     
-    public LobbyScreenUI(int playerId) {
-
+    {
         rectangle = new Rectangle();
         label = new Label();
         dropShadow = new DropShadow();
@@ -493,6 +492,9 @@ public class LobbyScreenUI extends AnchorPane {
         ClientApp.currentScreen = this;
         
         sendMessageToAll(1, "BroadCast Message To All Players");
+    }
+    
+    public LobbyScreenUI(int playerId) {
     }
 
     private void sendMessageToAll(int sourceId, String broadcastMessage) {
