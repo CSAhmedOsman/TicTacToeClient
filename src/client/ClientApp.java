@@ -11,6 +11,7 @@ import javafx.application.Application;
 import javafx.event.EventType;
 import javafx.scene.Parent;
 import javafx.scene.control.ListView;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import ui.LobbyScreenUI;
@@ -22,8 +23,10 @@ import utils.Util;
  * @author w
  */
 public class ClientApp extends Application {
-    
+
     public static Stage stage;
+    public static Pane currentScreen;
+    public static Client client;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -33,8 +36,10 @@ public class ClientApp extends Application {
 
         //Hide top bar of the stage
         stage.initStyle(StageStyle.UNDECORATED);
-        
+
         Util.displayScreen(splashScreen);
+        ClientApp.client = new Client();
+        client.connect();
     }
 
     /**

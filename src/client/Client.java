@@ -8,6 +8,7 @@ package client;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import data.Player;
+import exception.NotConnectedException;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -40,12 +41,14 @@ public class Client {
     DataInputStream in;
     PrintStream out;
     ArrayList responceData;
-
+    boolean isConnected;
+    
     public void connect() {
         try {
             mySocket = new Socket(Constants.IP_ADDRESS, Constants.PORT);
             in = new DataInputStream(mySocket.getInputStream());
             out = new PrintStream(mySocket.getOutputStream());
+            isConnected = true;
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -61,8 +64,11 @@ public class Client {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
-    public void sendRequest(String gson) {
+    
+    public void sendRequest(String gson) throws NotConnectedException {
+        if (!isConnected) {
+            throw new NotConnectedException("Client is not connected to the server");
+        }
         out.println(gson);
     }
 
@@ -70,6 +76,7 @@ public class Client {
         new Thread(() -> {
             try {
                 while (mySocket != null && !(mySocket.isClosed())) {
+                    System.out.println("Call To StartListening");
                     String gsonResponse = in.readLine();
                     if (!gsonResponse.isEmpty()) {
                         handleResponse(gsonResponse);
@@ -121,7 +128,11 @@ public class Client {
                 //TODO updateScore();
                 break;
             case 11:
-                // TODO sendMessage();
+                //TODO getAvailablePlayer();
+                break;
+            case Constants.BROADCAST_MESSAGE:
+                System.out.println("BroadCast Message");
+                recieveBroadcastMessage();
                 break;
         }
     }
@@ -143,10 +154,7 @@ public class Client {
         Platform.runLater(() -> {
                 Util.showAlertDialog(Alert.AlertType.ERROR, "Login Error", userId+" ");
         });
-        
-        
-        if (userId >= 0) {
-            
+        if(userId >= 0) {
             Parent modesScreen = new LobbyScreenUI((int) userId);
             Util.displayScreen(modesScreen);
         } else {
@@ -175,5 +183,13 @@ public class Client {
             //Util.displayScreen(root);
             
         }
+    }
+
+    private void recieveBroadcastMessage() {
+        String srcPlayerName = (String) responceData.get(1);
+        String message = (String) responceData.get(2);
+        System.out.println("RecieveBroadCastMessage");
+        LobbyScreenUI lobbyScreen= (LobbyScreenUI) ClientApp.currentScreen;
+        lobbyScreen.desplayMessage(srcPlayerName, message);
     }
 }

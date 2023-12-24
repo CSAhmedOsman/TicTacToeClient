@@ -4,7 +4,10 @@ import client.Client;
 import client.ClientApp;
 import data.Player;
 import com.google.gson.Gson;
+import exception.NotConnectedException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
@@ -38,9 +41,6 @@ public class LoginScreenUI extends Pane {
     protected final DropShadow dropShadow;
     protected final Button btnMinimize;
     protected final DropShadow dropShadow0;
-
-    //________________________My Work_________________________
-    Client client;
 
     public LoginScreenUI() {
 
@@ -253,34 +253,39 @@ public class LoginScreenUI extends Pane {
         getChildren().add(btnMinimize);
 
         //______________My Work_______________
-        client = new Client();
-        client.connect();
-
         setListeners();
-        
+
         Animation.setButtonHoverFunctionality(btnLogin);
-        
+
         Animation.setAnimatedNodeIn(btnLogin);
         Animation.setAnimatedNodeIn(btnClose);
         Animation.setAnimatedNodeIn(btnMinimize);
+
+        tfEmail.setText("a@a.com");
+        pfPassword.setText("Aa#0123456");
     }
 
     private void setListeners() {
 
         btnLogin.setOnAction((ActionEvent event) -> {
             Player player = getCurrentPlayer();
-            
-            if (player == null)
+            if (player == null) {
                 return;
+            }
 
             player.setPassword(PasswordEncryptor.encryptPassword(player.getPassword()));
             Gson gson = new Gson();
             ArrayList jsonArr = new ArrayList();
             jsonArr.add(Constants.LOGIN);
             jsonArr.add(player);
-            
+
             String gsonRequest = gson.toJson(jsonArr);
-            client.sendRequest(gsonRequest);
+            try {
+                ClientApp.client.sendRequest(gsonRequest);
+            } catch (NotConnectedException ex) {
+                System.out.println(ex.getMessage());
+                ex.printStackTrace();
+            }
         });
 
         btnClose.setOnAction((ActionEvent event) -> {
