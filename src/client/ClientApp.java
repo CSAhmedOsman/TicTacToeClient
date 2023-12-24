@@ -21,8 +21,6 @@ public class ClientApp extends Application {
 
     public static Stage stage;
     public static Pane currentScreen;
-
-    public static Pane currentDisplayedScreen;
     
     @Override
     public void start(Stage stage) throws Exception {

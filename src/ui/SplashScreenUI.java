@@ -229,6 +229,7 @@ public class SplashScreenUI extends AnchorPane {
         //_____________________My Work_______________________
         setListeners(ClientApp.stage);
         Animation.setButtonHoverFunctionality(btnNext);
+        ClientApp.currentScreen= this;
     }
 
     private void setListeners(Stage stage) {

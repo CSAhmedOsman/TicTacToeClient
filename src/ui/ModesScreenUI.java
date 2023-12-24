@@ -351,6 +351,8 @@ public class ModesScreenUI extends Pane {
         addEventHandlers();
         
         Animation.setButtonHoverFunctionality(btnGamesHistory);
+        
+        ClientApp.currentScreen= this;
     }
     
     public ModesScreenUI(int playerId) {

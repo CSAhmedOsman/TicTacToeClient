@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.scene.Cursor;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -261,6 +262,8 @@ public class RegisterScreenUI extends Pane {
         getChildren().add(btnMinimize);
         
         setListeners(ClientApp.stage);
+        
+        ClientApp.currentScreen= this;
     }
     
     private void setListeners(Stage stage) {
@@ -297,9 +300,8 @@ public class RegisterScreenUI extends Pane {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
-            Logger.getLogger(RegisterScreenUI.class.getName()).log(Level.SEVERE, null, ex);
+            Util.showAlertDialog(Alert.AlertType.ERROR, "Server", "The Server is Closed");
         }
-        
     }
     
     private Player makeNewPlayer() {

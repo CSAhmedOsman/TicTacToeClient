@@ -517,28 +517,23 @@ public class SelectRecord extends AnchorPane {
 
         String directoryPath = "C:\\files";
         addTextFilesToListView(directoryPath);
-        btnBack.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                Parent root= new ModesScreenUI();
-                Util.displayScreen(root);
-            }
-        });
+        
+        ClientApp.currentScreen= this;
     }
 
     private void setListeners(Stage stage) {
         btnMin.setOnAction(e -> {
             stage.setIconified(true); // This will minimize the window
         });
+        
         btnClose.setOnAction(e -> {
             System.exit(0);
         });
+        
         btnBack.setOnAction((e) -> {
             Parent selectMode = new ModesScreenUI();
             Util.displayScreen(selectMode);
-
         });
-
     }
 
     private void addTextFilesToListView(String path) {

@@ -22,7 +22,6 @@ import javafx.scene.control.Alert;
 import ui.LobbyScreenUI;
 import ui.GameBoard;
 import ui.LoginScreenUI;
-import ui.ModesScreenUI;
 import utils.Constants;
 import utils.Util;
 
@@ -31,7 +30,7 @@ import utils.Util;
  * @author w
  */
 public class Client {
-    
+
     Socket mySocket;
     DataInputStream in;
     PrintStream out;
@@ -39,18 +38,18 @@ public class Client {
     boolean isConnected;
 
     private static Client singletonClient;
-    
+
     private Client() {
     }
-    
+
     public static Client getClient() {
-        if(singletonClient== null) {
-            singletonClient= new Client();
+        if (singletonClient == null) {
+            singletonClient = new Client();
             singletonClient.connect();
         }
         return singletonClient;
     }
-    
+
     public void connect() {
         try {
             mySocket = new Socket(Constants.IP_ADDRESS, Constants.PORT);
@@ -58,7 +57,7 @@ public class Client {
             out = new PrintStream(mySocket.getOutputStream());
             isConnected = true;
         } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println(ex.getMessage());
         }
         startListening();
     }
@@ -72,7 +71,7 @@ public class Client {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void sendRequest(String gson) throws NotConnectedException {
         if (!isConnected) {
             throw new NotConnectedException("Client is not connected to the server");
@@ -84,24 +83,25 @@ public class Client {
         new Thread(() -> {
             try {
                 while (mySocket != null && !(mySocket.isClosed())) {
-                    System.out.println("Call To StartListening");
                     String gsonResponse = in.readLine();
-                    if(!gsonResponse.isEmpty())
+                    if (!gsonResponse.isEmpty()) {
                         handleResponse(gsonResponse);
+                    }
                 }
             } catch (IOException ex) {
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
             }
         }).start();
     }
-    
+
     public void handleResponse(String gsonResponce) {
-        
-        Type listType = new TypeToken<ArrayList<Object>>() {}.getType();
+
+        Type listType = new TypeToken<ArrayList<Object>>() {
+        }.getType();
         Gson gson = new Gson();
         responceData = gson.fromJson(gsonResponce, listType);
-        double action= (double) responceData.get(0);
-        
+        double action = (double) responceData.get(0);
+
         switch ((int) action) {
             case Constants.REGISTER:
                 register();
@@ -137,50 +137,101 @@ public class Client {
                 //TODO getAvailablePlayer();
                 break;
             case Constants.BROADCAST_MESSAGE:
-                System.out.println("BroadCast Message");
                 recieveBroadcastMessage();
+                break;
+            case Constants.ADD_FRIEND:
+                addFriend();
+                break;
+            case Constants.REMOVE_FRIEND:
+                removeFriend();
+                break;
+            case Constants.BLOCK_PLAYER:
+                blockPlayer();
+                break;
+            case Constants.UN_BLOCK_PLAYER:
+                unBlockPlayer();
                 break;
         }
     }
-    
+
     private void register() {
         boolean registerStatus = (boolean) responceData.get(1);
-        
-        if(registerStatus) {
-            Parent loginScreen= new LoginScreenUI();
+
+        if (registerStatus) {
+            Parent loginScreen = new LoginScreenUI();
             Util.displayScreen(loginScreen);
         } else {
             // Maybe Throw
-            Util.showAlertDialog(Alert.AlertType.ERROR, "Register Error", "SomeThing Wrong Happen. Check For The Network.");
+            Platform.runLater(()-> {
+                Util.showAlertDialog(Alert.AlertType.ERROR, "Register Error", "This Email is Already Login");
+            });
         }
     }
-    
+
     private void login() {
         double userId = (double) responceData.get(1);
-        if(userId >= 0) {
-            Parent modesScreen = new LobbyScreenUI((int) userId);
-            Util.displayScreen(modesScreen);
+        if (userId >= 0) {
+            Parent lobbyScreen = new LobbyScreenUI((int) userId);
+            Util.displayScreen(lobbyScreen);
         } else {
-            Platform.runLater(()-> {
+            Platform.runLater(() -> {
                 Util.showAlertDialog(Alert.AlertType.ERROR, "Login Error", "Your Email Or Password is Incorrect.");
             });
         }
     }
 
-
     private void recieveBroadcastMessage() {
         String srcPlayerName = (String) responceData.get(1);
         String message = (String) responceData.get(2);
-        System.out.println("RecieveBroadCastMessage");
-        LobbyScreenUI lobbyScreen= (LobbyScreenUI) ClientApp.currentScreen;
+        LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.currentScreen;
         lobbyScreen.desplayMessage(srcPlayerName, message);
     }
-    
+
     private void recieveMessage() {
         String message = (String) responceData.get(1);
         String sourceplayerName = (String) responceData.get(2);
-        
-        GameBoard gameBoard= (GameBoard) ClientApp.currentDisplayedScreen;
+
+        GameBoard gameBoard = (GameBoard) ClientApp.currentScreen;
         gameBoard.displayMessage(sourceplayerName, message);
+    }
+
+    private void addFriend() {
+        boolean isFriend = (boolean) responceData.get(1);
+
+        LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.currentScreen;
+
+        if (isFriend) {
+            lobbyScreen.addFriend();
+        }
+    }
+
+    private void removeFriend() {
+        boolean isNotFriend = (boolean) responceData.get(1);
+
+        LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.currentScreen;
+
+        if (isNotFriend) {
+            lobbyScreen.removeFriend();
+        }
+    }
+    
+    private void blockPlayer() {
+        boolean isBlockedPlayer = (boolean) responceData.get(1);
+
+        LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.currentScreen;
+
+        if (isBlockedPlayer) {
+            lobbyScreen.blockPlayer();
+        }
+    }
+
+    private void unBlockPlayer() {
+        boolean isUnBlocked = (boolean) responceData.get(1);
+
+        LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.currentScreen;
+
+        if (isUnBlocked) {
+            lobbyScreen.unBlockPlayer();
+        }
     }
 }
