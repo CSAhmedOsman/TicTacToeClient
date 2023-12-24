@@ -19,4 +19,5 @@ public class Constants {
     public static final int LOGIN = 2;
     
     public static final int GET_AVAILIABLE_PLAYERS = 3;
+    public static final int  REQUEST =4;
 }

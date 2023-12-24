@@ -5,10 +5,15 @@
  */
 package client;
 
+import data.Player;
+import java.util.ArrayList;
 import javafx.application.Application;
+import javafx.event.EventType;
 import javafx.scene.Parent;
+import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import ui.LobbyScreenUI;
 import ui.SplashScreenUI;
 import utils.Util;
 
@@ -23,6 +28,7 @@ public class ClientApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         ClientApp.stage = stage;
+      
         Parent splashScreen = new SplashScreenUI();
 
         //Hide top bar of the stage

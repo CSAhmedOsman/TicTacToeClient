@@ -43,7 +43,7 @@ public class Player {
         this.isOnline = isOnline;
     }
    public Player(int id, String name,int score){
-         this.id = id;
+        this.id = id;
         this.name = name;
         this.score = score;
     }
