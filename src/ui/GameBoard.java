@@ -614,6 +614,8 @@ public abstract class GameBoard extends BorderPane {
         pane.getChildren().add(btnClose);
         pane.getChildren().add(btnMin);
         pane.getChildren().add(win);
+
+        addEventHandlers();
     }
 
     protected abstract void nextTern();
@@ -791,7 +793,10 @@ public abstract class GameBoard extends BorderPane {
         if (countDownLimit > 10) {
             Platform.runLater(() -> labelCountNum.setText("00:" + (--countDownLimit)));
         } else {
-            Platform.runLater(() -> labelCountNum.setText("00:0" + (--countDownLimit)));
+            Platform.runLater(() -> {
+                //---------------------- red
+                labelCountNum.setText("00:0" + (--countDownLimit));
+            });
         }
     }
 
