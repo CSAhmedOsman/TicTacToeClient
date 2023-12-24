@@ -26,6 +26,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import ui.LobbyScreenUI;
+import ui.GameBoard;
 import ui.LoginScreenUI;
 import ui.ModesScreenUI;
 import utils.Constants;
@@ -42,6 +43,18 @@ public class Client {
     PrintStream out;
     ArrayList responceData;
     boolean isConnected;
+
+    private static Client singletonClient;
+    
+    private Client() {
+        singletonClient.connect();
+    }
+    
+    public static Client getClient() {
+        if(singletonClient== null)
+            singletonClient= new Client();
+        return singletonClient;
+    }
     
     public void connect() {
         try {
@@ -124,8 +137,9 @@ public class Client {
             case 9:
                 //TODO finish();
                 break;
-            case 10:
-                //TODO updateScore();
+            case Constants.SENDMESSAGE:
+                recieveMessage();
+
                 break;
             case 11:
                 //TODO getAvailablePlayer();
@@ -164,10 +178,11 @@ public class Client {
         }
     }
 
+
     private void getAvailablePlayers() {
         ArrayList<Player> getAvailablePlayers = (ArrayList) responceData.get(1);
         
-        LobbyScreenUI.setPlayers(getAvailablePlayers);
+       // LobbyScreenUI.setPlayers(getAvailablePlayers);
         //Parent AvailablePlayersScreen = new LobbyScreenUI(getAvailablePlayersStatus);
         //Util.displayScreen(AvailablePlayersScreen);
 
@@ -185,6 +200,7 @@ public class Client {
         }
     }
 
+
     private void recieveBroadcastMessage() {
         String srcPlayerName = (String) responceData.get(1);
         String message = (String) responceData.get(2);
@@ -192,4 +208,14 @@ public class Client {
         LobbyScreenUI lobbyScreen= (LobbyScreenUI) ClientApp.currentScreen;
         lobbyScreen.desplayMessage(srcPlayerName, message);
     }
+
+    
+    private void recieveMessage() {
+        String message = (String) responceData.get(1);
+        String sourceplayerName = (String) responceData.get(2);
+        
+        GameBoard gameBoard= (GameBoard) ClientApp.currentDisplayedScreen;
+        gameBoard.displayMessage(sourceplayerName, message);
+    }
 }
+

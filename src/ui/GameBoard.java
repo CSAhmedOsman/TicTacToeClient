@@ -1,13 +1,21 @@
 package ui;
 
+import client.Client;
 import client.ClientApp;
+import com.google.gson.Gson;
+import data.Message;
 import data.Player;
+import exception.NotConnectedException;
 import java.io.File;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
@@ -22,6 +30,7 @@ import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
+import utils.Constants;
 import utils.Util;
 
 public abstract class GameBoard extends BorderPane {
@@ -139,27 +148,27 @@ public abstract class GameBoard extends BorderPane {
         player2Name = "Player2";
         recordedGame = "";
         isRecord = false;
+
+        init();
+        ClientApp.currentDisplayedScreen = this;
     }
 
     public GameBoard(int mode) {
         player2Name = "Robot";
         robotLevel = mode;
-        init();
     }
 
     public GameBoard() {
-        init();
+
     }
 
     public GameBoard(String p2) {
         player2Name = p2;
-        init();
     }
 
     public GameBoard(String p1, String p2) {
         player1Name = p1;
         player2Name = p2;
-        init();
     }
 
     // show recorded games ---
@@ -689,7 +698,7 @@ public abstract class GameBoard extends BorderPane {
 
         // Check 2nd diagonals
         for (int i = 0; i < boardSize; i++) {
-            if (position[i][boardSize - 1 - i].getText() != ""
+            if (position[i][boardSize - 1 - i].getText().equals("")
                     && position[i][boardSize - 1 - i].getText().equals(tempDiagonal)) {
                 indexes[i][0] = i;
                 indexes[i][1] = boardSize - 1 - i;
@@ -710,9 +719,9 @@ public abstract class GameBoard extends BorderPane {
                 position[winIndexes[i][0]][winIndexes[i][1]].setEffect(dropShadow1);
             }
             paneCount.setOpacity(0.0);
-            if (position[winIndexes[boardSize - 1][0]][winIndexes[boardSize - 1][1]].getText() == "X") {
+            if (position[winIndexes[boardSize - 1][0]][winIndexes[boardSize - 1][1]].getText().equals("X")) {
                 labelPlayerXNum.setText("" + (Integer.valueOf(labelPlayerXNum.getText()) + 1));
-            } else if (position[winIndexes[boardSize - 1][0]][winIndexes[boardSize - 1][1]].getText() == "O") {
+            } else if (position[winIndexes[boardSize - 1][0]][winIndexes[boardSize - 1][1]].getText().equals("O")) {
                 labelPlayerONum.setText("" + (Integer.valueOf(labelPlayerONum.getText()) + 1));
             }
         }
@@ -745,6 +754,8 @@ public abstract class GameBoard extends BorderPane {
 
         btnMin.setOnAction((e) -> {
             ClientApp.stage.setIconified(true);
+            Message message = new Message("Send Message To Target Player", 6, 7);
+            sendMessage(message);
         });
 
         win.setOnMouseClicked((e) -> {
@@ -791,4 +802,24 @@ public abstract class GameBoard extends BorderPane {
     }
 
     protected abstract void startGame();
+
+    private void sendMessage(Message message) {
+        Gson gson = new Gson();
+        ArrayList jsonRequest = new ArrayList();
+        jsonRequest.add(Constants.SENDMESSAGE);
+        jsonRequest.add(message);
+
+        String gsonRequest = gson.toJson(jsonRequest);
+        try {
+            Client.getClient().sendRequest(gsonRequest);
+        } catch (NotConnectedException ex) {
+            Logger.getLogger(GameBoard.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void displayMessage(String srcPlayerName, String message) {
+        Platform.runLater(() -> {
+            Util.showAlertDialog(Alert.AlertType.CONFIRMATION, srcPlayerName, message);
+        });
+    }
 }

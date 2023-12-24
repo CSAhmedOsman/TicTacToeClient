@@ -26,8 +26,9 @@ public class ClientApp extends Application {
 
     public static Stage stage;
     public static Pane currentScreen;
-    public static Client client;
 
+    public static Pane currentDisplayedScreen;
+    
     @Override
     public void start(Stage stage) throws Exception {
         ClientApp.stage = stage;
@@ -38,8 +39,6 @@ public class ClientApp extends Application {
         stage.initStyle(StageStyle.UNDECORATED);
 
         Util.displayScreen(splashScreen);
-        ClientApp.client = new Client();
-        client.connect();
     }
 
     /**
