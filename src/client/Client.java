@@ -10,20 +10,15 @@ import data.Player;
 import exception.NotConnectedException;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
 import java.net.Socket;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
-import javafx.stage.Stage;
 import ui.LobbyScreenUI;
 import ui.GameBoard;
 import ui.LoginScreenUI;
@@ -176,14 +171,19 @@ public class Client {
     }
 
     private void login() {
-        double userId = (double) responceData.get(1);
 
-        if (userId >= 0) {
-            Parent lobbyScreen = new LobbyScreenUI((int) userId);
+        double playerId = (double) responceData.get(1);
+        if (playerId >= 0) {
+            Parent lobbyScreen = new LobbyScreenUI((int) playerId);
+
             Util.displayScreen(lobbyScreen);
-        } else {
+        } else if(playerId == -1){
             Platform.runLater(() -> {
                 Util.showAlertDialog(Alert.AlertType.ERROR, "Login Error", "Your Email Or Password is Incorrect.");
+            });
+        } else {
+            Platform.runLater(() -> {
+                Util.showAlertDialog(Alert.AlertType.ERROR, "Login Error", "Your Email Is Already Login");
             });
         }
     }

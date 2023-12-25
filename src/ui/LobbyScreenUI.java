@@ -58,7 +58,6 @@ public class LobbyScreenUI extends AnchorPane {
     protected final Button btnSend;
     protected final ListView<HBox> playerListView;
     int playerId;
-    // private static ArrayList<Player> players;
 
     {
         rectangle = new Rectangle();
@@ -254,7 +253,8 @@ public class LobbyScreenUI extends AnchorPane {
         flowPane.getChildren().add(btnSend);
         pane0.getChildren().add(borderPane);
         getChildren().add(pane0);
-
+        
+        //______________My Work_______________
         ClientApp.currentScreen = this;
         sendMessageToAll(1, "BroadCast Message To All Players");
 
@@ -262,6 +262,7 @@ public class LobbyScreenUI extends AnchorPane {
         blockPlayer(6, 7);
         unBlockPlayer(6, 8);
         unBlockPlayer(6, 7);
+
     }
 
     public LobbyScreenUI(int playerId) {
@@ -327,12 +328,12 @@ public class LobbyScreenUI extends AnchorPane {
         }
     }
 
-    private void blockPlayer(int playerId, int friendId) {
+    private void blockPlayer(int playerId, int blockedId) {
         Gson gson = new Gson();
         ArrayList jsonRequest = new ArrayList();
         jsonRequest.add(Constants.BLOCK_PLAYER);
         jsonRequest.add(playerId);
-        jsonRequest.add(friendId);
+        jsonRequest.add(blockedId);
 
         String gsonRequest = gson.toJson(jsonRequest);
         try {
@@ -343,12 +344,27 @@ public class LobbyScreenUI extends AnchorPane {
         }
     }
 
-    private void unBlockPlayer(int playerId, int friendId) {
+    private void unBlockPlayer(int playerId, int blockedId) {
         Gson gson = new Gson();
         ArrayList jsonRequest = new ArrayList();
         jsonRequest.add(Constants.UN_BLOCK_PLAYER);
         jsonRequest.add(playerId);
-        jsonRequest.add(friendId);
+        jsonRequest.add(blockedId);
+
+        String gsonRequest = gson.toJson(jsonRequest);
+        try {
+            Client.getClient().sendRequest(gsonRequest);
+        } catch (NotConnectedException ex) {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+
+    private void makePlayerOnline(int playerId) {
+        Gson gson = new Gson();
+        ArrayList jsonRequest = new ArrayList();
+        jsonRequest.add(Constants.PLAYER_ONLINE);
+        jsonRequest.add(playerId);
 
         String gsonRequest = gson.toJson(jsonRequest);
         try {
