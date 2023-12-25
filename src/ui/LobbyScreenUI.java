@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
@@ -26,6 +27,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -54,9 +56,9 @@ public class LobbyScreenUI extends AnchorPane {
     protected final FlowPane flowPane;
     protected final TextField textsg;
     protected final Button btnSend;
-    protected static ListView<HBox> playerListView;
+    protected final ListView<HBox> playerListView;
     int playerId;
-    private static ArrayList<Player> players;
+    // private static ArrayList<Player> players;
 
     {
 
@@ -80,7 +82,7 @@ public class LobbyScreenUI extends AnchorPane {
         flowPane = new FlowPane();
         textsg = new TextField();
         btnSend = new Button();
-        playerListView = new ListView();
+
         setMaxHeight(USE_PREF_SIZE);
         setMaxWidth(USE_PREF_SIZE);
         setMinHeight(USE_PREF_SIZE);
@@ -240,12 +242,6 @@ public class LobbyScreenUI extends AnchorPane {
         btnSend.setFont(new Font(23.0));
         borderPane.setBottom(flowPane);
 
-        playerListView.setLayoutX(332.0);
-        playerListView.setLayoutY(111.0);
-        playerListView.setPrefHeight(471.0);
-        playerListView.setPrefWidth(355.0);
-        playerListView.setStyle("-fx-background-radius: 10;");
-
         getChildren().add(rectangle);
         getChildren().add(label);
         getChildren().add(rectangle0);
@@ -259,21 +255,24 @@ public class LobbyScreenUI extends AnchorPane {
         flowPane.getChildren().add(btnSend);
         pane0.getChildren().add(borderPane);
         getChildren().add(pane0);
-        getChildren().add(playerListView);
+
         ClientApp.currentScreen = this;
         sendMessageToAll(1, "BroadCast Message To All Players");
 
     }
 
-    public static void setPlayers(ArrayList<Player> players) {
-        LobbyScreenUI.players = players;
-    }
-
     public LobbyScreenUI(int playerId) {
         this.playerId = playerId;
-        setListeners();
+        playerListView = new ListView();
+        playerListView.setLayoutX(332.0);
+        playerListView.setLayoutY(111.0);
+        playerListView.setPrefHeight(471.0);
+        playerListView.setPrefWidth(355.0);
+        playerListView.setStyle("-fx-background-radius: 10;");
+        getChildren().add(playerListView);
+        getAvailablePlayers();
 
-        //getAvaliablePlayers();
+        setListeners();
         //______________My Work_______________
     }
 
@@ -299,87 +298,93 @@ public class LobbyScreenUI extends AnchorPane {
             Util.showAlertDialog(Alert.AlertType.CONFIRMATION, srcPlayerName, message);
         });
     }
-    
-    
-    private void getAvaliablePlayers() {
+
+    private void getAvailablePlayers() {
+        System.out.println("getAvailablePlayers in lobby");
         Gson gson = new Gson();
-        String gsonRequest = gson.toJson(Constants.GET_AVAILIABLE_PLAYERS);
+        ArrayList jsonRequest = new ArrayList();
+        jsonRequest.add(Constants.GET_AVAILIABLE_PLAYERS);
+
+        String gsonRequest = gson.toJson(jsonRequest);
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
-            Logger.getLogger(LobbyScreenUI.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
         }
-        
     }
 
-    private static void displayAvaliablePlayers(ArrayList<Player> onlinePlayers) {
-        playerListView.getItems().clear();
+    public void displayAvailablePlayers(ArrayList<Player> availablePlayers) {
 
-        for (Player player : onlinePlayers) {
-            HBox playerBox = new HBox();
+        Platform.runLater(() -> {
+            playerListView.getItems().clear();
 
-            Rectangle rectangle = new Rectangle();
-            rectangle.setArcHeight(5.0);
-            rectangle.setArcWidth(5.0);
-            rectangle.setFill(javafx.scene.paint.Color.valueOf("#9f56ff"));
-            rectangle.setHeight(98.0);
-            rectangle.setLayoutX(23.0);
-            rectangle.setLayoutY(14.0);
-            rectangle.setStroke(javafx.scene.paint.Color.BLACK);
-            rectangle.setStrokeLineCap(javafx.scene.shape.StrokeLineCap.ROUND);
-            rectangle.setStrokeType(javafx.scene.shape.StrokeType.INSIDE);
-            rectangle.setWidth(273.0);
+            for (Player player : availablePlayers) {
+                if (player.getId() == playerId) {
+                    continue;
+                }
 
-            Label nameLabel = new Label();
-            nameLabel.setPrefWidth(198.0);
-            nameLabel.setLayoutX(101.0);
-            nameLabel.setLayoutY(27.0);
-            nameLabel.setText(player.getName());
-            nameLabel.setTextFill(javafx.scene.paint.Color.valueOf("#f4dfff"));
-            nameLabel.setFont(new Font("Franklin Gothic Demi Cond", 21.0));
+                HBox playerBox = createPlayerBox(player);
+                playerListView.getItems().add(playerBox);
+            }
+        });
 
-            Label scoreLabel = new Label();
-            scoreLabel.setPrefWidth(50.0);
-            scoreLabel.setLayoutX(101.0);
-            scoreLabel.setLayoutY(51.0);
-            scoreLabel.setText("Score: " + player.getScore());
-            scoreLabel.setTextFill(javafx.scene.paint.Color.valueOf("#f4dfff"));
-            scoreLabel.setFont(new Font("Franklin Gothic Demi Cond", 14.0));
+    }
 
-            ImageView imageView = new ImageView();
-            imageView.setFitHeight(64.0);
-            imageView.setFitWidth(53.0);
-            imageView.setLayoutX(37.0);
-            imageView.setLayoutY(14.0);
-            //imageView.setImage(new Image(getClass().getResource("images/panda.png").toExternalForm()));
+    
+    private HBox createPlayerBox(Player player) {
+        HBox playerBox = new HBox();
 
-            Button requestButton = new Button("Request");
-            requestButton.setStyle("-fx-background-radius: 100; -fx-background-color: #EA93A3;");
-            requestButton.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
-            requestButton.setFont(new Font("Gill Sans Ultra Bold Condensed", 10.0));
-            requestButton.setCursor(Cursor.HAND);
-            requestButton.setLayoutX(118.0);
-            requestButton.setLayoutY(177.0);
-            requestButton.setMnemonicParsing(false);
-            requestButton.setPrefHeight(30.0);
-            requestButton.setPrefWidth(122.0);
+   
+        Label nameLabel = new Label();
+        nameLabel.setPrefWidth(198.0);
+        nameLabel.setLayoutX(101.0);
+        nameLabel.setLayoutY(27.0);
+        nameLabel.setText(player.getName());
+        nameLabel.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
+        nameLabel.setFont(new Font("Franklin Gothic Demi Cond", 21.0));
 
-            playerBox.getChildren().addAll(rectangle, nameLabel, scoreLabel, imageView, requestButton);
-            playerListView.getItems().add(playerBox);
-            
-            
-           /* requestButton.setOnAction((e) -> {
-                Gson gson = new Gson();
-                ArrayList<Object> jsonArr = new ArrayList<>();
-                jsonArr.add(Constants.REQUEST);
-                jsonArr.add(PlayerId);
-                jsonArr.add(player.getId());
+        Label scoreLabel = new Label();
+        scoreLabel.setPrefWidth(198.0);
+        scoreLabel.setLayoutX(101.0);
+        scoreLabel.setLayoutY(51.0);
+        scoreLabel.setText("Score:  " + (String.valueOf(player.getScore())));
+        scoreLabel.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
+        scoreLabel.setFont(new Font("Franklin Gothic Demi Cond", 14.0));
 
-                String gsonRequest = gson.toJson(jsonArr);
-                client.sendRequest(gsonRequest);
-            });*/
+        Button requestButton = new Button("Request");
+        requestButton.setStyle("-fx-background-radius: 100; -fx-background-color: #EA93A3;");
+        requestButton.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
+        requestButton.setFont(new Font("Gill Sans Ultra Bold Condensed", 10.0));
+        requestButton.setCursor(Cursor.HAND);
+        requestButton.setLayoutX(118.0);
+        requestButton.setLayoutY(177.0);
+        requestButton.setMnemonicParsing(false);
+        requestButton.setPrefHeight(30.0);
+        requestButton.setPrefWidth(122.0);
 
-        }
+        requestButton.setOnAction((e) -> {
+            Gson gson = new Gson();
+            ArrayList<Object> jsonArr = new ArrayList<>();
+            jsonArr.add(Constants.REQUEST);
+
+            jsonArr.add(playerId);
+            jsonArr.add(player.getId());
+
+            String gsonRequest = gson.toJson(jsonArr);
+            try {
+                Client.getClient().sendRequest(gsonRequest);
+            } catch (NotConnectedException ex) {
+                Logger.getLogger(LobbyScreenUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+
+        VBox playerInfo = new VBox(nameLabel, scoreLabel);
+        playerInfo.setAlignment(Pos.CENTER_LEFT);
+
+        playerBox.getChildren().addAll( playerInfo, requestButton);
+
+        return playerBox;
     }
 
     private void setListeners() {
@@ -397,7 +402,4 @@ public class LobbyScreenUI extends AnchorPane {
         });
     }
 
-    public ArrayList<Player> getPlayers() {
-        return players;
-    }
 }

@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package client;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import data.Player;
@@ -45,17 +44,19 @@ public class Client {
     boolean isConnected;
 
     private static Client singletonClient;
-    
+
     private Client() {
-        singletonClient.connect();
     }
-    
+
     public static Client getClient() {
-        if(singletonClient== null)
-            singletonClient= new Client();
+        if (singletonClient == null) {
+            singletonClient = new Client();
+        }
+        singletonClient.connect();
+
         return singletonClient;
     }
-    
+
     public void connect() {
         try {
             mySocket = new Socket(Constants.IP_ADDRESS, Constants.PORT);
@@ -77,7 +78,7 @@ public class Client {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void sendRequest(String gson) throws NotConnectedException {
         if (!isConnected) {
             throw new NotConnectedException("Client is not connected to the server");
@@ -166,11 +167,12 @@ public class Client {
     private void login() {
         double userId = (double) responceData.get(1);
         Platform.runLater(() -> {
-                Util.showAlertDialog(Alert.AlertType.ERROR, "Login Error", userId+" ");
+            Util.showAlertDialog(Alert.AlertType.ERROR, "Login Error", userId + " ");
         });
-        if(userId >= 0) {
+        if (userId >= 0) {
             Parent modesScreen = new LobbyScreenUI((int) userId);
             Util.displayScreen(modesScreen);
+
         } else {
             Platform.runLater(() -> {
                 Util.showAlertDialog(Alert.AlertType.ERROR, "Login Error", "Your Email Or Password is Incorrect.");
@@ -178,44 +180,54 @@ public class Client {
         }
     }
 
-
     private void getAvailablePlayers() {
-        ArrayList<Player> getAvailablePlayers = (ArrayList) responceData.get(1);
+        System.out.println("getAvailablePlayers in client");
+        ArrayList<Player> getAvailablePlayers = new ArrayList<>();
+        Player player;
+        double id,score;
+        String name;
         
-       // LobbyScreenUI.setPlayers(getAvailablePlayers);
-        //Parent AvailablePlayersScreen = new LobbyScreenUI(getAvailablePlayersStatus);
-        //Util.displayScreen(AvailablePlayersScreen);
-
+        for (int i = 1; i < responceData.size(); i+=3) {
+            id=(double) responceData.get(i);
+            name=(String) responceData.get(i+1);
+            score=(double) responceData.get(i+2);
+            player =new Player((int)id, name,(int)score );
+            getAvailablePlayers.add(player);
+              System.out.println("player Data :"+player.getId()+" "+ player.getName()+ " "+player.getScore());
+              }
+        
+        LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.currentScreen;
+        lobbyScreen.displayAvailablePlayers(getAvailablePlayers);
     }
 
+
+    
     private void request() {
-        boolean isRequestHandled = (boolean) responceData.get(1);
-        if (isRequestHandled) {
+        double senderId = (double) responceData.get(1);
+        String sendername =  (String) responceData.get(2);
+        double senderScore =  (double) responceData.get(3);
+        
+        if (sendername != null) {
             System.out.println("Request handled successfully");
         } else {
             System.out.println("Failed to handle the request");
-            //Parent root = new LobbyScreenUI(responceData);
-            //Util.displayScreen(root);
-            
+
         }
     }
-
 
     private void recieveBroadcastMessage() {
         String srcPlayerName = (String) responceData.get(1);
         String message = (String) responceData.get(2);
         System.out.println("RecieveBroadCastMessage");
-        LobbyScreenUI lobbyScreen= (LobbyScreenUI) ClientApp.currentScreen;
+        LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.currentScreen;
         lobbyScreen.desplayMessage(srcPlayerName, message);
     }
 
-    
     private void recieveMessage() {
         String message = (String) responceData.get(1);
         String sourceplayerName = (String) responceData.get(2);
-        
-        GameBoard gameBoard= (GameBoard) ClientApp.currentDisplayedScreen;
+
+        GameBoard gameBoard = (GameBoard) ClientApp.currentDisplayedScreen;
         gameBoard.displayMessage(sourceplayerName, message);
     }
 }
-
