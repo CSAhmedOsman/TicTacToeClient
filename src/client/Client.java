@@ -169,13 +169,17 @@ public class Client {
     }
 
     private void login() {
-        double userId = (double) responceData.get(1);
-        if (userId >= 0) {
-            Parent lobbyScreen = new LobbyScreenUI((int) userId);
+        double playerId = (double) responceData.get(1);
+        if (playerId >= 0) {
+            Parent lobbyScreen = new LobbyScreenUI((int) playerId);
             Util.displayScreen(lobbyScreen);
-        } else {
+        } else if(playerId == -1){
             Platform.runLater(() -> {
                 Util.showAlertDialog(Alert.AlertType.ERROR, "Login Error", "Your Email Or Password is Incorrect.");
+            });
+        } else {
+            Platform.runLater(() -> {
+                Util.showAlertDialog(Alert.AlertType.ERROR, "Login Error", "Your Email Is Already Login");
             });
         }
     }

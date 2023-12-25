@@ -261,7 +261,7 @@ public class LoginScreenUI extends Pane {
         Animation.setAnimatedNodeIn(btnMinimize);
 
         tfEmail.setText("a@a.com");
-        pfPassword.setText("Aa#0123456");
+        pfPassword.setText("Aa#01234");
         
         ClientApp.currentScreen= this;
     }
@@ -284,7 +284,7 @@ public class LoginScreenUI extends Pane {
             try {
                 Client.getClient().sendRequest(gsonRequest);
             } catch (NotConnectedException ex) {
-                Util.showAlertDialog(Alert.AlertType.ERROR, "Server", "The Server is Closed");
+                Util.showAlertDialog(Alert.AlertType.ERROR, "Server", "The Server is Closed\n"+ex.getMessage());
             }
         });
 

@@ -67,7 +67,7 @@ public class LobbyScreenUI extends AnchorPane {
     protected final DropShadow dropShadow11;
     protected final Button btnMin;
     protected final DropShadow dropShadow12;
-    
+
     {
         rectangle = new Rectangle();
         label = new Label();
@@ -488,18 +488,9 @@ public class LobbyScreenUI extends AnchorPane {
         getChildren().add(btnMin);
 
         //______________My Work_______________
-        
         ClientApp.currentScreen = this;
-        
-        sendMessageToAll(1, "BroadCast Message To All Players");
-        
-        
-        blockPlayer(6, 8);
-        blockPlayer(6, 7);
-        unBlockPlayer(6, 8);
-        unBlockPlayer(6, 7);
     }
-    
+
     public LobbyScreenUI(int playerId) {
     }
 
@@ -518,14 +509,14 @@ public class LobbyScreenUI extends AnchorPane {
             ex.printStackTrace();
         }
     }
-    
+
     private void addFriend(int playerId, int friendId) {
         Gson gson = new Gson();
         ArrayList jsonRequest = new ArrayList();
         jsonRequest.add(Constants.ADD_FRIEND);
         jsonRequest.add(playerId);
         jsonRequest.add(friendId);
-        
+
         String gsonRequest = gson.toJson(jsonRequest);
         try {
             Client.getClient().sendRequest(gsonRequest);
@@ -534,14 +525,14 @@ public class LobbyScreenUI extends AnchorPane {
             ex.printStackTrace();
         }
     }
-    
+
     private void removeFriend(int playerId, int friendId) {
         Gson gson = new Gson();
         ArrayList jsonRequest = new ArrayList();
         jsonRequest.add(Constants.REMOVE_FRIEND);
         jsonRequest.add(playerId);
         jsonRequest.add(friendId);
-        
+
         String gsonRequest = gson.toJson(jsonRequest);
         try {
             Client.getClient().sendRequest(gsonRequest);
@@ -550,14 +541,14 @@ public class LobbyScreenUI extends AnchorPane {
             ex.printStackTrace();
         }
     }
-    
-    private void blockPlayer(int playerId, int friendId) {
+
+    private void blockPlayer(int playerId, int blockedId) {
         Gson gson = new Gson();
         ArrayList jsonRequest = new ArrayList();
         jsonRequest.add(Constants.BLOCK_PLAYER);
         jsonRequest.add(playerId);
-        jsonRequest.add(friendId);
-        
+        jsonRequest.add(blockedId);
+
         String gsonRequest = gson.toJson(jsonRequest);
         try {
             Client.getClient().sendRequest(gsonRequest);
@@ -566,14 +557,14 @@ public class LobbyScreenUI extends AnchorPane {
             ex.printStackTrace();
         }
     }
-    
-    private void unBlockPlayer(int playerId, int friendId) {
+
+    private void unBlockPlayer(int playerId, int blockedId) {
         Gson gson = new Gson();
         ArrayList jsonRequest = new ArrayList();
         jsonRequest.add(Constants.UN_BLOCK_PLAYER);
         jsonRequest.add(playerId);
-        jsonRequest.add(friendId);
-        
+        jsonRequest.add(blockedId);
+
         String gsonRequest = gson.toJson(jsonRequest);
         try {
             Client.getClient().sendRequest(gsonRequest);
@@ -583,33 +574,48 @@ public class LobbyScreenUI extends AnchorPane {
         }
     }
     
+    private void makePlayerOnline(int playerId) {
+        Gson gson = new Gson();
+        ArrayList jsonRequest = new ArrayList();
+        jsonRequest.add(Constants.PLAYER_ONLINE);
+        jsonRequest.add(playerId);
+
+        String gsonRequest = gson.toJson(jsonRequest);
+        try {
+            Client.getClient().sendRequest(gsonRequest);
+        } catch (NotConnectedException ex) {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+
     public void desplayMessage(String srcPlayerName, String message) {
         Platform.runLater(() -> {
             Util.showAlertDialog(Alert.AlertType.CONFIRMATION, srcPlayerName, message);
         });
     }
-    
+
     public void addFriend() {
-        Platform.runLater(()-> {
-                Util.showAlertDialog(Alert.AlertType.CONFIRMATION, "Friends Area", "Now Is your Friend");
+        Platform.runLater(() -> {
+            Util.showAlertDialog(Alert.AlertType.CONFIRMATION, "Friends Area", "Now Is your Friend");
         });
     }
-    
+
     public void removeFriend() {
         Platform.runLater(() -> {
-                Util.showAlertDialog(Alert.AlertType.CONFIRMATION, "Friends Area", "Now Is Not your Friend");
+            Util.showAlertDialog(Alert.AlertType.CONFIRMATION, "Friends Area", "Now Is Not your Friend");
         });
     }
-    
+
     public void blockPlayer() {
-        Platform.runLater(()-> {
-                Util.showAlertDialog(Alert.AlertType.CONFIRMATION, "Blocked Area", "Now In Block List");
+        Platform.runLater(() -> {
+            Util.showAlertDialog(Alert.AlertType.CONFIRMATION, "Blocked Area", "Now In Block List");
         });
     }
-    
+
     public void unBlockPlayer() {
         Platform.runLater(() -> {
-                Util.showAlertDialog(Alert.AlertType.CONFIRMATION, "Friends Area", "Now You Can Play With Him !");
+            Util.showAlertDialog(Alert.AlertType.CONFIRMATION, "Friends Area", "Now You Can Play With Him !");
         });
     }
 }
