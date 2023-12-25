@@ -62,20 +62,14 @@ public class Util {
         );
 
         // Make the dialog draggable
-        dialogPane.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                xOffset = event.getSceneX();
-                yOffset = event.getSceneY();
-            }
+        dialogPane.setOnMousePressed((MouseEvent event) -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
         });
 
-        dialogPane.setOnMouseDragged(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                dialogStage.setX(event.getScreenX() - xOffset);
-                dialogStage.setY(event.getScreenY() - yOffset);
-            }
+        dialogPane.setOnMouseDragged((MouseEvent event) -> {
+            dialogStage.setX(event.getScreenX() - xOffset);
+            dialogStage.setY(event.getScreenY() - yOffset);
         });
 
         dialogPane.setOnMousePressed((MouseEvent event) -> {

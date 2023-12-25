@@ -42,6 +42,17 @@ public class Player {
         this.score = score;
         this.isOnline = isOnline;
     }
+   public Player(int id, String name,int score){
+        this.id = id;
+        this.name = name;
+        this.score = score;
+    }
+    public Player(String name,int score){
+        
+        this.name = name;
+        this.score = score;
+    }
+   
 
     public int getId() {
         return id;

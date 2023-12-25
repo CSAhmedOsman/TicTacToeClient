@@ -2,22 +2,17 @@ package ui;
 
 import client.ClientApp;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -46,7 +41,7 @@ public class SelectRecord extends AnchorPane {
     protected final Rectangle rectangle2;
     protected final Rectangle btnLogin;
     protected final Circle circle;
-    private ListView<Button> recordsListView;
+    private final ListView<Button> recordsListView;
     protected final DropShadow dropShadow0;
     protected final Button back;
     protected final Button btnBack;
@@ -457,7 +452,6 @@ public class SelectRecord extends AnchorPane {
         dropShadow14.setSpread(0.69);
         btnMin.setEffect(dropShadow14);
 
-         
         lableTurnPlayer.setLayoutX(32.0);
         lableTurnPlayer.setLayoutY(174.0);
         lableTurnPlayer.setPrefHeight(74.0);
@@ -568,6 +562,7 @@ public class SelectRecord extends AnchorPane {
             System.out.println("The specified path either doesn't exist or is not a directory.");
         }
     }
+
     private void displayFileContent(String filePath) {
         recordsListView.setDisable(true);
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -598,41 +593,37 @@ public class SelectRecord extends AnchorPane {
         clearBoard(); // Clear the board before simulating moves
         String[] moves = record.split("\n");
         List<String> movesList = Arrays.asList(moves);
-        simulationThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (String move : movesList) {
-                    String[] player = move.split(", ");
-                    String[] moveDetails = move.split(": ");
-                    String[] coordinates = moveDetails[1].split(", ");
-                    int rowIndex = Integer.parseInt(coordinates[0]);
-                    int columnIndex = Integer.parseInt(coordinates[1]);
-                    Button button = buttons[rowIndex][columnIndex];
-                    Platform.runLater(() -> {
-                        lableTurnPlayer.setText("Turn: " + player[0] + " " + player[1]);
-                        button.setText(player[1]);
-                    });
-
-                    try {
-                        Thread.sleep(1000); // Sleep for 2 seconds between moves
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                        Thread.currentThread().interrupt();
-                    }
-                }
-                Platform.runLater(() -> recordsListView.setDisable(false));
+        simulationThread = new Thread(() -> {
+            for (String move : movesList) {
+                String[] player = move.split(", ");
+                String[] moveDetails = move.split(": ");
+                String[] coordinates = moveDetails[1].split(", ");
+                int rowIndex = Integer.parseInt(coordinates[0]);
+                int columnIndex = Integer.parseInt(coordinates[1]);
+                Button button = buttons[rowIndex][columnIndex];
                 Platform.runLater(() -> {
-                    String type;
-                    type = checkWin();
-                    if (type.equals("X")) {
-                        lableTurnPlayer.setText("You Win");
-                    } else if (type.equals("O")) {
-                        lableTurnPlayer.setText("You Lose");
-                    } else {
-                        lableTurnPlayer.setText("You Draw");
-                    }
+                    lableTurnPlayer.setText("Turn: " + player[0] + " " + player[1]);
+                    button.setText(player[1]);
                 });
+                try {
+                    Thread.sleep(1000); // Sleep for 2 seconds between moves
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    Thread.currentThread().interrupt();
+                }
             }
+            Platform.runLater(() -> recordsListView.setDisable(false));
+            Platform.runLater(() -> {
+                String type;
+                type = checkWin();
+                if (type.equals("X")) {
+                    lableTurnPlayer.setText("You Win");
+                } else if (type.equals("O")) {
+                    lableTurnPlayer.setText("You Lose");
+                } else {
+                    lableTurnPlayer.setText("You Draw");
+                }
+            });
         });
         simulationThread.start();
     }

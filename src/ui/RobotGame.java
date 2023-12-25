@@ -76,7 +76,7 @@ public class RobotGame extends GameBoard {
                             bestScore = Math.max(bestScore, minimax(board, depth + 1, true)); // mid
                         } else {
                             bestScore = Math.max(bestScore, minimax(board, depth + 3, true)); // high
-                        }
+                       }
                         board[i][j].setText("");
                     }
                 }
