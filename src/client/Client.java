@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package client;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import data.Player;
@@ -50,9 +51,9 @@ public class Client {
 
     public static Client getClient() {
 
-        if(singletonClient== null){
-            singletonClient= new Client();
-                    singletonClient.connect();
+        if (singletonClient == null) {
+            singletonClient = new Client();
+            singletonClient.connect();
         }
 
         return singletonClient;
@@ -185,29 +186,27 @@ public class Client {
         System.out.println("getAvailablePlayers in client");
         ArrayList<Player> getAvailablePlayers = new ArrayList<>();
         Player player;
-        double id,score;
+        double id, score;
         String name;
-        
-        for (int i = 1; i < responceData.size(); i+=3) {
-            id=(double) responceData.get(i);
-            name=(String) responceData.get(i+1);
-            score=(double) responceData.get(i+2);
-            player =new Player((int)id, name,(int)score );
+
+        for (int i = 1; i < responceData.size(); i += 3) {
+            id = (double) responceData.get(i);
+            name = (String) responceData.get(i + 1);
+            score = (double) responceData.get(i + 2);
+            player = new Player((int) id, name, (int) score);
             getAvailablePlayers.add(player);
-              System.out.println("player Data :"+player.getId()+" "+ player.getName()+ " "+player.getScore());
-              }
-        
+            System.out.println("player Data :" + player.getId() + " " + player.getName() + " " + player.getScore());
+        }
+
         LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.currentScreen;
         lobbyScreen.displayAvailablePlayers(getAvailablePlayers);
     }
 
-
-    
     private void request() {
         double senderId = (double) responceData.get(1);
-        String sendername =  (String) responceData.get(2);
-        double senderScore =  (double) responceData.get(3);
-        
+        String sendername = (String) responceData.get(2);
+        double senderScore = (double) responceData.get(3);
+
         if (sendername != null) {
             System.out.println("Request handled successfully");
         } else {

@@ -23,6 +23,14 @@
                 <DropShadow color="#e6e1f5" spread="0.75" />
             </effect>
         </Label>
+      <Label layoutX="40.0" layoutY="179.0" text="Waiting for your partner to accept the request" textFill="#431159">
+         <font>
+            <Font name="Franklin Gothic Demi Cond" size="36.0" />
+         </font>
+         <effect>
+            <DropShadow color="#e6e1f5" spread="0.5" />
+         </effect>
+      </Label>
         <Circle fill="#00000078" layoutX="631.0" layoutY="51.0" opacity="0.2" radius="111.0" stroke="#d0cbcb" strokeType="INSIDE" />
         <Circle fill="#00000078" layoutX="54.0" layoutY="548.0" opacity="0.2" radius="85.0" stroke="#d0cbcb" strokeType="INSIDE" strokeWidth="0.0" />
         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#141414" height="188.0" layoutX="627.0" layoutY="473.0" opacity="0.2" rotate="145.0" stroke="BLACK" strokeType="INSIDE" width="29.0" />

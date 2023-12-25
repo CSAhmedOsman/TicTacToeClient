@@ -331,11 +331,9 @@ public class LobbyScreenUI extends AnchorPane {
 
     }
 
-    
     private HBox createPlayerBox(Player player) {
         HBox playerBox = new HBox();
 
-   
         Label nameLabel = new Label();
         nameLabel.setPrefWidth(198.0);
         nameLabel.setLayoutX(101.0);
@@ -382,7 +380,7 @@ public class LobbyScreenUI extends AnchorPane {
         VBox playerInfo = new VBox(nameLabel, scoreLabel);
         playerInfo.setAlignment(Pos.CENTER_LEFT);
 
-        playerBox.getChildren().addAll( playerInfo, requestButton);
+        playerBox.getChildren().addAll(playerInfo, requestButton);
 
         return playerBox;
     }
