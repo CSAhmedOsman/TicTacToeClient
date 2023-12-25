@@ -208,8 +208,6 @@ public class Client {
         lobbyScreen.displayAvailablePlayers(getAvailablePlayers);
     }
 
-
-    
     private void request() {
         double senderId = (double) responceData.get(1);
         String sendername =  (String) responceData.get(2);
@@ -228,7 +226,7 @@ public class Client {
         String message = (String) responceData.get(2);
         System.out.println("RecieveBroadCastMessage");
         LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.currentScreen;
-        lobbyScreen.desplayMessage(srcPlayerName, message);
+        lobbyScreen.displayMessage(srcPlayerName, message);
     }
 
     private void recieveMessage() {

@@ -256,13 +256,6 @@ public class LobbyScreenUI extends AnchorPane {
         
         //______________My Work_______________
         ClientApp.currentScreen = this;
-        sendMessageToAll(1, "BroadCast Message To All Players");
-
-        blockPlayer(6, 8);
-        blockPlayer(6, 7);
-        unBlockPlayer(6, 8);
-        unBlockPlayer(6, 7);
-
     }
 
     public LobbyScreenUI(int playerId) {
@@ -278,6 +271,7 @@ public class LobbyScreenUI extends AnchorPane {
 
         setListeners();
         //______________My Work_______________
+        makePlayerOnline(playerId); 
     }
 
     private void sendMessageToAll(int sourceId, String broadcastMessage) {
@@ -375,7 +369,7 @@ public class LobbyScreenUI extends AnchorPane {
         }
     }
 
-    public void desplayMessage(String srcPlayerName, String message) {
+    public void displayMessage(String srcPlayerName, String message) {
         Platform.runLater(() -> {
             Util.showAlertDialog(Alert.AlertType.CONFIRMATION, srcPlayerName, message);
         });
