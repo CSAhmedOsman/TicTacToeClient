@@ -22,6 +22,7 @@ import javafx.application.Platform;
 public class LocalGame extends GameBoard {
 
     public LocalGame() {
+        super("Player2");
         startGame();
     }
 

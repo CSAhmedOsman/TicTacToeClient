@@ -145,44 +145,13 @@ public abstract class GameBoard extends BorderPane {
         countDownLimit = 0;
         playedKey = 0;
         player1Name = "Player1";
-        player2Name = "Player2";
         recordedGame = "";
         isRecord = false;
-
-        init();
         ClientApp.currentScreen = this;
     }
 
-    public GameBoard(int mode) {
-        player2Name = "Robot";
-        robotLevel = mode;
-    }
-
-    public GameBoard() {
-    }
-
-    public GameBoard(String p2) {
-        player2Name = p2;
-    }
-
-    public GameBoard(String p1, String p2) {
-        player1Name = p1;
-        player2Name = p2;
-    }
-
-    // show recorded games ---
-    public GameBoard(File file) {
-        //--------add function name for handling the read files
-        // -------- don't forget to disable -- buttons with using forloop -- position[i][j].setDisable(true);
-    }
-
-    // playing online game ---
-    public GameBoard(Player player1, Socket player2) {
-        //--------add function name for handling the online gamming
-    }
-
-    public void init() {
-
+    public GameBoard(String mode) {
+        player2Name = mode;
         setMaxHeight(USE_PREF_SIZE);
         setMaxWidth(USE_PREF_SIZE);
         setMinHeight(USE_PREF_SIZE);
@@ -619,6 +588,8 @@ public abstract class GameBoard extends BorderPane {
 
     protected abstract void nextTern();
 
+    protected abstract void startGame();
+
     protected abstract void addHandlers();
 
     protected void changeTern() {
@@ -804,8 +775,6 @@ public abstract class GameBoard extends BorderPane {
         paneCount.setOpacity(0.0);
         labelDrawNum.setText("" + (Integer.valueOf(labelDrawNum.getText()) + 1));
     }
-
-    protected abstract void startGame();
 
     private void sendMessage(Message message) {
         Gson gson = new Gson();
