@@ -16,7 +16,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import ui.LobbyScreenUI;
 import ui.SplashScreenUI;
-import ui.WaittingRoom;
 import utils.Util;
 
 /**
@@ -27,14 +26,12 @@ public class ClientApp extends Application {
 
     public static Stage stage;
     public static Pane currentScreen;
-
-    public static Pane currentDisplayedScreen;
     
     @Override
     public void start(Stage stage) throws Exception {
         ClientApp.stage = stage;
       
-        Parent splashScreen = new WaittingRoom();
+        Parent splashScreen = new SplashScreenUI();
 
         //Hide top bar of the stage
         stage.initStyle(StageStyle.UNDECORATED);

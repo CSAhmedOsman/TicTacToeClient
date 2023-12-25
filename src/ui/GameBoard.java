@@ -150,7 +150,7 @@ public abstract class GameBoard extends BorderPane {
         isRecord = false;
 
         init();
-        ClientApp.currentDisplayedScreen = this;
+        ClientApp.currentScreen = this;
     }
 
     public GameBoard(int mode) {
@@ -159,7 +159,6 @@ public abstract class GameBoard extends BorderPane {
     }
 
     public GameBoard() {
-
     }
 
     public GameBoard(String p2) {

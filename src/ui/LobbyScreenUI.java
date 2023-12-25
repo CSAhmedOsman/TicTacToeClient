@@ -58,10 +58,8 @@ public class LobbyScreenUI extends AnchorPane {
     protected final Button btnSend;
     protected final ListView<HBox> playerListView;
     int playerId;
-    // private static ArrayList<Player> players;
 
     {
-
         rectangle = new Rectangle();
         label = new Label();
         dropShadow = new DropShadow();
@@ -255,10 +253,9 @@ public class LobbyScreenUI extends AnchorPane {
         flowPane.getChildren().add(btnSend);
         pane0.getChildren().add(borderPane);
         getChildren().add(pane0);
-
+        
+        //______________My Work_______________
         ClientApp.currentScreen = this;
-        sendMessageToAll(1, "BroadCast Message To All Players");
-
     }
 
     public LobbyScreenUI(int playerId) {
@@ -274,6 +271,7 @@ public class LobbyScreenUI extends AnchorPane {
 
         setListeners();
         //______________My Work_______________
+        makePlayerOnline(playerId); 
     }
 
     private void sendMessageToAll(int sourceId, String broadcastMessage) {
@@ -292,10 +290,112 @@ public class LobbyScreenUI extends AnchorPane {
         }
     }
 
-    public void desplayMessage(String srcPlayerName, String message) {
+    private void addFriend(int playerId, int friendId) {
+        Gson gson = new Gson();
+        ArrayList jsonRequest = new ArrayList();
+        jsonRequest.add(Constants.ADD_FRIEND);
+        jsonRequest.add(playerId);
+        jsonRequest.add(friendId);
+
+        String gsonRequest = gson.toJson(jsonRequest);
+        try {
+            Client.getClient().sendRequest(gsonRequest);
+        } catch (NotConnectedException ex) {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+
+    private void removeFriend(int playerId, int friendId) {
+        Gson gson = new Gson();
+        ArrayList jsonRequest = new ArrayList();
+        jsonRequest.add(Constants.REMOVE_FRIEND);
+        jsonRequest.add(playerId);
+        jsonRequest.add(friendId);
+
+        String gsonRequest = gson.toJson(jsonRequest);
+        try {
+            Client.getClient().sendRequest(gsonRequest);
+        } catch (NotConnectedException ex) {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+
+    private void blockPlayer(int playerId, int blockedId) {
+        Gson gson = new Gson();
+        ArrayList jsonRequest = new ArrayList();
+        jsonRequest.add(Constants.BLOCK_PLAYER);
+        jsonRequest.add(playerId);
+        jsonRequest.add(blockedId);
+
+        String gsonRequest = gson.toJson(jsonRequest);
+        try {
+            Client.getClient().sendRequest(gsonRequest);
+        } catch (NotConnectedException ex) {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+
+    private void unBlockPlayer(int playerId, int blockedId) {
+        Gson gson = new Gson();
+        ArrayList jsonRequest = new ArrayList();
+        jsonRequest.add(Constants.UN_BLOCK_PLAYER);
+        jsonRequest.add(playerId);
+        jsonRequest.add(blockedId);
+
+        String gsonRequest = gson.toJson(jsonRequest);
+        try {
+            Client.getClient().sendRequest(gsonRequest);
+        } catch (NotConnectedException ex) {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+
+    private void makePlayerOnline(int playerId) {
+        Gson gson = new Gson();
+        ArrayList jsonRequest = new ArrayList();
+        jsonRequest.add(Constants.PLAYER_ONLINE);
+        jsonRequest.add(playerId);
+
+        String gsonRequest = gson.toJson(jsonRequest);
+        try {
+            Client.getClient().sendRequest(gsonRequest);
+        } catch (NotConnectedException ex) {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+
+    public void displayMessage(String srcPlayerName, String message) {
         Platform.runLater(() -> {
-            System.out.println("Desplay Message");
             Util.showAlertDialog(Alert.AlertType.CONFIRMATION, srcPlayerName, message);
+        });
+    }
+
+    public void addFriend() {
+        Platform.runLater(() -> {
+            Util.showAlertDialog(Alert.AlertType.CONFIRMATION, "Friends Area", "Now Is your Friend");
+        });
+    }
+
+    public void removeFriend() {
+        Platform.runLater(() -> {
+            Util.showAlertDialog(Alert.AlertType.CONFIRMATION, "Friends Area", "Now Is Not your Friend");
+        });
+    }
+
+    public void blockPlayer() {
+        Platform.runLater(() -> {
+            Util.showAlertDialog(Alert.AlertType.CONFIRMATION, "Blocked Area", "Now In Block List");
+        });
+    }
+
+    public void unBlockPlayer() {
+        Platform.runLater(() -> {
+            Util.showAlertDialog(Alert.AlertType.CONFIRMATION, "Friends Area", "Now You Can Play With Him !");
         });
     }
 
@@ -328,7 +428,6 @@ public class LobbyScreenUI extends AnchorPane {
                 playerListView.getItems().add(playerBox);
             }
         });
-
     }
 
     private HBox createPlayerBox(Player player) {
@@ -399,5 +498,4 @@ public class LobbyScreenUI extends AnchorPane {
             Util.displayScreen(root);
         });
     }
-
 }
