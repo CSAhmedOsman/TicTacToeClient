@@ -16,7 +16,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 
-public class WaittingRoom extends AnchorPane {
+public class WaitingRoom extends AnchorPane {
     
     protected final Rectangle rectangle;
     protected final Label label;
@@ -42,7 +42,7 @@ public class WaittingRoom extends AnchorPane {
     protected int countDownSec;
     protected boolean isRunning;
     
-    public WaittingRoom() {
+    public WaitingRoom() {
         
         isRunning = true;
         countDownSec = 59;
@@ -86,7 +86,7 @@ public class WaittingRoom extends AnchorPane {
         
         label.setLayoutX(150.0);
         label.setLayoutY(100.0);
-        label.setText("Waitting Room");
+        label.setText("Waiting Room");
         label.setTextFill(javafx.scene.paint.Color.valueOf("#431159"));
         label.setFont(new Font("Franklin Gothic Demi Cond", 72.0));
         
@@ -271,11 +271,12 @@ public class WaittingRoom extends AnchorPane {
                             countDownMSec = 99;
                             countDownSec--;
                         }
+                        //--l
                         drawCount();
                         Thread.sleep(10);
                     }
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(WaittingRoom.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(WaitingRoom.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
