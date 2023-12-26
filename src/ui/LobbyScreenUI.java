@@ -8,7 +8,6 @@ import exception.NotConnectedException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -28,7 +27,6 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import utils.Constants;
@@ -54,7 +52,7 @@ public class LobbyScreenUI extends AnchorPane {
     protected final BorderPane borderPane;
     protected final TextArea textArea;
     protected final FlowPane flowPane;
-    protected final TextField textsg;
+    protected final TextField tfMessage;
     protected final Button btnSend;
     protected final ListView<HBox> playerListView;
     int playerId;
@@ -78,7 +76,7 @@ public class LobbyScreenUI extends AnchorPane {
         borderPane = new BorderPane();
         textArea = new TextArea();
         flowPane = new FlowPane();
-        textsg = new TextField();
+        tfMessage = new TextField();
         btnSend = new Button();
 
         setMaxHeight(USE_PREF_SIZE);
@@ -227,9 +225,9 @@ public class LobbyScreenUI extends AnchorPane {
         flowPane.setPrefHeight(49.0);
         flowPane.setPrefWidth(600.0);
 
-        textsg.setPrefHeight(52.0);
-        textsg.setPrefWidth(200.0);
-        textsg.setStyle("-fx-background-radius: 10;");
+        tfMessage.setPrefHeight(52.0);
+        tfMessage.setPrefWidth(200.0);
+        tfMessage.setStyle("-fx-background-radius: 10;");
 
         btnSend.setMnemonicParsing(false);
         btnSend.setPrefHeight(48.0);
@@ -249,11 +247,11 @@ public class LobbyScreenUI extends AnchorPane {
         getChildren().add(btnMin);
         pane.getChildren().add(imageView);
         getChildren().add(btnBack);
-        flowPane.getChildren().add(textsg);
+        flowPane.getChildren().add(tfMessage);
         flowPane.getChildren().add(btnSend);
         pane0.getChildren().add(borderPane);
         getChildren().add(pane0);
-        
+
         //______________My Work_______________
         ClientApp.currentScreen = this;
     }
@@ -271,7 +269,35 @@ public class LobbyScreenUI extends AnchorPane {
 
         setListeners();
         //______________My Work_______________
-        makePlayerOnline(playerId); 
+        makePlayerOnline(playerId);
+
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+        textArea.setStyle("-fx-font-family: 'Arial'; -fx-font-size: 18; -fx-font-type: 'bold';");
+    }
+
+    private void setListeners() {
+
+        btnClose.setOnAction((ActionEvent event) -> {
+            ClientApp.stage.close();
+        });
+
+        btnMin.setOnAction((ActionEvent event) -> {
+            ClientApp.stage.setIconified(true);
+        });
+        btnBack.setOnAction((ActionEvent event) -> {
+            Parent root = new ModesScreenUI();
+            Util.displayScreen(root);
+        });
+
+        btnSend.setOnAction((ActionEvent event) -> {
+            String broadcastMessage = tfMessage.getText();
+            if (broadcastMessage.trim().isEmpty()) {
+                return;
+            }
+            sendMessageToAll(playerId, broadcastMessage);
+            tfMessage.clear();
+        });
     }
 
     private void sendMessageToAll(int sourceId, String broadcastMessage) {
@@ -286,7 +312,6 @@ public class LobbyScreenUI extends AnchorPane {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
             System.out.println(ex.getMessage());
-            ex.printStackTrace();
         }
     }
 
@@ -365,42 +390,30 @@ public class LobbyScreenUI extends AnchorPane {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
             System.out.println(ex.getMessage());
-            ex.printStackTrace();
         }
     }
 
     public void displayMessage(String srcPlayerName, String message) {
-        Platform.runLater(() -> {
-            Util.showAlertDialog(Alert.AlertType.CONFIRMATION, srcPlayerName, message);
-        });
+        textArea.appendText(srcPlayerName + ": " + message + "\n");
     }
 
     public void addFriend() {
-        Platform.runLater(() -> {
-            Util.showAlertDialog(Alert.AlertType.CONFIRMATION, "Friends Area", "Now Is your Friend");
-        });
+        Util.showAlertDialog(Alert.AlertType.CONFIRMATION, "Friends Area", "Now Is your Friend");
     }
 
     public void removeFriend() {
-        Platform.runLater(() -> {
-            Util.showAlertDialog(Alert.AlertType.CONFIRMATION, "Friends Area", "Now Is Not your Friend");
-        });
+        Util.showAlertDialog(Alert.AlertType.CONFIRMATION, "Friends Area", "Now Is Not your Friend");
     }
 
     public void blockPlayer() {
-        Platform.runLater(() -> {
-            Util.showAlertDialog(Alert.AlertType.CONFIRMATION, "Blocked Area", "Now In Block List");
-        });
+        Util.showAlertDialog(Alert.AlertType.CONFIRMATION, "Blocked Area", "Now In Block List");
     }
 
     public void unBlockPlayer() {
-        Platform.runLater(() -> {
-            Util.showAlertDialog(Alert.AlertType.CONFIRMATION, "Friends Area", "Now You Can Play With Him !");
-        });
+        Util.showAlertDialog(Alert.AlertType.CONFIRMATION, "Friends Area", "Now You Can Play With Him !");
     }
 
     private void getAvailablePlayers() {
-        System.out.println("getAvailablePlayers in lobby");
         Gson gson = new Gson();
         ArrayList jsonRequest = new ArrayList();
         jsonRequest.add(Constants.GET_AVAILIABLE_PLAYERS);
@@ -410,13 +423,10 @@ public class LobbyScreenUI extends AnchorPane {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
             System.out.println(ex.getMessage());
-            ex.printStackTrace();
         }
     }
 
     public void displayAvailablePlayers(ArrayList<Player> availablePlayers) {
-
-        Platform.runLater(() -> {
             playerListView.getItems().clear();
 
             for (Player player : availablePlayers) {
@@ -427,7 +437,6 @@ public class LobbyScreenUI extends AnchorPane {
                 HBox playerBox = createPlayerBox(player);
                 playerListView.getItems().add(playerBox);
             }
-        });
     }
 
     private HBox createPlayerBox(Player player) {
@@ -482,20 +491,5 @@ public class LobbyScreenUI extends AnchorPane {
         playerBox.getChildren().addAll(playerInfo, requestButton);
 
         return playerBox;
-    }
-
-    private void setListeners() {
-
-        btnClose.setOnAction((ActionEvent event) -> {
-            ClientApp.stage.close();
-        });
-
-        btnMin.setOnAction((ActionEvent event) -> {
-            ClientApp.stage.setIconified(true);
-        });
-        btnBack.setOnAction((ActionEvent event) -> {
-            Parent root = new ModesScreenUI();
-            Util.displayScreen(root);
-        });
     }
 }

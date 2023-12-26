@@ -4,9 +4,11 @@
  * and open the template in the editor.
  */
 package client;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import data.Player;
+import utils.PlayerStorage;
 import exception.NotConnectedException;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -30,12 +32,14 @@ import utils.Util;
  * @author w
  */
 public class Client {
+    
+    private Thread thread;
 
-    Socket mySocket;
-    DataInputStream in;
-    PrintStream out;
-    ArrayList responceData;
-    boolean isConnected;
+    private Socket mySocket;
+    private DataInputStream in;
+    private PrintStream out;
+    private ArrayList responceData;
+    private boolean isConnected;
 
     private static Client singletonClient;
 
@@ -68,6 +72,8 @@ public class Client {
             in.close();
             out.close();
             mySocket.close();
+            thread.destroy();
+            thread= null;
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -81,7 +87,7 @@ public class Client {
     }
 
     private void startListening() {
-        new Thread(() -> {
+        thread = new Thread(() -> {
             try {
                 while (mySocket != null && !(mySocket.isClosed())) {
                     String gsonResponse = in.readLine();
@@ -92,7 +98,8 @@ public class Client {
             } catch (IOException ex) {
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }).start();
+        });
+        thread.start();
     }
 
     private void handleResponse(String gsonResponce) {
@@ -164,7 +171,7 @@ public class Client {
             Util.displayScreen(loginScreen);
         } else {
             // Maybe Throw
-            Platform.runLater(()-> {
+            Platform.runLater(() -> {
                 Util.showAlertDialog(Alert.AlertType.ERROR, "Register Error", "This Email is Already Login");
             });
         }
@@ -177,7 +184,8 @@ public class Client {
             Parent lobbyScreen = new LobbyScreenUI((int) playerId);
 
             Util.displayScreen(lobbyScreen);
-        } else if(playerId == -1){
+            PlayerStorage.saveUserId((int) playerId);
+        } else if (playerId == -1) {
             Platform.runLater(() -> {
                 Util.showAlertDialog(Alert.AlertType.ERROR, "Login Error", "Your Email Or Password is Incorrect.");
             });
@@ -192,27 +200,27 @@ public class Client {
         System.out.println("getAvailablePlayers in client");
         ArrayList<Player> getAvailablePlayers = new ArrayList<>();
         Player player;
-        double id,score;
+        double id, score;
         String name;
-        
-        for (int i = 1; i < responceData.size(); i+=3) {
-            id=(double) responceData.get(i);
-            name=(String) responceData.get(i+1);
-            score=(double) responceData.get(i+2);
-            player =new Player((int)id, name,(int)score );
+
+        for (int i = 1; i < responceData.size(); i += 3) {
+            id = (double) responceData.get(i);
+            name = (String) responceData.get(i + 1);
+            score = (double) responceData.get(i + 2);
+            player = new Player((int) id, name, (int) score);
             getAvailablePlayers.add(player);
-              System.out.println("player Data :"+player.getId()+" "+ player.getName()+ " "+player.getScore());
-              }
-        
+            System.out.println("player Data :" + player.getId() + " " + player.getName() + " " + player.getScore());
+        }
+
         LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.currentScreen;
         lobbyScreen.displayAvailablePlayers(getAvailablePlayers);
     }
 
     private void request() {
         double senderId = (double) responceData.get(1);
-        String sendername =  (String) responceData.get(2);
-        double senderScore =  (double) responceData.get(3);
-        
+        String sendername = (String) responceData.get(2);
+        double senderScore = (double) responceData.get(3);
+
         if (sendername != null) {
             System.out.println("Request handled successfully");
         } else {
@@ -256,7 +264,7 @@ public class Client {
             lobbyScreen.removeFriend();
         }
     }
-    
+
     private void blockPlayer() {
         boolean isBlockedPlayer = (boolean) responceData.get(1);
 

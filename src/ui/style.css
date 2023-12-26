@@ -1,0 +1,9 @@
+.player-name {
+    -rtfx-fill: blue;
+    -rtfx-font-weight: bold;
+}
+
+.message {
+    -rtfx-fill: black;
+    -rtfx-font-size: 12;
+}

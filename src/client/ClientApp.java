@@ -5,16 +5,16 @@
  */
 package client;
 
-import data.Player;
-import java.util.ArrayList;
+import utils.PlayerStorage;
 import javafx.application.Application;
-import javafx.event.EventType;
+import javafx.event.EventHandler;
 import javafx.scene.Parent;
-import javafx.scene.control.ListView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 import ui.LobbyScreenUI;
+import ui.LoginScreenUI;
 import ui.SplashScreenUI;
 import utils.Util;
 
@@ -26,17 +26,25 @@ public class ClientApp extends Application {
 
     public static Stage stage;
     public static Pane currentScreen;
-    
+
     @Override
     public void start(Stage stage) throws Exception {
+        
         ClientApp.stage = stage;
-      
-        Parent splashScreen = new SplashScreenUI();
+        ClientApp.stage.initStyle(StageStyle.UNDECORATED);
+        ClientApp.stage.setOnCloseRequest((WindowEvent event) -> {
+            Client.getClient().closeConnection();
+        });
+        
+        int savedUserId = PlayerStorage.loadUserId();
 
-        //Hide top bar of the stage
-        stage.initStyle(StageStyle.UNDECORATED);
-
-        Util.displayScreen(splashScreen);
+        if (savedUserId == -1) {
+            Parent login = new LoginScreenUI();
+            Util.displayScreen(login);
+        } else {
+            Parent lobby = new LobbyScreenUI((int) savedUserId);
+            Util.displayScreen(lobby);
+        }
     }
 
     /**
