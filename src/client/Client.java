@@ -47,6 +47,7 @@ public class Client {
     }
 
     public static Client getClient() {
+
         if (singletonClient == null) {
             singletonClient = new Client();
             singletonClient.connect();
