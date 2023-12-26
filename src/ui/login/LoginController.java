@@ -17,6 +17,7 @@ import exception.NotConnectedException;
 import javafx.event.ActionEvent;
 import java.util.ArrayList;
 import javafx.scene.control.Alert;
+import ui.JsonHandler;
 import utils.Constants;
 import utils.PasswordEncryptor;
 import utils.Util;
@@ -39,17 +40,14 @@ public class LoginController {
     }
 
     private void onLoginBtnClicked(ActionEvent event) {
+
         Player player = getCurrentPlayer();
         if (player == null)
             return;
 
         player.setPassword(PasswordEncryptor.encryptPassword(player.getPassword()));
 
-        Gson gson = new Gson();
-        ArrayList<Object> jsonRequest = new ArrayList<>();
-        jsonRequest.add(Constants.LOGIN);
-        jsonRequest.add(player);
-        String gsonRequest = gson.toJson(jsonRequest);
+        String gsonRequest = JsonHandler.serializeJson(Constants.LOGIN, player);        
         
         try {
             Client.getClient().sendRequest(gsonRequest);

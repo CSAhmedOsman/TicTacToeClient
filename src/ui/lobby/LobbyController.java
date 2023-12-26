@@ -12,6 +12,8 @@ import exception.NotConnectedException;
 import java.util.ArrayList;
 import javafx.event.ActionEvent;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
+import ui.JsonHandler;
 import ui.ModesScreenUI;
 import utils.Constants;
 import utils.Util;
@@ -61,11 +63,7 @@ public class LobbyController {
     }
 
     public void getAvailablePlayers() {
-        Gson gson = new Gson();
-        ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.GET_AVAILIABLE_PLAYERS);
-
-        String gsonRequest = gson.toJson(jsonRequest);
+        String gsonRequest = JsonHandler.serializeJson(Constants.GET_AVAILIABLE_PLAYERS);
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
@@ -74,13 +72,10 @@ public class LobbyController {
     }
     
     public void sendMessageToAll(int sourceId, String broadcastMessage) {
-        Gson gson = new Gson();
-        ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.BROADCAST_MESSAGE);
-        jsonRequest.add(sourceId);
-        jsonRequest.add(broadcastMessage);
-
-        String gsonRequest = gson.toJson(jsonRequest);
+        
+        String gsonRequest = JsonHandler.serializeJson(Constants.BROADCAST_MESSAGE, 
+                sourceId, broadcastMessage);
+        
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
@@ -89,13 +84,8 @@ public class LobbyController {
     }
 
     public void addFriend(int playerId, int friendId) {
-        Gson gson = new Gson();
-        ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.ADD_FRIEND);
-        jsonRequest.add(playerId);
-        jsonRequest.add(friendId);
-
-        String gsonRequest = gson.toJson(jsonRequest);
+        String gsonRequest = JsonHandler.serializeJson(Constants.ADD_FRIEND, playerId, friendId);
+        
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
@@ -105,13 +95,9 @@ public class LobbyController {
     }
 
     public void removeFriend(int playerId, int friendId) {
-        Gson gson = new Gson();
-        ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.REMOVE_FRIEND);
-        jsonRequest.add(playerId);
-        jsonRequest.add(friendId);
-
-        String gsonRequest = gson.toJson(jsonRequest);
+        
+        String gsonRequest = JsonHandler.serializeJson(Constants.REMOVE_FRIEND, playerId, friendId);
+        
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
@@ -121,44 +107,30 @@ public class LobbyController {
     }
 
     public void blockPlayer(int playerId, int blockedId) {
-        Gson gson = new Gson();
-        ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.BLOCK_PLAYER);
-        jsonRequest.add(playerId);
-        jsonRequest.add(blockedId);
-
-        String gsonRequest = gson.toJson(jsonRequest);
+        String gsonRequest = JsonHandler.serializeJson(Constants.BLOCK_PLAYER, playerId, blockedId);
+        
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
+            Util.showAlertDialog(Alert.AlertType.ERROR, "Server", "The Server is Closed\n" + ex.getMessage());
             System.out.println(ex.getMessage());
-            ex.printStackTrace();
         }
     }
 
     public void unBlockPlayer(int playerId, int blockedId) {
-        Gson gson = new Gson();
-        ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.UN_BLOCK_PLAYER);
-        jsonRequest.add(playerId);
-        jsonRequest.add(blockedId);
-
-        String gsonRequest = gson.toJson(jsonRequest);
+        String gsonRequest = JsonHandler.serializeJson(Constants.UN_BLOCK_PLAYER, playerId, blockedId);
+        
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
+            Util.showAlertDialog(Alert.AlertType.ERROR, "Server", "The Server is Closed\n" + ex.getMessage());
             System.out.println(ex.getMessage());
-            ex.printStackTrace();
         }
     }
 
     public void makePlayerOnline(int playerId) {
-        Gson gson = new Gson();
-        ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.PLAYER_ONLINE);
-        jsonRequest.add(playerId);
-
-        String gsonRequest = gson.toJson(jsonRequest);
+        String gsonRequest = JsonHandler.serializeJson(Constants.UN_BLOCK_PLAYER, playerId);
+        
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {

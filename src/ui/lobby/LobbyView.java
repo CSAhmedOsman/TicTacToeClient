@@ -30,6 +30,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import ui.JsonHandler;
 import utils.Constants;
 import utils.Util;
 
@@ -340,14 +341,9 @@ public class LobbyView extends AnchorPane {
         requestButton.setPrefWidth(122.0);
 
         requestButton.setOnAction((e) -> {
-            Gson gson = new Gson();
-            ArrayList<Object> jsonArr = new ArrayList<>();
-            jsonArr.add(Constants.REQUEST);
-
-            jsonArr.add(playerId);
-            jsonArr.add(player.getId());
-
-            String gsonRequest = gson.toJson(jsonArr);
+            
+            String gsonRequest = JsonHandler.serializeJson(Constants.REQUEST, 
+                    playerId, player.getId());
             try {
                 Client.getClient().sendRequest(gsonRequest);
             } catch (NotConnectedException ex) {
