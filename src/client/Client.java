@@ -21,9 +21,9 @@ import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
-import ui.LobbyScreenUI;
+import ui.lobby.LobbyView;
 import ui.GameBoard;
-import ui.LoginScreenUI;
+import ui.login.LoginView;
 import utils.Constants;
 import utils.Util;
 
@@ -73,8 +73,7 @@ public class Client {
             in.close();
             out.close();
             mySocket.close();
-            thread.destroy();
-            thread= null;
+            isConnected= false;
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -90,7 +89,7 @@ public class Client {
     private void startListening() {
         thread = new Thread(() -> {
             try {
-                while (mySocket != null && !(mySocket.isClosed())) {
+                while (isConnected&& mySocket != null && !(mySocket.isClosed())) {
                     String gsonResponse = in.readLine();
                     if (!gsonResponse.isEmpty()) {
                         handleResponse(gsonResponse);
@@ -168,7 +167,7 @@ public class Client {
         boolean registerStatus = (boolean) responceData.get(1);
 
         if (registerStatus) {
-            Parent loginScreen = new LoginScreenUI();
+            Parent loginScreen = new LoginView();
             Util.displayScreen(loginScreen);
         } else {
             // Maybe Throw
@@ -182,7 +181,7 @@ public class Client {
 
         double playerId = (double) responceData.get(1);
         if (playerId >= 0) {
-            Parent lobbyScreen = new LobbyScreenUI((int) playerId);
+            Parent lobbyScreen = new LobbyView((int) playerId);
 
             Util.displayScreen(lobbyScreen);
             PlayerStorage.saveUserId((int) playerId);
@@ -213,7 +212,7 @@ public class Client {
             System.out.println("player Data :" + player.getId() + " " + player.getName() + " " + player.getScore());
         }
 
-        LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.currentScreen;
+        LobbyView lobbyScreen = (LobbyView) ClientApp.currentScreen;
         lobbyScreen.displayAvailablePlayers(getAvailablePlayers);
     }
 
@@ -233,8 +232,7 @@ public class Client {
     private void recieveBroadcastMessage() {
         String srcPlayerName = (String) responceData.get(1);
         String message = (String) responceData.get(2);
-        System.out.println("RecieveBroadCastMessage");
-        LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.currentScreen;
+        LobbyView lobbyScreen = (LobbyView) ClientApp.currentScreen;
         lobbyScreen.displayMessage(srcPlayerName, message);
     }
 
@@ -249,7 +247,7 @@ public class Client {
     private void addFriend() {
         boolean isFriend = (boolean) responceData.get(1);
 
-        LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.currentScreen;
+        LobbyView lobbyScreen = (LobbyView) ClientApp.currentScreen;
 
         if (isFriend) {
             lobbyScreen.addFriend();
@@ -259,7 +257,7 @@ public class Client {
     private void removeFriend() {
         boolean isNotFriend = (boolean) responceData.get(1);
 
-        LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.currentScreen;
+        LobbyView lobbyScreen = (LobbyView) ClientApp.currentScreen;
 
         if (isNotFriend) {
             lobbyScreen.removeFriend();
@@ -269,7 +267,7 @@ public class Client {
     private void blockPlayer() {
         boolean isBlockedPlayer = (boolean) responceData.get(1);
 
-        LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.currentScreen;
+        LobbyView lobbyScreen = (LobbyView) ClientApp.currentScreen;
 
         if (isBlockedPlayer) {
             lobbyScreen.blockPlayer();
@@ -279,7 +277,7 @@ public class Client {
     private void unBlockPlayer() {
         boolean isUnBlocked = (boolean) responceData.get(1);
 
-        LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.currentScreen;
+        LobbyView lobbyScreen = (LobbyView) ClientApp.currentScreen;
 
         if (isUnBlocked) {
             lobbyScreen.unBlockPlayer();

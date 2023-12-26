@@ -1,5 +1,6 @@
 package ui;
 
+import ui.login.LoginView;
 import utils.Util;
 import client.ClientApp;
 import javafx.application.Platform;
@@ -387,7 +388,7 @@ public class ModesScreenUI extends Pane {
         });
 
         btnLogout.setOnAction((e) -> {
-            Parent homeScreen = new LoginScreenUI();
+            Parent homeScreen = new LoginView();
             animateOut(homeScreen);
         });
 

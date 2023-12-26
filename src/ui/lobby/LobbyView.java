@@ -1,4 +1,4 @@
-package ui;
+package ui.lobby;
 
 import client.Client;
 import client.ClientApp;
@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
@@ -32,7 +33,7 @@ import javafx.scene.text.Font;
 import utils.Constants;
 import utils.Util;
 
-public class LobbyScreenUI extends AnchorPane {
+public class LobbyView extends AnchorPane {
 
     protected final Rectangle rectangle;
     protected final Label label;
@@ -256,7 +257,7 @@ public class LobbyScreenUI extends AnchorPane {
         ClientApp.currentScreen = this;
     }
 
-    public LobbyScreenUI(int playerId) {
+    public LobbyView(int playerId) {
         this.playerId = playerId;
         playerListView = new ListView();
         playerListView.setLayoutX(332.0);
@@ -265,132 +266,15 @@ public class LobbyScreenUI extends AnchorPane {
         playerListView.setPrefWidth(355.0);
         playerListView.setStyle("-fx-background-radius: 10;");
         getChildren().add(playerListView);
-        getAvailablePlayers();
 
-        setListeners();
         //______________My Work_______________
-        makePlayerOnline(playerId);
+        LobbyController lobbyController = new LobbyController(this);
+        lobbyController.makePlayerOnline(playerId);
+        lobbyController.getAvailablePlayers();
 
         textArea.setEditable(false);
         textArea.setWrapText(true);
         textArea.setStyle("-fx-font-family: 'Arial'; -fx-font-size: 18; -fx-font-type: 'bold';");
-    }
-
-    private void setListeners() {
-
-        btnClose.setOnAction((ActionEvent event) -> {
-            ClientApp.stage.close();
-        });
-
-        btnMin.setOnAction((ActionEvent event) -> {
-            ClientApp.stage.setIconified(true);
-        });
-        btnBack.setOnAction((ActionEvent event) -> {
-            Parent root = new ModesScreenUI();
-            Util.displayScreen(root);
-        });
-
-        btnSend.setOnAction((ActionEvent event) -> {
-            String broadcastMessage = tfMessage.getText();
-            if (broadcastMessage.trim().isEmpty()) {
-                return;
-            }
-            sendMessageToAll(playerId, broadcastMessage);
-            tfMessage.clear();
-        });
-    }
-
-    private void sendMessageToAll(int sourceId, String broadcastMessage) {
-        Gson gson = new Gson();
-        ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.BROADCAST_MESSAGE);
-        jsonRequest.add(sourceId);
-        jsonRequest.add(broadcastMessage);
-
-        String gsonRequest = gson.toJson(jsonRequest);
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            System.out.println(ex.getMessage());
-        }
-    }
-
-    private void addFriend(int playerId, int friendId) {
-        Gson gson = new Gson();
-        ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.ADD_FRIEND);
-        jsonRequest.add(playerId);
-        jsonRequest.add(friendId);
-
-        String gsonRequest = gson.toJson(jsonRequest);
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            System.out.println(ex.getMessage());
-            ex.printStackTrace();
-        }
-    }
-
-    private void removeFriend(int playerId, int friendId) {
-        Gson gson = new Gson();
-        ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.REMOVE_FRIEND);
-        jsonRequest.add(playerId);
-        jsonRequest.add(friendId);
-
-        String gsonRequest = gson.toJson(jsonRequest);
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            System.out.println(ex.getMessage());
-            ex.printStackTrace();
-        }
-    }
-
-    private void blockPlayer(int playerId, int blockedId) {
-        Gson gson = new Gson();
-        ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.BLOCK_PLAYER);
-        jsonRequest.add(playerId);
-        jsonRequest.add(blockedId);
-
-        String gsonRequest = gson.toJson(jsonRequest);
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            System.out.println(ex.getMessage());
-            ex.printStackTrace();
-        }
-    }
-
-    private void unBlockPlayer(int playerId, int blockedId) {
-        Gson gson = new Gson();
-        ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.UN_BLOCK_PLAYER);
-        jsonRequest.add(playerId);
-        jsonRequest.add(blockedId);
-
-        String gsonRequest = gson.toJson(jsonRequest);
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            System.out.println(ex.getMessage());
-            ex.printStackTrace();
-        }
-    }
-
-    private void makePlayerOnline(int playerId) {
-        Gson gson = new Gson();
-        ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.PLAYER_ONLINE);
-        jsonRequest.add(playerId);
-
-        String gsonRequest = gson.toJson(jsonRequest);
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            System.out.println(ex.getMessage());
-        }
     }
 
     public void displayMessage(String srcPlayerName, String message) {
@@ -413,26 +297,12 @@ public class LobbyScreenUI extends AnchorPane {
         Util.showAlertDialog(Alert.AlertType.CONFIRMATION, "Friends Area", "Now You Can Play With Him !");
     }
 
-    private void getAvailablePlayers() {
-        Gson gson = new Gson();
-        ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.GET_AVAILIABLE_PLAYERS);
-
-        String gsonRequest = gson.toJson(jsonRequest);
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            System.out.println(ex.getMessage());
-        }
-    }
-
     public void displayAvailablePlayers(ArrayList<Player> availablePlayers) {
             playerListView.getItems().clear();
 
             for (Player player : availablePlayers) {
-                if (player.getId() == playerId) {
+                if (player.getId() == playerId)
                     continue;
-                }
 
                 HBox playerBox = createPlayerBox(player);
                 playerListView.getItems().add(playerBox);
@@ -481,7 +351,7 @@ public class LobbyScreenUI extends AnchorPane {
             try {
                 Client.getClient().sendRequest(gsonRequest);
             } catch (NotConnectedException ex) {
-                Logger.getLogger(LobbyScreenUI.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(LobbyView.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
 
@@ -491,5 +361,33 @@ public class LobbyScreenUI extends AnchorPane {
         playerBox.getChildren().addAll(playerInfo, requestButton);
 
         return playerBox;
+    }
+    
+    public void setCloseButtonAction(EventHandler<ActionEvent> eventHandler) {
+        btnClose.setOnAction(eventHandler);
+    }
+
+    public void setMinimizeButtonAction(EventHandler<ActionEvent> eventHandler) {
+        btnMin.setOnAction(eventHandler);
+    }
+
+    public void setBackButtonAction(EventHandler<ActionEvent> eventHandler) {
+        btnBack.setOnAction(eventHandler);
+    }
+
+    public void setSendButtonAction(EventHandler<ActionEvent> eventHandler) {
+        btnSend.setOnAction(eventHandler);
+    }
+
+    public String getMessageText() {
+        return tfMessage.getText();
+    }
+
+    public void clearMessageText() {
+        tfMessage.clear();
+    }
+
+    public int getPlayerId() {
+        return playerId;
     }
 }

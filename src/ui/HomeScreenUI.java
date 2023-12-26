@@ -1,6 +1,7 @@
 package ui;
 
-import client.Client;
+import ui.register.RegisterView;
+import ui.login.LoginView;
 import client.ClientApp;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -20,7 +21,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import utils.Animation;
-import utils.Util;
 
 public class HomeScreenUI extends AnchorPane {
 
@@ -292,19 +292,19 @@ public class HomeScreenUI extends AnchorPane {
         Animation.setButtonHoverFunctionality(btnOffLine);
 
         animateIn();
-        
+
         ClientApp.currentScreen = this;
     }
 
     private void setListeners(Stage stage) {
 
         btnLogin.setOnAction((ActionEvent event) -> {
-            Parent loginScreen = new LoginScreenUI();
-            animateOut(loginScreen);
+            LoginView loginView = new LoginView();
+            animateOut(loginView);
         });
 
         btnSignUp.setOnAction((ActionEvent event) -> {
-            Parent registerScreen = new RegisterScreenUI();
+            Parent registerScreen = new RegisterView();
             animateOut(registerScreen);
         });
 

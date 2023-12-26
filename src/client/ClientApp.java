@@ -7,15 +7,13 @@ package client;
 
 import utils.PlayerStorage;
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
-import ui.LobbyScreenUI;
-import ui.LoginScreenUI;
-import ui.SplashScreenUI;
+import ui.HomeScreenUI;
+import ui.lobby.LobbyView;
 import utils.Util;
 
 /**
@@ -36,13 +34,14 @@ public class ClientApp extends Application {
             Client.getClient().closeConnection();
         });
         
+        PlayerStorage.saveUserId(-1);
         int savedUserId = PlayerStorage.loadUserId();
 
         if (savedUserId == -1) {
-            Parent login = new LoginScreenUI();
-            Util.displayScreen(login);
+            Parent home = new HomeScreenUI();
+            Util.displayScreen(home);
         } else {
-            Parent lobby = new LobbyScreenUI((int) savedUserId);
+            Parent lobby = new LobbyView((int) savedUserId);
             Util.displayScreen(lobby);
         }
     }
