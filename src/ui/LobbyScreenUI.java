@@ -8,8 +8,8 @@ import exception.NotConnectedException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
@@ -26,7 +26,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.shape.Circle;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import utils.Constants;
@@ -52,14 +52,12 @@ public class LobbyScreenUI extends AnchorPane {
     protected final BorderPane borderPane;
     protected final TextArea textArea;
     protected final FlowPane flowPane;
-    protected final TextField textsg;
+    protected final TextField tfMessage;
     protected final Button btnSend;
-    protected static ListView<HBox> playerListView;
+    protected final ListView<HBox> playerListView;
     int playerId;
-    private static ArrayList<Player> players;
 
     {
-
         rectangle = new Rectangle();
         label = new Label();
         dropShadow = new DropShadow();
@@ -78,9 +76,9 @@ public class LobbyScreenUI extends AnchorPane {
         borderPane = new BorderPane();
         textArea = new TextArea();
         flowPane = new FlowPane();
-        textsg = new TextField();
+        tfMessage = new TextField();
         btnSend = new Button();
-        playerListView = new ListView();
+
         setMaxHeight(USE_PREF_SIZE);
         setMaxWidth(USE_PREF_SIZE);
         setMinHeight(USE_PREF_SIZE);
@@ -227,9 +225,9 @@ public class LobbyScreenUI extends AnchorPane {
         flowPane.setPrefHeight(49.0);
         flowPane.setPrefWidth(600.0);
 
-        textsg.setPrefHeight(52.0);
-        textsg.setPrefWidth(200.0);
-        textsg.setStyle("-fx-background-radius: 10;");
+        tfMessage.setPrefHeight(52.0);
+        tfMessage.setPrefWidth(200.0);
+        tfMessage.setStyle("-fx-background-radius: 10;");
 
         btnSend.setMnemonicParsing(false);
         btnSend.setPrefHeight(48.0);
@@ -240,12 +238,6 @@ public class LobbyScreenUI extends AnchorPane {
         btnSend.setFont(new Font(23.0));
         borderPane.setBottom(flowPane);
 
-        playerListView.setLayoutX(332.0);
-        playerListView.setLayoutY(111.0);
-        playerListView.setPrefHeight(471.0);
-        playerListView.setPrefWidth(355.0);
-        playerListView.setStyle("-fx-background-radius: 10;");
-
         getChildren().add(rectangle);
         getChildren().add(label);
         getChildren().add(rectangle0);
@@ -255,131 +247,33 @@ public class LobbyScreenUI extends AnchorPane {
         getChildren().add(btnMin);
         pane.getChildren().add(imageView);
         getChildren().add(btnBack);
-        flowPane.getChildren().add(textsg);
+        flowPane.getChildren().add(tfMessage);
         flowPane.getChildren().add(btnSend);
         pane0.getChildren().add(borderPane);
         getChildren().add(pane0);
-        getChildren().add(playerListView);
-        ClientApp.currentScreen = this;
-        sendMessageToAll(1, "BroadCast Message To All Players");
 
-    }
-
-    public static void setPlayers(ArrayList<Player> players) {
-        LobbyScreenUI.players = players;
+        //______________My Work_______________
+        ClientApp.curDisplayedScreen = this;
     }
 
     public LobbyScreenUI(int playerId) {
         this.playerId = playerId;
+        playerListView = new ListView();
+        playerListView.setLayoutX(332.0);
+        playerListView.setLayoutY(111.0);
+        playerListView.setPrefHeight(471.0);
+        playerListView.setPrefWidth(355.0);
+        playerListView.setStyle("-fx-background-radius: 10;");
+        getChildren().add(playerListView);
+        getAvailablePlayers();
+
         setListeners();
-
-        //getAvaliablePlayers();
         //______________My Work_______________
-    }
+        makePlayerOnline(playerId);
 
-    private void sendMessageToAll(int sourceId, String broadcastMessage) {
-        Gson gson = new Gson();
-        ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.BROADCAST_MESSAGE);
-        jsonRequest.add(sourceId);
-        jsonRequest.add(broadcastMessage);
-
-        String gsonRequest = gson.toJson(jsonRequest);
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            System.out.println(ex.getMessage());
-            ex.printStackTrace();
-        }
-    }
-
-    public void desplayMessage(String srcPlayerName, String message) {
-        Platform.runLater(() -> {
-            System.out.println("Desplay Message");
-            Util.showAlertDialog(Alert.AlertType.CONFIRMATION, srcPlayerName, message);
-        });
-    }
-    
-    
-    private void getAvaliablePlayers() {
-        Gson gson = new Gson();
-        String gsonRequest = gson.toJson(Constants.GET_AVAILIABLE_PLAYERS);
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            Logger.getLogger(LobbyScreenUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-    }
-
-    private static void displayAvaliablePlayers(ArrayList<Player> onlinePlayers) {
-        playerListView.getItems().clear();
-
-        for (Player player : onlinePlayers) {
-            HBox playerBox = new HBox();
-
-            Rectangle rectangle = new Rectangle();
-            rectangle.setArcHeight(5.0);
-            rectangle.setArcWidth(5.0);
-            rectangle.setFill(javafx.scene.paint.Color.valueOf("#9f56ff"));
-            rectangle.setHeight(98.0);
-            rectangle.setLayoutX(23.0);
-            rectangle.setLayoutY(14.0);
-            rectangle.setStroke(javafx.scene.paint.Color.BLACK);
-            rectangle.setStrokeLineCap(javafx.scene.shape.StrokeLineCap.ROUND);
-            rectangle.setStrokeType(javafx.scene.shape.StrokeType.INSIDE);
-            rectangle.setWidth(273.0);
-
-            Label nameLabel = new Label();
-            nameLabel.setPrefWidth(198.0);
-            nameLabel.setLayoutX(101.0);
-            nameLabel.setLayoutY(27.0);
-            nameLabel.setText(player.getName());
-            nameLabel.setTextFill(javafx.scene.paint.Color.valueOf("#f4dfff"));
-            nameLabel.setFont(new Font("Franklin Gothic Demi Cond", 21.0));
-
-            Label scoreLabel = new Label();
-            scoreLabel.setPrefWidth(50.0);
-            scoreLabel.setLayoutX(101.0);
-            scoreLabel.setLayoutY(51.0);
-            scoreLabel.setText("Score: " + player.getScore());
-            scoreLabel.setTextFill(javafx.scene.paint.Color.valueOf("#f4dfff"));
-            scoreLabel.setFont(new Font("Franklin Gothic Demi Cond", 14.0));
-
-            ImageView imageView = new ImageView();
-            imageView.setFitHeight(64.0);
-            imageView.setFitWidth(53.0);
-            imageView.setLayoutX(37.0);
-            imageView.setLayoutY(14.0);
-            //imageView.setImage(new Image(getClass().getResource("images/panda.png").toExternalForm()));
-
-            Button requestButton = new Button("Request");
-            requestButton.setStyle("-fx-background-radius: 100; -fx-background-color: #EA93A3;");
-            requestButton.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
-            requestButton.setFont(new Font("Gill Sans Ultra Bold Condensed", 10.0));
-            requestButton.setCursor(Cursor.HAND);
-            requestButton.setLayoutX(118.0);
-            requestButton.setLayoutY(177.0);
-            requestButton.setMnemonicParsing(false);
-            requestButton.setPrefHeight(30.0);
-            requestButton.setPrefWidth(122.0);
-
-            playerBox.getChildren().addAll(rectangle, nameLabel, scoreLabel, imageView, requestButton);
-            playerListView.getItems().add(playerBox);
-            
-            
-           /* requestButton.setOnAction((e) -> {
-                Gson gson = new Gson();
-                ArrayList<Object> jsonArr = new ArrayList<>();
-                jsonArr.add(Constants.REQUEST);
-                jsonArr.add(PlayerId);
-                jsonArr.add(player.getId());
-
-                String gsonRequest = gson.toJson(jsonArr);
-                client.sendRequest(gsonRequest);
-            });*/
-
-        }
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+        textArea.setStyle("-fx-font-family: 'Arial'; -fx-font-size: 18; -fx-font-type: 'bold';");
     }
 
     private void setListeners() {
@@ -395,9 +289,207 @@ public class LobbyScreenUI extends AnchorPane {
             Parent root = new ModesScreenUI();
             Util.displayScreen(root);
         });
+
+        btnSend.setOnAction((ActionEvent event) -> {
+            String broadcastMessage = tfMessage.getText();
+            if (broadcastMessage.trim().isEmpty()) {
+                return;
+            }
+            sendMessageToAll(playerId, broadcastMessage);
+            tfMessage.clear();
+        });
     }
 
-    public ArrayList<Player> getPlayers() {
-        return players;
+    private void sendMessageToAll(int sourceId, String broadcastMessage) {
+        Gson gson = new Gson();
+        ArrayList jsonRequest = new ArrayList();
+        jsonRequest.add(Constants.BROADCAST_MESSAGE);
+        jsonRequest.add(sourceId);
+        jsonRequest.add(broadcastMessage);
+
+        String gsonRequest = gson.toJson(jsonRequest);
+        try {
+            Client.getClient().sendRequest(gsonRequest);
+        } catch (NotConnectedException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    private void addFriend(int playerId, int friendId) {
+        Gson gson = new Gson();
+        ArrayList jsonRequest = new ArrayList();
+        jsonRequest.add(Constants.ADD_FRIEND);
+        jsonRequest.add(playerId);
+        jsonRequest.add(friendId);
+
+        String gsonRequest = gson.toJson(jsonRequest);
+        try {
+            Client.getClient().sendRequest(gsonRequest);
+        } catch (NotConnectedException ex) {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+
+    private void removeFriend(int playerId, int friendId) {
+        Gson gson = new Gson();
+        ArrayList jsonRequest = new ArrayList();
+        jsonRequest.add(Constants.REMOVE_FRIEND);
+        jsonRequest.add(playerId);
+        jsonRequest.add(friendId);
+
+        String gsonRequest = gson.toJson(jsonRequest);
+        try {
+            Client.getClient().sendRequest(gsonRequest);
+        } catch (NotConnectedException ex) {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+
+    private void blockPlayer(int playerId, int blockedId) {
+        Gson gson = new Gson();
+        ArrayList jsonRequest = new ArrayList();
+        jsonRequest.add(Constants.BLOCK_PLAYER);
+        jsonRequest.add(playerId);
+        jsonRequest.add(blockedId);
+
+        String gsonRequest = gson.toJson(jsonRequest);
+        try {
+            Client.getClient().sendRequest(gsonRequest);
+        } catch (NotConnectedException ex) {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+
+    private void unBlockPlayer(int playerId, int blockedId) {
+        Gson gson = new Gson();
+        ArrayList jsonRequest = new ArrayList();
+        jsonRequest.add(Constants.UN_BLOCK_PLAYER);
+        jsonRequest.add(playerId);
+        jsonRequest.add(blockedId);
+
+        String gsonRequest = gson.toJson(jsonRequest);
+        try {
+            Client.getClient().sendRequest(gsonRequest);
+        } catch (NotConnectedException ex) {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+
+    private void makePlayerOnline(int playerId) {
+        Gson gson = new Gson();
+        ArrayList jsonRequest = new ArrayList();
+        jsonRequest.add(Constants.ONLINE);
+        jsonRequest.add(playerId);
+
+        String gsonRequest = gson.toJson(jsonRequest);
+        try {
+            Client.getClient().sendRequest(gsonRequest);
+        } catch (NotConnectedException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    public void displayMessage(String srcPlayerName, String message) {
+        textArea.appendText(srcPlayerName + ": " + message + "\n");
+    }
+
+    public void addFriend() {
+        Util.showAlertDialog(Alert.AlertType.CONFIRMATION, "Friends Area", "Now Is your Friend");
+    }
+
+    public void removeFriend() {
+        Util.showAlertDialog(Alert.AlertType.CONFIRMATION, "Friends Area", "Now Is Not your Friend");
+    }
+
+    public void blockPlayer() {
+        Util.showAlertDialog(Alert.AlertType.CONFIRMATION, "Blocked Area", "Now In Block List");
+    }
+
+    public void unBlockPlayer() {
+        Util.showAlertDialog(Alert.AlertType.CONFIRMATION, "Friends Area", "Now You Can Play With Him !");
+    }
+
+    private void getAvailablePlayers() {
+        Gson gson = new Gson();
+        ArrayList jsonRequest = new ArrayList();
+        jsonRequest.add(Constants.GET_AVAILIABLE_PLAYERS);
+
+        String gsonRequest = gson.toJson(jsonRequest);
+        try {
+            Client.getClient().sendRequest(gsonRequest);
+        } catch (NotConnectedException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    public void displayAvailablePlayers(ArrayList<Player> availablePlayers) {
+            playerListView.getItems().clear();
+
+            for (Player player : availablePlayers) {
+                if (player.getId() == playerId) {
+                    continue;
+                }
+
+                HBox playerBox = createPlayerBox(player);
+                playerListView.getItems().add(playerBox);
+            }
+    }
+
+    private HBox createPlayerBox(Player player) {
+        HBox playerBox = new HBox();
+
+        Label nameLabel = new Label();
+        nameLabel.setPrefWidth(198.0);
+        nameLabel.setLayoutX(101.0);
+        nameLabel.setLayoutY(27.0);
+        nameLabel.setText(player.getName());
+        nameLabel.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
+        nameLabel.setFont(new Font("Franklin Gothic Demi Cond", 21.0));
+
+        Label scoreLabel = new Label();
+        scoreLabel.setPrefWidth(198.0);
+        scoreLabel.setLayoutX(101.0);
+        scoreLabel.setLayoutY(51.0);
+        scoreLabel.setText("Score:  " + (String.valueOf(player.getScore())));
+        scoreLabel.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
+        scoreLabel.setFont(new Font("Franklin Gothic Demi Cond", 14.0));
+
+        Button requestButton = new Button("Request");
+        requestButton.setStyle("-fx-background-radius: 100; -fx-background-color: #EA93A3;");
+        requestButton.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
+        requestButton.setFont(new Font("Gill Sans Ultra Bold Condensed", 10.0));
+        requestButton.setCursor(Cursor.HAND);
+        requestButton.setLayoutX(118.0);
+        requestButton.setLayoutY(177.0);
+        requestButton.setMnemonicParsing(false);
+        requestButton.setPrefHeight(30.0);
+        requestButton.setPrefWidth(122.0);
+
+        requestButton.setOnAction((e) -> {
+            Gson gson = new Gson();
+            ArrayList<Object> jsonArr = new ArrayList<>();
+            jsonArr.add(Constants.REQUEST);
+
+            jsonArr.add(playerId);
+            jsonArr.add(player.getId());
+
+            String gsonRequest = gson.toJson(jsonArr);
+            try {
+                Client.getClient().sendRequest(gsonRequest);
+            } catch (NotConnectedException ex) {
+                Logger.getLogger(LobbyScreenUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+
+        VBox playerInfo = new VBox(nameLabel, scoreLabel);
+        playerInfo.setAlignment(Pos.CENTER_LEFT);
+
+        playerBox.getChildren().addAll(playerInfo, requestButton);
+
+        return playerBox;
     }
 }

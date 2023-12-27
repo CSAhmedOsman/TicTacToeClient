@@ -47,6 +47,12 @@ public class Player {
         this.name = name;
         this.score = score;
     }
+    public Player(String name,int score){
+        
+        this.name = name;
+        this.score = score;
+    }
+   
 
     public int getId() {
         return id;

@@ -2,22 +2,17 @@ package ui;
 
 import client.ClientApp;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -46,7 +41,7 @@ public class SelectRecord extends AnchorPane {
     protected final Rectangle rectangle2;
     protected final Rectangle btnLogin;
     protected final Circle circle;
-    private ListView<Button> recordsListView;
+    private final ListView<Button> recordsListView;
     protected final DropShadow dropShadow0;
     protected final Button back;
     protected final Button btnBack;
@@ -141,7 +136,7 @@ public class SelectRecord extends AnchorPane {
         dropShadow14 = new DropShadow();
         lableTurnPlayer = new Label();
         dropShadow15 = new DropShadow();
-        turn ="";
+        turn = "";
         setMaxHeight(USE_PREF_SIZE);
         setMaxWidth(USE_PREF_SIZE);
         setMinHeight(USE_PREF_SIZE);
@@ -517,28 +512,24 @@ public class SelectRecord extends AnchorPane {
 
         String directoryPath = "C:\\files";
         addTextFilesToListView(directoryPath);
-        btnBack.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                Parent root = new ModesScreenUI();
-                Util.displayScreen(root);
-            }
-        });
+
+        ClientApp.curDisplayedScreen = this;
+
     }
 
     private void setListeners(Stage stage) {
         btnMin.setOnAction(e -> {
             stage.setIconified(true); // This will minimize the window
         });
+
         btnClose.setOnAction(e -> {
             System.exit(0);
         });
+
         btnBack.setOnAction((e) -> {
             Parent selectMode = new ModesScreenUI();
             Util.displayScreen(selectMode);
-
         });
-
     }
 
     private void addTextFilesToListView(String path) {
@@ -605,6 +596,7 @@ public class SelectRecord extends AnchorPane {
         String[] moves = record.split("\n");
         String turn = moves[moves.length - 1];
         List<String> movesList = Arrays.asList(moves);
+
         simulationThread = new Thread(new Runnable() {
             @Override
             public void run() {

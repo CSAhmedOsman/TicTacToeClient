@@ -46,7 +46,6 @@ public class LocalGame extends GameBoard {
         btnRecordeGame.setDisable(false);
 
         //------------Handlers------
-        addEventHandlers();
         addHandlers();
 
         //----------Game Limits countDownLimit thread

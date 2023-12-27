@@ -292,13 +292,15 @@ public class HomeScreenUI extends AnchorPane {
         Animation.setButtonHoverFunctionality(btnOffLine);
 
         animateIn();
+        
+        ClientApp.curDisplayedScreen = this;
     }
 
     private void setListeners(Stage stage) {
 
         btnLogin.setOnAction((ActionEvent event) -> {
             Parent loginScreen = new LoginScreenUI();
-            Util.displayScreen(loginScreen);
+            animateOut(loginScreen);
         });
 
         btnSignUp.setOnAction((ActionEvent event) -> {

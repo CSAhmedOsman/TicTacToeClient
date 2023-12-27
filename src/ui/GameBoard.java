@@ -157,6 +157,8 @@ public abstract class GameBoard extends BorderPane {
         player2Name = "Player2";
         recordedGame = "";
         isRecord = false;
+        init();
+        ClientApp.curDisplayedScreen = this;
     }
 
     public GameBoard(int mode) {
@@ -606,9 +608,11 @@ public abstract class GameBoard extends BorderPane {
         pane.getChildren().add(pane0);
         pane.getChildren().add(btnClose);
         pane.getChildren().add(btnMin);
-        //  pane.getChildren().add(win);
+
+// pane.getChildren().add(win);
         addEventHandlers();
         addHandlers();
+
     }
 
     protected abstract void nextTern();
@@ -785,7 +789,7 @@ public abstract class GameBoard extends BorderPane {
         });
 
         btnNewGame.setOnAction((e) -> {
-            isRunning=false;
+            isRunning = false;
             countThread.stop();
             recordedGame = "";
             isRecord = false;
@@ -814,7 +818,10 @@ public abstract class GameBoard extends BorderPane {
         if (countDownLimit > 10) {
             Platform.runLater(() -> labelCountNum.setText("00:" + (--countDownLimit)));
         } else {
-            Platform.runLater(() -> labelCountNum.setText("00:0" + (--countDownLimit)));
+            Platform.runLater(() -> {
+                //---------------------- red
+                labelCountNum.setText("00:0" + (--countDownLimit));
+            });
         }
     }
 
@@ -825,7 +832,7 @@ public abstract class GameBoard extends BorderPane {
     }
 
     protected void saveRecordFile() {
-        
+
         Date date = new Date();
         try (FileOutputStream outputStream = new FileOutputStream("C:/files/" + player1Name + "/Game Record at "
                 + date.getDate() + "-" + (date.getMonth() + 1) + "-" + (date.getYear() + 1900) + "-" + date.getHours() + "=" + date.getMinutes() + ".bin", true)) {

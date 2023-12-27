@@ -280,10 +280,12 @@ public class SelectGameLevel extends AnchorPane {
         getChildren().add(logoToe);
         getChildren().add(logoTac);
 
-        addEventHandlers();
+        setListeners();
+        
+        ClientApp.curDisplayedScreen= this;
     }
 
-    protected void addEventHandlers() {
+    protected void setListeners() {
         btnClose.setOnAction((e) -> {
             Platform.exit();
         });

@@ -8,6 +8,7 @@ import exception.NotConnectedException;
 import java.util.ArrayList;
 import javafx.event.ActionEvent;
 import javafx.scene.Cursor;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -261,28 +262,26 @@ public class LoginScreenUI extends Pane {
 
         tfEmail.setText("a@gmail.com");
         pfPassword.setText("Aa#123456");
+        ClientApp.curDisplayedScreen = this;
     }
 
     private void setListeners() {
-
         btnLogin.setOnAction((ActionEvent event) -> {
             Player player = getCurrentPlayer();
             if (player == null) {
                 return;
             }
-
             player.setPassword(PasswordEncryptor.encryptPassword(player.getPassword()));
             Gson gson = new Gson();
-            ArrayList jsonArr = new ArrayList();
-            jsonArr.add(Constants.LOGIN);
-            jsonArr.add(player);
+            ArrayList jsonRequest = new ArrayList();
+            jsonRequest.add(Constants.LOGIN);
+            jsonRequest.add(player);
 
-            String gsonRequest = gson.toJson(jsonArr);
+            String gsonRequest = gson.toJson(jsonRequest);
             try {
                 Client.getClient().sendRequest(gsonRequest);
             } catch (NotConnectedException ex) {
-                System.out.println(ex.getMessage());
-                ex.printStackTrace();
+                Util.showAlertDialog(Alert.AlertType.ERROR, "Server", "The Server is Closed\n" + ex.getMessage());
             }
         });
 
