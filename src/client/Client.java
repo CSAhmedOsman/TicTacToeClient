@@ -8,6 +8,7 @@ package client;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import data.Player;
+import data.GameInfo;
 import exception.NotConnectedException;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -27,8 +28,10 @@ import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import ui.LobbyScreenUI;
 import ui.GameBoard;
+import ui.LocalGame;
 import ui.LoginScreenUI;
 import ui.ModesScreenUI;
+import ui.OnlineGame;
 import utils.Constants;
 import utils.Util;
 
@@ -45,17 +48,19 @@ public class Client {
     boolean isConnected;
 
     private static Client singletonClient;
-    
+
     private Client() {
-        singletonClient.connect();
+
     }
-    
+
     public static Client getClient() {
-        if(singletonClient== null)
-            singletonClient= new Client();
+        if (singletonClient == null) {
+            singletonClient = new Client();
+            singletonClient.connect();
+        }
         return singletonClient;
     }
-    
+
     public void connect() {
         try {
             mySocket = new Socket(Constants.IP_ADDRESS, Constants.PORT);
@@ -77,7 +82,7 @@ public class Client {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void sendRequest(String gson) throws NotConnectedException {
         if (!isConnected) {
             throw new NotConnectedException("Client is not connected to the server");
@@ -123,10 +128,10 @@ public class Client {
                 request();
                 break;
             case 5:
-                //TODO accept();
+                // accept();
                 break;
             case 6:
-                //TODO updateBoard();
+                //TODO
                 break;
             case 7:
                 //TODO logout();
@@ -139,15 +144,26 @@ public class Client {
                 break;
             case Constants.SENDMESSAGE:
                 recieveMessage();
-
                 break;
-            case 11:
-                //TODO getAvailablePlayer();
+            case Constants.SENDINVITE:
+                recieveInvit();
                 break;
             case Constants.BROADCAST_MESSAGE:
-                System.out.println("BroadCast Message");
                 recieveBroadcastMessage();
                 break;
+            case Constants.ACCEPTGAME:
+                startGame();
+                break;
+            case Constants.SENDMOVE:
+                handleMove();
+                break;
+            case 15:
+                //todo
+                break;
+            case Constants.EXIT_PLAYER_GAME:
+                handleExit();
+                break;
+
         }
     }
 
@@ -166,9 +182,9 @@ public class Client {
     private void login() {
         double userId = (double) responceData.get(1);
         Platform.runLater(() -> {
-                Util.showAlertDialog(Alert.AlertType.ERROR, "Login Error", userId+" ");
+            Util.showAlertDialog(Alert.AlertType.ERROR, "Login Error", userId + " ");
         });
-        if(userId >= 0) {
+        if (userId >= 0) {
             Parent modesScreen = new LobbyScreenUI((int) userId);
             Util.displayScreen(modesScreen);
         } else {
@@ -178,14 +194,12 @@ public class Client {
         }
     }
 
-
     private void getAvailablePlayers() {
         ArrayList<Player> getAvailablePlayers = (ArrayList) responceData.get(1);
-        
-       // LobbyScreenUI.setPlayers(getAvailablePlayers);
+
+        // LobbyScreenUI.setPlayers(getAvailablePlayers);
         //Parent AvailablePlayersScreen = new LobbyScreenUI(getAvailablePlayersStatus);
         //Util.displayScreen(AvailablePlayersScreen);
-
     }
 
     private void request() {
@@ -196,26 +210,83 @@ public class Client {
             System.out.println("Failed to handle the request");
             //Parent root = new LobbyScreenUI(responceData);
             //Util.displayScreen(root);
-            
+
         }
     }
-
 
     private void recieveBroadcastMessage() {
         String srcPlayerName = (String) responceData.get(1);
         String message = (String) responceData.get(2);
         System.out.println("RecieveBroadCastMessage");
-        LobbyScreenUI lobbyScreen= (LobbyScreenUI) ClientApp.currentScreen;
+        LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.currentScreen;
         lobbyScreen.desplayMessage(srcPlayerName, message);
     }
 
-    
     private void recieveMessage() {
         String message = (String) responceData.get(1);
         String sourceplayerName = (String) responceData.get(2);
-        
-        GameBoard gameBoard= (GameBoard) ClientApp.currentDisplayedScreen;
-        gameBoard.displayMessage(sourceplayerName, message);
+        OnlineGame onlineGame = (OnlineGame) ClientApp.curDisplayedScreen;
+        onlineGame.displayMessage(sourceplayerName, message);
     }
-}
+//---------------------------Abdelrhman------------------------------
 
+    private void recieveInvit() {
+        Gson gson = new Gson();
+        String jsonString = (String) responceData.get(1);
+        GameInfo info = gson.fromJson(jsonString, GameInfo.class);
+        double type = (double) responceData.get(2);
+        if ((int) type == 2) {
+            Platform.runLater(() -> {
+                Util.invitationAlert(Alert.AlertType.CONFIRMATION, info, "New Game", 2);
+            });
+        } else if ((int) type == 1) {
+            Platform.runLater(() -> {
+                Util.invitationAlert(Alert.AlertType.CONFIRMATION, info, "Invitation To play", 1);
+            });
+        } else {
+            Platform.runLater(() -> {
+                Util.invitationAlert(Alert.AlertType.CONFIRMATION, info, "Exit Game", 3);
+            });
+        }
+
+    }
+
+    private void startGame() {
+        Gson gson = new Gson();
+        String jsonString = (String) responceData.get(1);
+        GameInfo info = gson.fromJson(jsonString, GameInfo.class);
+
+        boolean myTurn = (boolean) responceData.get(2);
+        double type = (double) responceData.get(3);
+        if ((int) type == 2) {
+            OnlineGame game = (OnlineGame) ClientApp.curDisplayedScreen;
+            Platform.runLater(() -> game.startGame());
+
+        } else if ((int) type == 1) {
+            Parent onlineGame = new OnlineGame(info, myTurn);
+            Util.displayScreen(onlineGame);
+        } else {
+            OnlineGame game = (OnlineGame) ClientApp.curDisplayedScreen;
+            Platform.runLater(() -> game.exitGame());
+        }
+
+    }
+
+    private void handleMove() {
+        String playable = (String) responceData.get(1);
+        double x = (double) responceData.get(2);
+        double y = (double) responceData.get(3);
+        System.out.println("playable=" + playable + "x=" + x + "y=" + y);
+        Platform.runLater(() -> {
+            OnlineGame onlineGame = (OnlineGame) ClientApp.curDisplayedScreen;
+            onlineGame.setMove(playable, (int) x, (int) y);
+        });
+
+    }
+
+    private void handleExit() {
+        OnlineGame game = (OnlineGame) ClientApp.curDisplayedScreen;
+        Platform.runLater(() -> game.exitGame());
+    }
+
+}

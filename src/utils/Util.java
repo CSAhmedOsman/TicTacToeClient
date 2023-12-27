@@ -5,7 +5,15 @@
  */
 package utils;
 
+import data.GameInfo;
+import client.Client;
 import client.ClientApp;
+import com.google.gson.Gson;
+import data.GameInfo;
+import exception.NotConnectedException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
@@ -15,6 +23,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
@@ -26,6 +35,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import ui.GameBoard;
+import ui.LocalGame;
+import ui.OnlineGame;
 
 /**
  *
@@ -35,11 +47,11 @@ public class Util {
 
     private static double xOffset;
     private static double yOffset;
+    public static boolean accept;
 
     public static void showAlertDialog(Alert.AlertType alertType, String title, String message) {
         Stage dialogStage = new Stage();
         dialogStage.initModality(Modality.APPLICATION_MODAL);
-
         // Customize the appearance of the dialog
         VBox dialogPane = new VBox();
         dialogPane.setBackground(new Background(new BackgroundFill(Color.web("#ffbdbd"), new CornerRadii(10), Insets.EMPTY)));
@@ -50,7 +62,7 @@ public class Util {
         // Add content to the dialog
         javafx.scene.control.Label titleLabel = new javafx.scene.control.Label(title);
         titleLabel.setStyle("-fx-font-weight: bold;");
-        
+
         javafx.scene.control.Label messageLabel = new javafx.scene.control.Label(message);
         Button okButton = new Button("OK");
         okButton.setOnAction(event -> dismissDialog(dialogStage));
@@ -87,7 +99,7 @@ public class Util {
             dialogStage.setX(event.getScreenX() - xOffset);
             dialogStage.setY(event.getScreenY() - yOffset);
         });
-        
+
         // Apply fade-in animation
         dialogPane.setOpacity(0.0);
         dialogStage.setWidth(300);
@@ -131,5 +143,79 @@ public class Util {
             ClientApp.stage.setY(event.getScreenY() - yOffset);
         });
 
+    }
+
+    public static void invitationAlert(Alert.AlertType alertType, GameInfo info, String message, int type) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(message + " Request");
+        alert.setHeaderText("You've received an " + message + ".");
+        alert.setContentText("From Name = " + info.getSrcPlayerName() + " and has Score= " + info.getSrcPlayerScore());
+
+        // Add accept and reject buttons to the alert
+        ButtonType acceptButton = new ButtonType("Accept");
+        ButtonType rejectButton = new ButtonType("Decline");
+        alert.getButtonTypes().setAll(acceptButton, rejectButton);
+        alert.getDialogPane().setStyle(
+                "-fx-background-color: #F05F76; "
+                + "-fx-font-family: 'Franklin Gothic Demi Cond'; "
+                + "-fx-font-size: 16px; "
+                + "-fx-text-fill: #612D63; "
+                + "-fx-border-color: #8400CC; "
+                + "-fx-border-width: 2px; "
+                + "-fx-border-radius: 5px;"
+                +  "-fx-text-fill: #FFFFFF;");
+        
+        alert.getDialogPane().lookup(".header-panel").setStyle(
+                "-fx-background-color: #A500CC; "
+                + "-fx-font-weight: bold;"
+                +"-fx-font-size: 16px;"
+                +"-fx-text-fill: #FFFFFF;");
+
+        alert.getDialogPane().lookup(".content.label").setStyle(
+                "-fx-font-style: italic;"
+                + "-fx-font-weight: bold;"
+                +"-fx-font-size: 16px;"
+                +"-fx-text-fill: #FFFFFF;");
+        alert.showAndWait().ifPresent(buttonType -> {
+            if (buttonType == acceptButton) {
+                acceptGame(info.getSrcPlayerId(), info.getDestPlayerId(), type);
+            } else if (buttonType == rejectButton) {
+                if (type == 3) {
+                    exitPlayerGame(info.getSrcPlayerId());
+                    OnlineGame game = (OnlineGame) ClientApp.curDisplayedScreen;
+                    Platform.runLater(() -> {
+                        game.playWinVideo();
+                        game.updateMyScore(1);
+                    });
+                }
+            }
+        });
+    }
+
+    private static void acceptGame(int srcPlayerId, int destPlayerId, int type) {
+        Gson gson = new Gson();
+        ArrayList jsonRequest = new ArrayList();
+        jsonRequest.add(Constants.ACCEPTGAME);
+        jsonRequest.add(srcPlayerId);
+        jsonRequest.add(destPlayerId);
+        jsonRequest.add(type);
+        String gsonRequest = gson.toJson(jsonRequest);
+        try {
+            Client.getClient().sendRequest(gsonRequest);
+        } catch (NotConnectedException ex) {
+            Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+   private static void exitPlayerGame(int srcPlayerId){
+        Gson gson = new Gson();
+        ArrayList jsonRequest = new ArrayList();
+        jsonRequest.add(Constants.EXIT_PLAYER_GAME);
+        jsonRequest.add(srcPlayerId);
+        String gsonRequest = gson.toJson(jsonRequest);
+        try {
+            Client.getClient().sendRequest(gsonRequest);
+        } catch (NotConnectedException ex) {
+            Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

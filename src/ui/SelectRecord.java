@@ -93,6 +93,7 @@ public class SelectRecord extends AnchorPane {
     final long numberOfSeconds = 1L;
     private Button[][] buttons = new Button[3][3];
     private Thread simulationThread;
+    String turn;
 
     public SelectRecord() {
 
@@ -140,7 +141,7 @@ public class SelectRecord extends AnchorPane {
         dropShadow14 = new DropShadow();
         lableTurnPlayer = new Label();
         dropShadow15 = new DropShadow();
-
+        turn ="";
         setMaxHeight(USE_PREF_SIZE);
         setMaxWidth(USE_PREF_SIZE);
         setMinHeight(USE_PREF_SIZE);
@@ -457,7 +458,6 @@ public class SelectRecord extends AnchorPane {
         dropShadow14.setSpread(0.69);
         btnMin.setEffect(dropShadow14);
 
-         
         lableTurnPlayer.setLayoutX(32.0);
         lableTurnPlayer.setLayoutY(174.0);
         lableTurnPlayer.setPrefHeight(74.0);
@@ -520,7 +520,7 @@ public class SelectRecord extends AnchorPane {
         btnBack.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Parent root= new ModesScreenUI();
+                Parent root = new ModesScreenUI();
                 Util.displayScreen(root);
             }
         });
@@ -573,6 +573,7 @@ public class SelectRecord extends AnchorPane {
             System.out.println("The specified path either doesn't exist or is not a directory.");
         }
     }
+
     private void displayFileContent(String filePath) {
         recordsListView.setDisable(true);
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -602,13 +603,14 @@ public class SelectRecord extends AnchorPane {
     private void simulateMovesFromRecord(String record) {
         clearBoard(); // Clear the board before simulating moves
         String[] moves = record.split("\n");
+        String turn = moves[moves.length - 1];
         List<String> movesList = Arrays.asList(moves);
         simulationThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                for (String move : movesList) {
-                    String[] player = move.split(", ");
-                    String[] moveDetails = move.split(": ");
+                for (int i = 0; i < moves.length - 1; i++) {
+                    String[] player = moves[i].split(", ");
+                    String[] moveDetails = moves[i].split(": ");
                     String[] coordinates = moveDetails[1].split(", ");
                     int rowIndex = Integer.parseInt(coordinates[0]);
                     int columnIndex = Integer.parseInt(coordinates[1]);
@@ -629,12 +631,12 @@ public class SelectRecord extends AnchorPane {
                 Platform.runLater(() -> {
                     String type;
                     type = checkWin();
-                    if (type.equals("X")) {
-                        lableTurnPlayer.setText("You Win");
-                    } else if (type.equals("O")) {
-                        lableTurnPlayer.setText("You Lose");
-                    } else {
+                    if (type.equals("Draw")) {
                         lableTurnPlayer.setText("You Draw");
+                    } else if (type.equals(turn)) {
+                        lableTurnPlayer.setText("You Win");
+                    } else {
+                        lableTurnPlayer.setText("You Lose");
                     }
                 });
             }

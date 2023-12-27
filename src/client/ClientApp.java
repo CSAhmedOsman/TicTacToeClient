@@ -6,12 +6,16 @@
 package client;
 
 import data.Player;
+import java.io.File;
 import java.util.ArrayList;
 import javafx.application.Application;
 import javafx.event.EventType;
 import javafx.scene.Parent;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import ui.LobbyScreenUI;
@@ -27,14 +31,16 @@ public class ClientApp extends Application {
     public static Stage stage;
     public static Pane currentScreen;
 
-    public static Pane currentDisplayedScreen;
-    
+    public static Pane curDisplayedScreen;
+    public SoundManager soundManager;
+
     @Override
     public void start(Stage stage) throws Exception {
         ClientApp.stage = stage;
-      
-        Parent splashScreen = new SplashScreenUI();
+        soundManager = new SoundManager();
+        soundManager.playSound();
 
+        Parent splashScreen = new SplashScreenUI();
         //Hide top bar of the stage
         stage.initStyle(StageStyle.UNDECORATED);
 

@@ -22,6 +22,7 @@ import javafx.application.Platform;
 public class LocalGame extends GameBoard {
 
     public LocalGame() {
+          pane.getChildren().add(win);
         startGame();
     }
 
@@ -82,23 +83,13 @@ public class LocalGame extends GameBoard {
                 playWinVideo();
             } else {
                 drawer();
+                playLoseVideo();
             }
             // save file if recorded ---
+            recordedGame +=isXTurn ? "X" : "O";
             if (isRecord) {
-                Date date = new Date();
-                try (FileOutputStream outputStream = new FileOutputStream("C:/files/Game Record at "
-                        + date.getDate() + "-" + (date.getMonth() + 1) + "-" + (date.getYear() + 1900) + "-" + date.getHours() + "=" + date.getMinutes() + ".bin", true)) {
-                    try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream))) {
-                        writer.write(recordedGame);
-                        writer.flush();
-                    }
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException ex) {
-                    Logger.getLogger(LocalGame.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                saveRecordFile();
             }
-            recordedGame = "";
         }
     }
 
