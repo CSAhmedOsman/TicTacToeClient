@@ -45,7 +45,7 @@ public class WaitingRoom extends AnchorPane {
     public WaitingRoom() {
         
         isRunning = true;
-        countDownSec = 59;
+        countDownSec = 30;
         countDownMSec = 99;
         rectangle = new Rectangle();
         label = new Label();

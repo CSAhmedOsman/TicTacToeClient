@@ -14,7 +14,7 @@
 <?import javafx.scene.text.Font?>
 
 <BorderPane fx:id="border" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="700.0" style="-fx-background-color: F1AAAA;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
-   <top>
+   <center>
         <Pane fx:id="pane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <children>
                 <Ellipse fx:id="backgroundET" layoutX="626.0" layoutY="36.0" opacity="0.2" radiusX="88.0" radiusY="84.0" stroke="BLACK" strokeType="INSIDE" />
@@ -27,7 +27,7 @@
                 </Label>
                 <Rectangle fx:id="backgroundRBX" arcHeight="5.0" arcWidth="5.0" height="200.0" layoutX="605.0" layoutY="473.0" opacity="0.2" rotate="-25.0" stroke="BLACK" strokeType="INSIDE" width="30.0" />
                 <Rectangle fx:id="backgroundRBX2" arcHeight="5.0" arcWidth="5.0" height="200.0" layoutX="605.0" layoutY="473.0" opacity="0.2" rotate="65.0" stroke="BLACK" strokeType="INSIDE" width="30.0" />
-            <Button fx:id="btnNewGame" layoutX="124.0" layoutY="527.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="131.0" style="-fx-background-radius: 10; -fx-font-size: 20; -fx-font-weight: bold; -fx-background-color: #FD6D84;" text="New Game" textAlignment="CENTER" textFill="WHITE">
+            <Button fx:id="btnNewGame" layoutX="90.0" layoutY="542.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="131.0" style="-fx-background-radius: 10; -fx-font-size: 20; -fx-font-weight: bold; -fx-background-color: #FD6D84;" text="New Game" textAlignment="CENTER" textFill="WHITE">
                <effect>
                   <DropShadow color="#fff7f7" spread="0.25" />
                </effect>
@@ -38,7 +38,28 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Pane layoutX="14.0" layoutY="57.0" prefHeight="450.0" prefWidth="350.0">
+            <Pane fx:id="paneMessage" layoutX="411.0" layoutY="93.0">
+               <children>
+                  <BorderPane fx:id="borderMessage" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="415.0" prefWidth="265.0" style="-fx-background-radius: 20;">
+                     <center>
+                        <TextArea fx:id="taMessage" disable="true" prefWidth="0.0" style="-fx-textColor: black; -fx-background-radius: 10;" BorderPane.alignment="CENTER" />
+                     </center>
+                     <bottom>
+                        <FlowPane BorderPane.alignment="CENTER">
+                           <children>
+                              <TextField fx:id="tfMessage" prefHeight="50.0" prefWidth="180.0" style="-fx-background-radius: 10;" />
+                              <Button fx:id="btnSendMessage" mnemonicParsing="false" prefHeight="50.0" prefWidth="85.0" style="-fx-background-color: #FD6D84; -fx-background-radius: 10;" text="Send" textFill="#f5f3f3">
+                                 <font>
+                                    <Font size="23.0" />
+                                 </font>
+                              </Button>
+                           </children>
+                        </FlowPane>
+                     </bottom>
+                  </BorderPane>
+               </children>
+            </Pane>
+            <Pane layoutX="46.0" layoutY="75.0" prefHeight="450.0" prefWidth="350.0">
                <children>
                       <Rectangle fx:id="backgroundGame" arcHeight="25.0" arcWidth="25.0" fill="#ca4b62" height="450.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="350.0" />
                       <Pane fx:id="panePlayerX" layoutX="25.0" layoutY="23.0" prefHeight="90.0" prefWidth="90.0">
@@ -178,27 +199,6 @@
                               </Button>
                           </children>
                       </Pane>
-                  <Pane layoutX="364.0" layoutY="68.0" prefHeight="384.0" prefWidth="244.0">
-                     <children>
-                        <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="384.0" prefWidth="297.0" style="-fx-background-radius: 20;">
-                           <center>
-                              <TextArea disable="true" prefHeight="332.0" prefWidth="115.0" style="-fx-textColor: black; -fx-background-radius: 10;" BorderPane.alignment="CENTER" />
-                           </center>
-                           <bottom>
-                              <FlowPane prefHeight="49.0" prefWidth="600.0" BorderPane.alignment="CENTER">
-                                 <children>
-                                    <TextField fx:id="textsg" prefHeight="52.0" prefWidth="200.0" style="-fx-background-radius: 10;" />
-                                    <Button fx:id="btnSend" mnemonicParsing="false" prefHeight="48.0" prefWidth="96.0" style="-fx-background-color: #FD6D84; -fx-background-radius: 10;" text="Send" textFill="#f5f3f3">
-                                       <font>
-                                          <Font size="23.0" />
-                                       </font>
-                                    </Button>
-                                 </children>
-                              </FlowPane>
-                           </bottom>
-                        </BorderPane>
-                     </children>
-                  </Pane>
                </children>
                <effect>
                   <DropShadow color="#fff7f7" spread="0.25" />
@@ -226,7 +226,7 @@
                         <DropShadow color="#d0c1c1" spread="0.69" />
                     </effect>
                 </Button>
-                <Button fx:id="btnExitGame" layoutX="430.0" layoutY="527.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="124.0" style="-fx-background-radius: 10; -fx-font-size: 20; -fx-font-weight: bold; -fx-background-color: #FD6D84;" text="Exit Game" textAlignment="CENTER" textFill="WHITE">
+                <Button fx:id="btnExitGame" layoutX="476.0" layoutY="542.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="124.0" style="-fx-background-radius: 10; -fx-font-size: 20; -fx-font-weight: bold; -fx-background-color: #FD6D84;" text="Exit Game" textAlignment="CENTER" textFill="WHITE">
                     <effect>
                         <DropShadow color="#fff7f7" spread="0.25" />
                     </effect>
@@ -237,7 +237,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
                 </Button>
-            <Button fx:id="btnRecordeGame" layoutX="258.0" layoutY="527.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="168.0" style="-fx-background-radius: 10; -fx-font-size: 20; -fx-font-weight: bold; -fx-background-color: #FD6D84;" text="Recorde Game" textAlignment="CENTER" textFill="WHITE">
+            <Button fx:id="btnRecordeGame" layoutX="266.0" layoutY="542.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="168.0" style="-fx-background-radius: 10; -fx-font-size: 20; -fx-font-weight: bold; -fx-background-color: #FD6D84;" text="Recorde Game" textAlignment="CENTER" textFill="WHITE">
                <effect>
                   <DropShadow color="#fff7f7" spread="0.25" />
                </effect>
@@ -250,5 +250,5 @@
             </Button>
             </children>
         </Pane>
-   </top>
+   </center>
 </BorderPane>

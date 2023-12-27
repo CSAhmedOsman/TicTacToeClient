@@ -383,7 +383,8 @@ public class ModesScreenUI extends Pane {
         });
 
         btnOnline.setOnAction((e) -> {
-            Util.showAlertDialog(Alert.AlertType.INFORMATION, "Future work", "Will be Added Soon.");
+            Parent waitingRoom = new WaitingRoom();
+            animateOut(waitingRoom);
         });
 
         btnLogout.setOnAction((e) -> {
