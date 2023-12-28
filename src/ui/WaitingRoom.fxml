@@ -23,7 +23,7 @@
                 <DropShadow color="#e6e1f5" spread="0.75" />
             </effect>
         </Label>
-      <Label layoutX="40.0" layoutY="179.0" text="Waiting for your partner to accept the request" textFill="#431159">
+      <Label layoutX="40.0" layoutY="184.0" text="Waiting for your partner to accept the request" textFill="#431159">
          <font>
             <Font name="Franklin Gothic Demi Cond" size="36.0" />
          </font>
@@ -72,16 +72,16 @@
                 <DropShadow color="#fff7f7" spread="0.69" />
             </effect>
         </Button>
-      <Pane layoutX="200.0" layoutY="200.0" prefHeight="200.0" prefWidth="300.0">
+      <Pane layoutX="200.0" layoutY="226.0" prefHeight="250.0" prefWidth="300.0">
          <children>
-            <ImageView fitHeight="200.0" fitWidth="300.0">
+            <ImageView fitHeight="250.0" fitWidth="300.0">
                <image>
-                  <Image url="@images/gif/loading-loader.gif" />
+                  <Image url="@images/gif/loading.gif" />
                </image>
             </ImageView>
          </children>
       </Pane>
-      <Label fx:id="labelCount" alignment="CENTER" contentDisplay="CENTER" layoutX="201.0" layoutY="426.0" prefWidth="300.0" text="00:00:00">
+      <Label fx:id="labelCount" alignment="CENTER" contentDisplay="CENTER" layoutX="201.0" layoutY="463.0" prefWidth="300.0" text="00:00:00">
          <font>
             <Font name="Franklin Gothic Demi Cond" size="48.0" />
          </font>

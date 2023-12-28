@@ -145,13 +145,22 @@ public abstract class GameBoard extends BorderPane {
         countDownLimit = 0;
         playedKey = 0;
         player1Name = "Player1";
+        player2Name = "Player2";
         recordedGame = "";
         isRecord = false;
         ClientApp.currentScreen = this;
     }
 
-    public GameBoard(String mode) {
-        player2Name = mode;
+    public GameBoard() {
+        init();
+    }
+
+    public GameBoard(String p2name) {
+        player2Name = p2name;
+        init();
+    }
+
+    private void init() {
         setMaxHeight(USE_PREF_SIZE);
         setMaxWidth(USE_PREF_SIZE);
         setMinHeight(USE_PREF_SIZE);
@@ -584,6 +593,7 @@ public abstract class GameBoard extends BorderPane {
         pane.getChildren().add(win);
 
         addEventHandlers();
+        addHandlers();
     }
 
     protected abstract void nextTern();

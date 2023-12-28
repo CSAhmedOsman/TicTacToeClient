@@ -95,7 +95,7 @@ public class WaitingRoom extends AnchorPane {
         label.setEffect(dropShadow);
 
         labe2.setLayoutX(40.0);
-        labe2.setLayoutY(180.0);
+        labe2.setLayoutY(185.0);
         labe2.setText("Waiting for your partner to accept the request");
         labe2.setTextFill(javafx.scene.paint.Color.valueOf("#431159"));
         labe2.setFont(new Font("Franklin Gothic Demi Cond", 36.0));
@@ -224,18 +224,18 @@ public class WaitingRoom extends AnchorPane {
         btnMin.setEffect(dropShadow1);
         
         pane0.setLayoutX(200.0);
-        pane0.setLayoutY(200.0);
-        pane0.setPrefHeight(200.0);
+        pane0.setLayoutY(225.0);
+        pane0.setPrefHeight(250.0);
         pane0.setPrefWidth(300.0);
         
-        imageView0.setFitHeight(200.0);
+        imageView0.setFitHeight(250.0);
         imageView0.setFitWidth(300.0);
-        imageView0.setImage(new Image(getClass().getResource("images/gif/loading-loader.gif").toExternalForm()));
+        imageView0.setImage(new Image(getClass().getResource("images/gif/loading.gif").toExternalForm()));
         
         labelCount.setAlignment(javafx.geometry.Pos.CENTER);
         labelCount.setContentDisplay(javafx.scene.control.ContentDisplay.CENTER);
         labelCount.setLayoutX(201.0);
-        labelCount.setLayoutY(426.0);
+        labelCount.setLayoutY(465.0);
         labelCount.setPrefWidth(300.0);
         labelCount.setText("00:00:00");
         labelCount.setFont(new Font("Franklin Gothic Demi Cond", 48.0));
