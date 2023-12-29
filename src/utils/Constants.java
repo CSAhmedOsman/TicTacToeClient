@@ -12,6 +12,7 @@ package utils;
 public class Constants {
     // ip, port, DB username, DB pass, etc...
     // public static final CAPITAL
+    
     public static final int PORT = 5005;
     public static final String IP_ADDRESS = "127.0.0.1";
     public static final int REGISTER = 1;
@@ -30,6 +31,7 @@ public class Constants {
     public static final int BLOCK_PLAYER= 14;
     public static final int UN_BLOCK_PLAYER= 15;  
     public static final int ONLINE= 16;  
-    
+    public static final int SETDATAOFPLAYER= 17;
+    public static final int UPDATEUSERPROFILE= 18;
 
 }

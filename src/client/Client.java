@@ -28,6 +28,7 @@ import ui.LocalGame;
 import ui.LoginScreenUI;
 import ui.ModesScreenUI;
 import ui.OnlineGame;
+import ui.UserProfileUI;
 import utils.Constants;
 import utils.Util;
 
@@ -159,7 +160,24 @@ public class Client {
             case Constants.UN_BLOCK_PLAYER:
                 unBlockPlayer();
                 break;
+            case Constants.SETDATAOFPLAYER:
+                getDataOfPlayer();
+                break;
         }
+    }
+
+    private void getDataOfPlayer() {
+        String name = (String) responceData.get(1);
+        String email = (String) responceData.get(2);
+        String pass = (String) responceData.get(3);
+
+        Player player = new Player(name, email, pass);
+
+        System.out.println(name + " " + email + " " + pass);
+        UserProfileUI userProfileUI = (UserProfileUI) ClientApp.curDisplayedScreen;
+        Platform.runLater(() -> {
+            userProfileUI.setData(player);
+        });
     }
 
     private void register() {
@@ -212,7 +230,9 @@ public class Client {
         }
 
         LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.curDisplayedScreen;
-        lobbyScreen.displayAvailablePlayers(getAvailablePlayers);
+        Platform.runLater(()->{
+            lobbyScreen.displayAvailablePlayers(getAvailablePlayers);        
+        });
     }
 
     private void request() {

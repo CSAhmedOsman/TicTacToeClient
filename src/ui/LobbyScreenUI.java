@@ -16,6 +16,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
@@ -46,6 +48,10 @@ public class LobbyScreenUI extends AnchorPane {
     protected final Button btnMin;
     protected final DropShadow dropShadow2;
     protected final Button btnBack;
+     protected final MenuButton menuButton;
+    protected final MenuItem profile;
+    protected final MenuItem unBlock;
+    protected final ImageView imageView0;
     protected final Pane pane;
     protected final ImageView imageView;
     protected final Pane pane0;
@@ -56,8 +62,13 @@ public class LobbyScreenUI extends AnchorPane {
     protected final Button btnSend;
     protected final ListView<HBox> playerListView;
     int playerId;
+    boolean isRunning;
+    // private static ArrayList<Player> players;
+    Thread thread;
 
     {
+
+        isRunning = true;
         rectangle = new Rectangle();
         label = new Label();
         dropShadow = new DropShadow();
@@ -70,6 +81,10 @@ public class LobbyScreenUI extends AnchorPane {
         btnMin = new Button();
         dropShadow2 = new DropShadow();
         btnBack = new Button();
+         menuButton = new MenuButton();
+        profile = new MenuItem();
+        unBlock = new MenuItem();
+        imageView0 = new ImageView();
         pane = new Pane();
         imageView = new ImageView();
         pane0 = new Pane();
@@ -200,6 +215,27 @@ public class LobbyScreenUI extends AnchorPane {
         imageView.setFitWidth(40.0);
         imageView.setImage(new Image(getClass().getResource("images/back.png").toExternalForm()));
         btnBack.setGraphic(pane);
+        
+        
+         menuButton.setLayoutX(72.0);
+        menuButton.setLayoutY(12.0);
+        menuButton.setMnemonicParsing(false);
+        menuButton.setPrefHeight(42.0);
+        menuButton.setPrefWidth(50.0);
+        menuButton.setStyle("-fx-background-color: #ffbdbd;");
+        menuButton.setTextFill(javafx.scene.paint.Color.valueOf("#ffbdbd"));
+
+        profile.setMnemonicParsing(false);
+        profile.setText("Profile");
+
+        unBlock.setMnemonicParsing(false);
+        unBlock.setText("Un Block");
+
+        imageView0.setFitHeight(31.0);
+        imageView0.setFitWidth(24.0);
+        imageView0.setImage(new Image(getClass().getResource("images/menu.png").toExternalForm()));
+        menuButton.setGraphic(imageView0);
+        
 
         pane0.setLayoutX(13.0);
         pane0.setLayoutY(200.0);
@@ -247,7 +283,15 @@ public class LobbyScreenUI extends AnchorPane {
         getChildren().add(btnMin);
         pane.getChildren().add(imageView);
         getChildren().add(btnBack);
+<<<<<<< HEAD
         flowPane.getChildren().add(tfMessage);
+=======
+        pane.getChildren().add(imageView0);
+        menuButton.getItems().add(profile);
+        menuButton.getItems().add(unBlock);
+        pane.getChildren().add(menuButton);
+        flowPane.getChildren().add(textsg);
+>>>>>>> clientLobby
         flowPane.getChildren().add(btnSend);
         pane0.getChildren().add(borderPane);
         getChildren().add(pane0);
@@ -259,13 +303,31 @@ public class LobbyScreenUI extends AnchorPane {
     public LobbyScreenUI(int playerId) {
         this.playerId = playerId;
         playerListView = new ListView();
-        playerListView.setLayoutX(332.0);
+        playerListView.setLayoutX(320.0);
         playerListView.setLayoutY(111.0);
         playerListView.setPrefHeight(471.0);
         playerListView.setPrefWidth(355.0);
-        playerListView.setStyle("-fx-background-radius: 10;");
+        playerListView.setStyle("-fx-background-color: #000; -fx-background-radius: 10;");
+
         getChildren().add(playerListView);
-        getAvailablePlayers();
+
+        thread= new Thread(() -> {
+            while (isRunning) {
+                try {
+
+                    Platform.runLater(() -> {
+                        getAvailablePlayers();
+                    });
+                    Thread.sleep(2000);
+                    // Sleep for 10 seconds
+                   
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    Thread.currentThread().stop();
+                }
+            }
+        });
+        thread.start();
 
         setListeners();
         //______________My Work_______________
@@ -300,6 +362,7 @@ public class LobbyScreenUI extends AnchorPane {
         });
     }
 
+<<<<<<< HEAD
     private void sendMessageToAll(int sourceId, String broadcastMessage) {
         Gson gson = new Gson();
         ArrayList jsonRequest = new ArrayList();
@@ -316,6 +379,10 @@ public class LobbyScreenUI extends AnchorPane {
     }
 
     private void addFriend(int playerId, int friendId) {
+=======
+    private void getAvailablePlayers() {
+        System.out.println("getAvailablePlayers in lobby");
+>>>>>>> clientLobby
         Gson gson = new Gson();
         ArrayList jsonRequest = new ArrayList();
         jsonRequest.add(Constants.ADD_FRIEND);
@@ -435,39 +502,78 @@ public class LobbyScreenUI extends AnchorPane {
                 }
 
                 HBox playerBox = createPlayerBox(player);
+                playerBox.setStyle("-fx-background-color: #a02cda; -fx-background-radius: 10;");
                 playerListView.getItems().add(playerBox);
             }
+<<<<<<< HEAD
+=======
+            playerListView.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 10;");
+        });
+
+>>>>>>> clientLobby
     }
 
     private HBox createPlayerBox(Player player) {
         HBox playerBox = new HBox();
+<<<<<<< HEAD
 
+=======
+>>>>>>> clientLobby
         Label nameLabel = new Label();
-        nameLabel.setPrefWidth(198.0);
-        nameLabel.setLayoutX(101.0);
+        nameLabel.setPrefWidth(100.0);
+        // nameLabel.setLayoutX(101.0);
         nameLabel.setLayoutY(27.0);
         nameLabel.setText(player.getName());
-        nameLabel.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
+        nameLabel.setTextFill(javafx.scene.paint.Color.valueOf("#ffffff"));
         nameLabel.setFont(new Font("Franklin Gothic Demi Cond", 21.0));
 
         Label scoreLabel = new Label();
-        scoreLabel.setPrefWidth(198.0);
-        scoreLabel.setLayoutX(101.0);
+        scoreLabel.setPrefWidth(70.0);
+        // scoreLabel.setLayoutX(50.0);
         scoreLabel.setLayoutY(51.0);
         scoreLabel.setText("Score:  " + (String.valueOf(player.getScore())));
-        scoreLabel.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
-        scoreLabel.setFont(new Font("Franklin Gothic Demi Cond", 14.0));
+        scoreLabel.setTextFill(javafx.scene.paint.Color.valueOf("#ffffff"));
+        scoreLabel.setFont(new Font("Franklin Gothic Demi Cond", 18.0));
 
         Button requestButton = new Button("Request");
         requestButton.setStyle("-fx-background-radius: 100; -fx-background-color: #EA93A3;");
-        requestButton.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
+        requestButton.setTextFill(javafx.scene.paint.Color.valueOf("#ffffff"));
         requestButton.setFont(new Font("Gill Sans Ultra Bold Condensed", 10.0));
         requestButton.setCursor(Cursor.HAND);
-        requestButton.setLayoutX(118.0);
+        requestButton.setLayoutX(50.0);
         requestButton.setLayoutY(177.0);
         requestButton.setMnemonicParsing(false);
         requestButton.setPrefHeight(30.0);
-        requestButton.setPrefWidth(122.0);
+        requestButton.setPrefWidth(70.0);
+
+        Button blockButton = new Button("Block");
+        blockButton.setStyle("-fx-background-radius: 100; -fx-background-color: #EA93A3;");
+        blockButton.setTextFill(javafx.scene.paint.Color.valueOf("#ffffff"));
+        blockButton.setFont(new Font("Gill Sans Ultra Bold Condensed", 10.0));
+        blockButton.setCursor(Cursor.HAND);
+        blockButton.setLayoutX(100.0);
+        blockButton.setLayoutY(177.0);
+        blockButton.setMnemonicParsing(false);
+        blockButton.setPrefHeight(30.0);
+        blockButton.setPrefWidth(50.0);
+
+        Button addFriendButton = new Button("Add");
+        addFriendButton.setStyle("-fx-background-radius: 100; -fx-background-color: #EA93A3;");
+        addFriendButton.setTextFill(javafx.scene.paint.Color.valueOf("#ffffff"));
+        addFriendButton.setFont(new Font("Gill Sans Ultra Bold Condensed", 10.0));
+        addFriendButton.setCursor(Cursor.HAND);
+        addFriendButton.setLayoutX(145.0);
+        addFriendButton.setLayoutY(177.0);
+        addFriendButton.setMnemonicParsing(false);
+        addFriendButton.setPrefHeight(30.0);
+        addFriendButton.setPrefWidth(50.0);
+
+        ImageView imageView = new ImageView();
+        imageView.setFitHeight(60.0);
+        imageView.setFitWidth(70.0);
+        imageView.setLayoutX(133.0);
+        imageView.setLayoutY(353.0);
+        imageView.setImage(new Image(getClass().getResource("images/" + ((player.getId()) % 3) + ".png").toExternalForm()));
 
         requestButton.setOnAction((e) -> {
             Gson gson = new Gson();
@@ -485,11 +591,79 @@ public class LobbyScreenUI extends AnchorPane {
             }
         });
 
-        VBox playerInfo = new VBox(nameLabel, scoreLabel);
+        HBox playerInfo = new HBox(nameLabel, scoreLabel);
         playerInfo.setAlignment(Pos.CENTER_LEFT);
+        playerInfo.setSpacing(20);
 
+<<<<<<< HEAD
         playerBox.getChildren().addAll(playerInfo, requestButton);
 
         return playerBox;
     }
+=======
+        HBox buttons = new HBox(requestButton, addFriendButton, blockButton);
+        buttons.setAlignment(Pos.CENTER_LEFT);
+        buttons.setSpacing(10);
+
+        VBox Data = new VBox(playerInfo, buttons);
+        Data.setAlignment(Pos.CENTER_LEFT);
+        //Data.setSpacing(10);
+
+        playerBox.getChildren().addAll(imageView, Data);
+        playerBox.setSpacing(20);
+
+        return playerBox;
+    }
+
+    private void setListeners() {
+
+        btnClose.setOnAction((ActionEvent event) -> {
+            ClientApp.stage.close();
+        });
+
+        btnMin.setOnAction((ActionEvent event) -> {
+            ClientApp.stage.setIconified(true);
+        });
+        btnBack.setOnAction((ActionEvent event) -> {
+            Parent root = new ModesScreenUI();
+            Util.displayScreen(root);
+        });
+        
+        profile.setOnAction((ActionEvent e) -> {
+            Parent root = new UserProfileUI(playerId);
+            Util.displayScreen(root);
+            isRunning = false;
+            //thread.stop();
+        });
+        
+        unBlock.setOnAction((e) -> {
+            Parent root = new UnBlockUI();
+            Util.displayScreen(root);
+        });
+    }
+
+    private void sendMessageToAll(int sourceId, String broadcastMessage) {
+        Gson gson = new Gson();
+        ArrayList jsonRequest = new ArrayList();
+        jsonRequest.add(Constants.BROADCAST_MESSAGE);
+        jsonRequest.add(sourceId);
+        jsonRequest.add(broadcastMessage);
+
+        String gsonRequest = gson.toJson(jsonRequest);
+        try {
+            Client.getClient().sendRequest(gsonRequest);
+        } catch (NotConnectedException ex) {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+
+    public void desplayMessage(String srcPlayerName, String message) {
+        Platform.runLater(() -> {
+            System.out.println("Desplay Message");
+            Util.showAlertDialog(Alert.AlertType.CONFIRMATION, srcPlayerName, message);
+        });
+    }
+
+>>>>>>> clientLobby
 }
