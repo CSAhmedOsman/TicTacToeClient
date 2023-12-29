@@ -48,14 +48,15 @@ public class ClientApp extends Application {
         Util.displayScreen(splashScreen);
 
         int savedUserId = PlayerStorage.loadUserId();
+        
 
-        if (savedUserId == -1) {
+       /* if (savedUserId == -1) {
             Parent login = new LoginScreenUI();
             Util.displayScreen(login);
         } else {
             Parent lobby = new LobbyScreenUI((int) savedUserId);
             Util.displayScreen(lobby);
-        }
+        }*/
     }
 
     /**

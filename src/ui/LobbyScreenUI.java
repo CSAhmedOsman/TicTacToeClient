@@ -217,8 +217,8 @@ public class LobbyScreenUI extends AnchorPane {
         imageView.setImage(new Image(getClass().getResource("images/back.png").toExternalForm()));
         btnBack.setGraphic(pane);
 
-        menuButton.setLayoutX(72.0);
-        menuButton.setLayoutY(12.0);
+        menuButton.setLayoutX(60.0);
+        menuButton.setLayoutY(10.0);
         menuButton.setMnemonicParsing(false);
         menuButton.setPrefHeight(42.0);
         menuButton.setPrefWidth(50.0);
@@ -239,8 +239,15 @@ public class LobbyScreenUI extends AnchorPane {
         pane0.setLayoutX(13.0);
         pane0.setLayoutY(200.0);
         pane0.setPrefHeight(384.0);
-        textArea.setStyle("-fx-textColor: black; -fx-background-radius: 10;");
+        textArea.setStyle("-fx-textColor: black; -fx-background-radius: 10;-fx-background-color: white");
+        textArea.setDisable(true);
+        
+        
+        borderPane.setPrefHeight(385.0);
+        borderPane.setPrefWidth(300.0);
+        
         borderPane.setCenter(textArea);
+        
 
         BorderPane.setAlignment(flowPane, javafx.geometry.Pos.CENTER);
         flowPane.setPrefHeight(49.0);
