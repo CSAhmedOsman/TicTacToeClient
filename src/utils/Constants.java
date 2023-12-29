@@ -21,4 +21,6 @@ public class Constants {
     public static final int  REQUEST =4;
     public static final int BROADCAST_MESSAGE = 12;
     public static final int SENDMESSAGE= 10;
+    public static final int SETDATAOFPLAYER= 17;
+    public static final int UPDATEUSERPROFILE= 18;
 }

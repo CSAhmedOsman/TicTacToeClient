@@ -260,7 +260,7 @@ public class LoginScreenUI extends Pane {
         Animation.setAnimatedNodeIn(btnMinimize);
 
         tfEmail.setText("a@a.com");
-        pfPassword.setText("Aa#0123456");
+        pfPassword.setText("Aa#12345");
     }
 
     private void setListeners() {
