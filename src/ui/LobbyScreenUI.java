@@ -49,7 +49,7 @@ public class LobbyScreenUI extends AnchorPane {
     protected final Button btnMin;
     protected final DropShadow dropShadow2;
     protected final Button btnBack;
-     protected final MenuButton menuButton;
+    protected final MenuButton menuButton;
     protected final MenuItem profile;
     protected final MenuItem unBlock;
     protected final ImageView imageView0;
@@ -82,7 +82,7 @@ public class LobbyScreenUI extends AnchorPane {
         btnMin = new Button();
         dropShadow2 = new DropShadow();
         btnBack = new Button();
-         menuButton = new MenuButton();
+        menuButton = new MenuButton();
         profile = new MenuItem();
         unBlock = new MenuItem();
         imageView0 = new ImageView();
@@ -105,13 +105,13 @@ public class LobbyScreenUI extends AnchorPane {
         rectangle.setArcHeight(5.0);
         rectangle.setArcWidth(5.0);
         rectangle.setFill(javafx.scene.paint.Color.valueOf("#ffbdbd"));
-        rectangle.setHeight(625.0);
-        rectangle.setLayoutX(-4.0);
-        rectangle.setLayoutY(-21.0);
+        rectangle.setHeight(600.0);
+        rectangle.setLayoutX(0.0);
+        rectangle.setLayoutY(0.0);
         rectangle.setSmooth(false);
         rectangle.setStroke(javafx.scene.paint.Color.BLACK);
         rectangle.setStrokeType(javafx.scene.shape.StrokeType.INSIDE);
-        rectangle.setWidth(708.0);
+        rectangle.setWidth(700.0);
 
         label.setLayoutX(32.0);
         label.setLayoutY(87.0);
@@ -216,9 +216,8 @@ public class LobbyScreenUI extends AnchorPane {
         imageView.setFitWidth(40.0);
         imageView.setImage(new Image(getClass().getResource("images/back.png").toExternalForm()));
         btnBack.setGraphic(pane);
-        
-        
-         menuButton.setLayoutX(72.0);
+
+        menuButton.setLayoutX(72.0);
         menuButton.setLayoutY(12.0);
         menuButton.setMnemonicParsing(false);
         menuButton.setPrefHeight(42.0);
@@ -236,25 +235,10 @@ public class LobbyScreenUI extends AnchorPane {
         imageView0.setFitWidth(24.0);
         imageView0.setImage(new Image(getClass().getResource("images/menu.png").toExternalForm()));
         menuButton.setGraphic(imageView0);
-        
 
         pane0.setLayoutX(13.0);
         pane0.setLayoutY(200.0);
         pane0.setPrefHeight(384.0);
-        pane0.setPrefWidth(297.0);
-
-        borderPane.setMaxHeight(USE_PREF_SIZE);
-        borderPane.setMaxWidth(USE_PREF_SIZE);
-        borderPane.setMinHeight(USE_PREF_SIZE);
-        borderPane.setMinWidth(USE_PREF_SIZE);
-        borderPane.setPrefHeight(384.0);
-        borderPane.setPrefWidth(297.0);
-        borderPane.setStyle("-fx-background-radius: 20;");
-
-        BorderPane.setAlignment(textArea, javafx.geometry.Pos.CENTER);
-        textArea.setDisable(true);
-        textArea.setPrefHeight(320.0);
-        textArea.setPrefWidth(297.0);
         textArea.setStyle("-fx-textColor: black; -fx-background-radius: 10;");
         borderPane.setCenter(textArea);
 
@@ -308,7 +292,7 @@ public class LobbyScreenUI extends AnchorPane {
 
         getChildren().add(playerListView);
 
-        thread= new Thread(() -> {
+        thread = new Thread(() -> {
             while (isRunning) {
                 try {
                     Platform.runLater(() -> {
@@ -316,7 +300,7 @@ public class LobbyScreenUI extends AnchorPane {
                     });
                     Thread.sleep(20000);
                     // Sleep for 10 seconds
-                   
+
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     Thread.currentThread().stop();
@@ -356,9 +340,18 @@ public class LobbyScreenUI extends AnchorPane {
             sendMessageToAll(playerId, broadcastMessage);
             tfMessage.clear();
         });
+        profile.setOnAction((ActionEvent e) -> {
+            Parent root = new UserProfileUI(playerId);
+            Util.displayScreen(root);
+            isRunning = false;
+            //thread.stop();
+        });
+        unBlock.setOnAction((e) -> {
+            Parent root = new UnBlockUI();
+            Util.displayScreen(root);
+        });
     }
 
-<<<<<<< HEAD
     private void sendMessageToAll(int sourceId, String broadcastMessage) {
         Gson gson = new Gson();
         ArrayList jsonRequest = new ArrayList();
@@ -371,14 +364,11 @@ public class LobbyScreenUI extends AnchorPane {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
             System.out.println(ex.getMessage());
+            ex.printStackTrace();
         }
     }
 
     private void addFriend(int playerId, int friendId) {
-=======
-    private void getAvailablePlayers() {
-        System.out.println("getAvailablePlayers in lobby");
->>>>>>> clientLobby
         Gson gson = new Gson();
         ArrayList jsonRequest = new ArrayList();
         jsonRequest.add(Constants.ADD_FRIEND);
@@ -486,10 +476,13 @@ public class LobbyScreenUI extends AnchorPane {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
             System.out.println(ex.getMessage());
+            ex.printStackTrace();
         }
     }
 
     public void displayAvailablePlayers(ArrayList<Player> availablePlayers) {
+
+        Platform.runLater(() -> {
             playerListView.getItems().clear();
 
             for (Player player : availablePlayers) {
@@ -501,20 +494,12 @@ public class LobbyScreenUI extends AnchorPane {
                 playerBox.setStyle("-fx-background-color: #a02cda; -fx-background-radius: 10;");
                 playerListView.getItems().add(playerBox);
             }
-<<<<<<< HEAD
-=======
             playerListView.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 10;");
         });
-
->>>>>>> clientLobby
     }
 
     private HBox createPlayerBox(Player player) {
         HBox playerBox = new HBox();
-<<<<<<< HEAD
-
-=======
->>>>>>> clientLobby
         Label nameLabel = new Label();
         nameLabel.setPrefWidth(100.0);
         // nameLabel.setLayoutX(101.0);
@@ -591,12 +576,6 @@ public class LobbyScreenUI extends AnchorPane {
         playerInfo.setAlignment(Pos.CENTER_LEFT);
         playerInfo.setSpacing(20);
 
-<<<<<<< HEAD
-        playerBox.getChildren().addAll(playerInfo, requestButton);
-
-        return playerBox;
-    }
-=======
         HBox buttons = new HBox(requestButton, addFriendButton, blockButton);
         buttons.setAlignment(Pos.CENTER_LEFT);
         buttons.setSpacing(10);
@@ -611,55 +590,10 @@ public class LobbyScreenUI extends AnchorPane {
         return playerBox;
     }
 
-    private void setListeners() {
-
-        btnClose.setOnAction((ActionEvent event) -> {
-            ClientApp.stage.close();
-        });
-
-        btnMin.setOnAction((ActionEvent event) -> {
-            ClientApp.stage.setIconified(true);
-        });
-        btnBack.setOnAction((ActionEvent event) -> {
-            Parent root = new ModesScreenUI();
-            Util.displayScreen(root);
-        });
-        
-        profile.setOnAction((ActionEvent e) -> {
-            Parent root = new UserProfileUI(playerId);
-            Util.displayScreen(root);
-            isRunning = false;
-            //thread.stop();
-        });
-        
-        unBlock.setOnAction((e) -> {
-            Parent root = new UnBlockUI();
-            Util.displayScreen(root);
-        });
-    }
-
-    private void sendMessageToAll(int sourceId, String broadcastMessage) {
-        Gson gson = new Gson();
-        ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.BROADCAST_MESSAGE);
-        jsonRequest.add(sourceId);
-        jsonRequest.add(broadcastMessage);
-
-        String gsonRequest = gson.toJson(jsonRequest);
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            System.out.println(ex.getMessage());
-            ex.printStackTrace();
-        }
-    }
-
     public void desplayMessage(String srcPlayerName, String message) {
         Platform.runLater(() -> {
             System.out.println("Desplay Message");
             Util.showAlertDialog(Alert.AlertType.CONFIRMATION, srcPlayerName, message);
         });
     }
-
->>>>>>> clientLobby
 }
