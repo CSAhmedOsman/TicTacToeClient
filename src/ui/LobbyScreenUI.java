@@ -8,6 +8,7 @@ import exception.NotConnectedException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -283,15 +284,11 @@ public class LobbyScreenUI extends AnchorPane {
         getChildren().add(btnMin);
         pane.getChildren().add(imageView);
         getChildren().add(btnBack);
-<<<<<<< HEAD
         flowPane.getChildren().add(tfMessage);
-=======
         pane.getChildren().add(imageView0);
         menuButton.getItems().add(profile);
         menuButton.getItems().add(unBlock);
         pane.getChildren().add(menuButton);
-        flowPane.getChildren().add(textsg);
->>>>>>> clientLobby
         flowPane.getChildren().add(btnSend);
         pane0.getChildren().add(borderPane);
         getChildren().add(pane0);
@@ -314,11 +311,10 @@ public class LobbyScreenUI extends AnchorPane {
         thread= new Thread(() -> {
             while (isRunning) {
                 try {
-
                     Platform.runLater(() -> {
                         getAvailablePlayers();
                     });
-                    Thread.sleep(2000);
+                    Thread.sleep(20000);
                     // Sleep for 10 seconds
                    
                 } catch (InterruptedException e) {
