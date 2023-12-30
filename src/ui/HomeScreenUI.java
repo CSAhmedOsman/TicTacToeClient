@@ -292,8 +292,7 @@ public class HomeScreenUI extends AnchorPane {
         Animation.setButtonHoverFunctionality(btnOffLine);
 
         animateIn();
-
-        ClientApp.currentScreen = this;
+        ClientApp.curDisplayedScreen = this;
     }
 
     private void setListeners(Stage stage) {

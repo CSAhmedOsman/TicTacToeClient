@@ -1,0 +1,7 @@
+.custom-alert {
+    -fx-background-color: #f0f0f0;
+    -fx-font-family: "Arial";
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+    /* Add more styling properties as needed */
+}

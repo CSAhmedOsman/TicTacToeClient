@@ -2,19 +2,24 @@ package ui.lobby;
 
 import client.Client;
 import client.ClientApp;
+import com.google.gson.Gson;
 import data.Player;
 import exception.NotConnectedException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
@@ -25,10 +30,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import static javafx.scene.layout.Region.USE_PREF_SIZE;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-import utils.JsonHandler;
 import utils.Constants;
 import utils.Util;
 
@@ -46,6 +51,10 @@ public class LobbyView extends AnchorPane {
     protected final Button btnMin;
     protected final DropShadow dropShadow2;
     protected final Button btnBack;
+    protected final MenuButton menuButton;
+    protected final MenuItem profile;
+    protected final MenuItem unBlock;
+    protected final ImageView imageView0;
     protected final Pane pane;
     protected final ImageView imageView;
     protected final Pane pane0;
@@ -55,9 +64,14 @@ public class LobbyView extends AnchorPane {
     protected final TextField tfMessage;
     protected final Button btnSend;
     protected final ListView<HBox> playerListView;
-    int playerId;
+    public int playerId;
+    boolean isRunning;
+    // private static ArrayList<Player> players;
+    Thread thread;
 
     {
+
+        isRunning = true;
         rectangle = new Rectangle();
         label = new Label();
         dropShadow = new DropShadow();
@@ -70,6 +84,10 @@ public class LobbyView extends AnchorPane {
         btnMin = new Button();
         dropShadow2 = new DropShadow();
         btnBack = new Button();
+        menuButton = new MenuButton();
+        profile = new MenuItem();
+        unBlock = new MenuItem();
+        imageView0 = new ImageView();
         pane = new Pane();
         imageView = new ImageView();
         pane0 = new Pane();
@@ -89,13 +107,13 @@ public class LobbyView extends AnchorPane {
         rectangle.setArcHeight(5.0);
         rectangle.setArcWidth(5.0);
         rectangle.setFill(javafx.scene.paint.Color.valueOf("#ffbdbd"));
-        rectangle.setHeight(625.0);
-        rectangle.setLayoutX(-4.0);
-        rectangle.setLayoutY(-21.0);
+        rectangle.setHeight(600.0);
+        rectangle.setLayoutX(0.0);
+        rectangle.setLayoutY(0.0);
         rectangle.setSmooth(false);
         rectangle.setStroke(javafx.scene.paint.Color.BLACK);
         rectangle.setStrokeType(javafx.scene.shape.StrokeType.INSIDE);
-        rectangle.setWidth(708.0);
+        rectangle.setWidth(700.0);
 
         label.setLayoutX(32.0);
         label.setLayoutY(87.0);
@@ -198,28 +216,40 @@ public class LobbyView extends AnchorPane {
 
         imageView.setFitHeight(45.0);
         imageView.setFitWidth(40.0);
-        //imageView.setImage(new Image(getClass().getResource("images/back.png").toExternalForm()));
+        imageView.setImage(new Image(getClass().getResource("images/back.png").toExternalForm()));
         btnBack.setGraphic(pane);
+
+        menuButton.setLayoutX(60.0);
+        menuButton.setLayoutY(10.0);
+        menuButton.setMnemonicParsing(false);
+        menuButton.setPrefHeight(42.0);
+        menuButton.setPrefWidth(50.0);
+        menuButton.setStyle("-fx-background-color: #ffbdbd;");
+        menuButton.setTextFill(javafx.scene.paint.Color.valueOf("#ffbdbd"));
+
+        profile.setMnemonicParsing(false);
+        profile.setText("Profile");
+
+        unBlock.setMnemonicParsing(false);
+        unBlock.setText("Un Block");
+
+        imageView0.setFitHeight(31.0);
+        imageView0.setFitWidth(24.0);
+        imageView0.setImage(new Image(getClass().getResource("images/menu.png").toExternalForm()));
+        menuButton.setGraphic(imageView0);
 
         pane0.setLayoutX(13.0);
         pane0.setLayoutY(200.0);
         pane0.setPrefHeight(384.0);
-        pane0.setPrefWidth(297.0);
-
-        borderPane.setMaxHeight(USE_PREF_SIZE);
-        borderPane.setMaxWidth(USE_PREF_SIZE);
-        borderPane.setMinHeight(USE_PREF_SIZE);
-        borderPane.setMinWidth(USE_PREF_SIZE);
-        borderPane.setPrefHeight(384.0);
-        borderPane.setPrefWidth(297.0);
-        borderPane.setStyle("-fx-background-radius: 20;");
-
-        BorderPane.setAlignment(textArea, javafx.geometry.Pos.CENTER);
+        textArea.setStyle("-fx-textColor: black; -fx-background-radius: 10;-fx-background-color: white");
         textArea.setDisable(true);
-        textArea.setPrefHeight(320.0);
-        textArea.setPrefWidth(297.0);
-        textArea.setStyle("-fx-textColor: black; -fx-background-radius: 10;");
+        
+        
+        borderPane.setPrefHeight(385.0);
+        borderPane.setPrefWidth(300.0);
+        
         borderPane.setCenter(textArea);
+        
 
         BorderPane.setAlignment(flowPane, javafx.geometry.Pos.CENTER);
         flowPane.setPrefHeight(49.0);
@@ -248,12 +278,16 @@ public class LobbyView extends AnchorPane {
         pane.getChildren().add(imageView);
         getChildren().add(btnBack);
         flowPane.getChildren().add(tfMessage);
+        pane.getChildren().add(imageView0);
+        menuButton.getItems().add(profile);
+        menuButton.getItems().add(unBlock);
+        pane.getChildren().add(menuButton);
         flowPane.getChildren().add(btnSend);
         pane0.getChildren().add(borderPane);
         getChildren().add(pane0);
 
         //______________My Work_______________
-        ClientApp.currentScreen = this;
+        ClientApp.curDisplayedScreen = this;
     }
 
     public LobbyView(int playerId) {
@@ -274,6 +308,23 @@ public class LobbyView extends AnchorPane {
         textArea.setEditable(false);
         textArea.setWrapText(true);
         textArea.setStyle("-fx-font-family: 'Arial'; -fx-font-size: 18; -fx-font-type: 'bold';");
+        
+        thread = new Thread(() -> {
+            while (isRunning) {
+                try {
+                    Platform.runLater(() -> {
+                        lobbyController.getAvailablePlayers();
+                    });
+                    Thread.sleep(20000);
+                    // Sleep for 10 seconds
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    Thread.currentThread().stop();
+                }
+            }
+        });
+        thread.start();
     }
 
     public void displayMessage(String srcPlayerName, String message) {
@@ -310,38 +361,71 @@ public class LobbyView extends AnchorPane {
 
     private HBox createPlayerBox(Player player) {
         HBox playerBox = new HBox();
-
         Label nameLabel = new Label();
-        nameLabel.setPrefWidth(198.0);
-        nameLabel.setLayoutX(101.0);
+        nameLabel.setPrefWidth(100.0);
+        // nameLabel.setLayoutX(101.0);
         nameLabel.setLayoutY(27.0);
         nameLabel.setText(player.getName());
-        nameLabel.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
+        nameLabel.setTextFill(javafx.scene.paint.Color.valueOf("#ffffff"));
         nameLabel.setFont(new Font("Franklin Gothic Demi Cond", 21.0));
 
         Label scoreLabel = new Label();
-        scoreLabel.setPrefWidth(198.0);
-        scoreLabel.setLayoutX(101.0);
+        scoreLabel.setPrefWidth(70.0);
+        // scoreLabel.setLayoutX(50.0);
         scoreLabel.setLayoutY(51.0);
         scoreLabel.setText("Score:  " + (String.valueOf(player.getScore())));
-        scoreLabel.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
-        scoreLabel.setFont(new Font("Franklin Gothic Demi Cond", 14.0));
+        scoreLabel.setTextFill(javafx.scene.paint.Color.valueOf("#ffffff"));
+        scoreLabel.setFont(new Font("Franklin Gothic Demi Cond", 18.0));
 
         Button requestButton = new Button("Request");
         requestButton.setStyle("-fx-background-radius: 100; -fx-background-color: #EA93A3;");
-        requestButton.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
+        requestButton.setTextFill(javafx.scene.paint.Color.valueOf("#ffffff"));
         requestButton.setFont(new Font("Gill Sans Ultra Bold Condensed", 10.0));
         requestButton.setCursor(Cursor.HAND);
-        requestButton.setLayoutX(118.0);
+        requestButton.setLayoutX(50.0);
         requestButton.setLayoutY(177.0);
         requestButton.setMnemonicParsing(false);
         requestButton.setPrefHeight(30.0);
-        requestButton.setPrefWidth(122.0);
+        requestButton.setPrefWidth(70.0);
+
+        Button blockButton = new Button("Block");
+        blockButton.setStyle("-fx-background-radius: 100; -fx-background-color: #EA93A3;");
+        blockButton.setTextFill(javafx.scene.paint.Color.valueOf("#ffffff"));
+        blockButton.setFont(new Font("Gill Sans Ultra Bold Condensed", 10.0));
+        blockButton.setCursor(Cursor.HAND);
+        blockButton.setLayoutX(100.0);
+        blockButton.setLayoutY(177.0);
+        blockButton.setMnemonicParsing(false);
+        blockButton.setPrefHeight(30.0);
+        blockButton.setPrefWidth(50.0);
+
+        Button addFriendButton = new Button("Add");
+        addFriendButton.setStyle("-fx-background-radius: 100; -fx-background-color: #EA93A3;");
+        addFriendButton.setTextFill(javafx.scene.paint.Color.valueOf("#ffffff"));
+        addFriendButton.setFont(new Font("Gill Sans Ultra Bold Condensed", 10.0));
+        addFriendButton.setCursor(Cursor.HAND);
+        addFriendButton.setLayoutX(145.0);
+        addFriendButton.setLayoutY(177.0);
+        addFriendButton.setMnemonicParsing(false);
+        addFriendButton.setPrefHeight(30.0);
+        addFriendButton.setPrefWidth(50.0);
+
+        ImageView imageView = new ImageView();
+        imageView.setFitHeight(60.0);
+        imageView.setFitWidth(70.0);
+        imageView.setLayoutX(133.0);
+        imageView.setLayoutY(353.0);
+        imageView.setImage(new Image(getClass().getResource("images/" + ((player.getId()) % 3) + ".png").toExternalForm()));
 
         requestButton.setOnAction((e) -> {
-            
-            String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.REQUEST), 
-                    String.valueOf(playerId), String.valueOf(player.getId()));
+            Gson gson = new Gson();
+            ArrayList<Object> jsonArr = new ArrayList<>();
+            jsonArr.add(Constants.REQUEST);
+
+            jsonArr.add(playerId);
+            jsonArr.add(player.getId());
+
+            String gsonRequest = gson.toJson(jsonArr);
             try {
                 Client.getClient().sendRequest(gsonRequest);
             } catch (NotConnectedException ex) {
@@ -349,10 +433,20 @@ public class LobbyView extends AnchorPane {
             }
         });
 
-        VBox playerInfo = new VBox(nameLabel, scoreLabel);
+        HBox playerInfo = new HBox(nameLabel, scoreLabel);
         playerInfo.setAlignment(Pos.CENTER_LEFT);
+        playerInfo.setSpacing(20);
 
-        playerBox.getChildren().addAll(playerInfo, requestButton);
+        HBox buttons = new HBox(requestButton, addFriendButton, blockButton);
+        buttons.setAlignment(Pos.CENTER_LEFT);
+        buttons.setSpacing(10);
+
+        VBox Data = new VBox(playerInfo, buttons);
+        Data.setAlignment(Pos.CENTER_LEFT);
+        //Data.setSpacing(10);
+
+        playerBox.getChildren().addAll(imageView, Data);
+        playerBox.setSpacing(20);
 
         return playerBox;
     }
@@ -371,6 +465,14 @@ public class LobbyView extends AnchorPane {
 
     public void setSendBtnListener(EventHandler<ActionEvent> eventHandler) {
         btnSend.setOnAction(eventHandler);
+    }
+    
+    public void setProfileBtnListener(EventHandler<ActionEvent> eventHandler) {
+        profile.setOnAction(eventHandler);
+    }
+    
+    public void setUnBlockBtnListener(EventHandler<ActionEvent> eventHandler) {
+        unBlock.setOnAction(eventHandler);
     }
 
     public String getMessageText() {

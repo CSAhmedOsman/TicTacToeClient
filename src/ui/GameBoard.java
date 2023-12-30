@@ -1,14 +1,15 @@
 package ui;
 
-import utils.JsonHandler;
-import client.Client;
 import client.ClientApp;
-import com.google.gson.Gson;
-import data.Message;
 import data.Player;
-import exception.NotConnectedException;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.PauseTransition;
@@ -37,6 +38,7 @@ public abstract class GameBoard extends BorderPane {
 
     protected final Pane pane;
     protected final Pane win;
+    protected final Pane lose;
     protected final Ellipse backgroundET;
     protected final Rectangle backgroundRTX;
     protected final Rectangle backgroundRTX2;
@@ -99,6 +101,7 @@ public abstract class GameBoard extends BorderPane {
         boardSize = 3;
         pane = new Pane();
         win = new Pane();
+        lose = new Pane();
         backgroundET = new Ellipse();
         backgroundRTX = new Rectangle();
         backgroundRTX2 = new Rectangle();
@@ -148,26 +151,29 @@ public abstract class GameBoard extends BorderPane {
         player2Name = "Player2";
         recordedGame = "";
         isRecord = false;
-
         init();
-        ClientApp.currentScreen = this;
+        ClientApp.curDisplayedScreen = this;
     }
 
     public GameBoard(int mode) {
         player2Name = "Robot";
         robotLevel = mode;
+        init();
     }
 
     public GameBoard() {
+        init();
     }
 
     public GameBoard(String p2) {
         player2Name = p2;
+        init();
     }
 
     public GameBoard(String p1, String p2) {
         player1Name = p1;
         player2Name = p2;
+        init();
     }
 
     // show recorded games ---
@@ -363,9 +369,10 @@ public abstract class GameBoard extends BorderPane {
         labelPlayerX.setLayoutY(11.0);
         labelPlayerX.setMaxWidth(80.0);
         labelPlayerX.setText(player1Name + " X");
+        labelPlayerX.setContentDisplay(javafx.scene.control.ContentDisplay.CENTER);
         labelPlayerX.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
         labelPlayerX.setTextFill(javafx.scene.paint.Color.WHITE);
-        labelPlayerX.setFont(new Font("Arial Rounded MT Bold", 18.0));
+        labelPlayerX.setFont(new Font("Arial Rounded MT Bold", 14.0));
 
         labelPlayerXNum.setLayoutX(40.0);
         labelPlayerXNum.setLayoutY(45.0);
@@ -418,9 +425,10 @@ public abstract class GameBoard extends BorderPane {
         labelPlayerO.setLayoutY(11.0);
         labelPlayerO.setText(player2Name + " O");
         labelPlayerO.setMaxWidth(80.0);
+        labelPlayerO.setContentDisplay(javafx.scene.control.ContentDisplay.CENTER);
         labelPlayerO.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
         labelPlayerO.setTextFill(javafx.scene.paint.Color.WHITE);
-        labelPlayerO.setFont(new Font("Arial Rounded MT Bold", 18.0));
+        labelPlayerO.setFont(new Font("Arial Rounded MT Bold", 14.0));
 
         labelPlayerONum.setLayoutX(40.0);
         labelPlayerONum.setLayoutY(45.0);
@@ -469,6 +477,14 @@ public abstract class GameBoard extends BorderPane {
         win.setDisable(true);
         win.setStyle("-fx-background-radius: 10; -fx-background-color: #FD6D84;");
 
+        lose.setLayoutX(116.0);
+        lose.setLayoutY(115.0);
+        lose.setPrefHeight(370.0);
+        lose.setPrefWidth(468.0);
+        lose.setOpacity(0.0);
+        lose.setDisable(true);
+        lose.setStyle("-fx-background-radius: 10; -fx-background-color: #FD6D84;");
+
         backgroundPosition.setArcHeight(20.0);
         backgroundPosition.setArcWidth(20.0);
         backgroundPosition.setFill(javafx.scene.paint.Color.valueOf("#e4e4e4"));
@@ -494,41 +510,15 @@ public abstract class GameBoard extends BorderPane {
             for (int j = 0; j < boardSize; j++) {
                 position[i][j].setAlignment(javafx.geometry.Pos.CENTER);
                 position[i][j].setMnemonicParsing(false);
-                position[i][j].setPrefHeight(85.0);
-                position[i][j].setPrefWidth(85.0);
+                position[i][j].setPrefHeight(250 / boardSize);
+                position[i][j].setPrefWidth(250 / boardSize);
                 position[i][j].setText("");
                 position[i][j].setStyle("-fx-background-radius: 10; -fx-background-color: #c7c7c7;");
                 position[i][j].setTextFill(javafx.scene.paint.Color.valueOf("#030040"));
-                position[i][j].setFont(new Font("Arial Rounded MT Bold", 36.0));
+                position[i][j].setFont(new Font("Arial Rounded MT Bold", (100 / boardSize)));
                 position[i][j].setCursor(Cursor.HAND);
-                if (i == 0) {
-                    position[i][j].setLayoutY(11.0);
-                    if (j == 0) {
-                        position[i][j].setLayoutX(11.0);
-                    } else if (j == 1) {
-                        position[i][j].setLayoutX(107.0);
-                    } else {
-                        position[i][j].setLayoutX(203.0);
-                    }
-                } else if (i == 1) {
-                    position[i][j].setLayoutY(107.0);
-                    if (j == 0) {
-                        position[i][j].setLayoutX(11.0);
-                    } else if (j == 1) {
-                        position[i][j].setLayoutX(107.0);
-                    } else {
-                        position[i][j].setLayoutX(203.0);
-                    }
-                } else {
-                    position[i][j].setLayoutY(203.0);
-                    if (j == 0) {
-                        position[i][j].setLayoutX(11.0);
-                    } else if (j == 1) {
-                        position[i][j].setLayoutX(107.0);
-                    } else {
-                        position[i][j].setLayoutX(203.0);
-                    }
-                }
+                position[i][j].setLayoutY((50 / (boardSize + 1)) + (i * ((250 / (boardSize)) + (50 / (boardSize + 1)))));
+                position[i][j].setLayoutX((50 / (boardSize + 1)) + (j * ((250 / (boardSize)) + (50 / (boardSize + 1)))));
             }
         }
 
@@ -612,14 +602,18 @@ public abstract class GameBoard extends BorderPane {
         pane.getChildren().add(pane0);
         pane.getChildren().add(btnClose);
         pane.getChildren().add(btnMin);
-        pane.getChildren().add(win);
 
+// pane.getChildren().add(win);
         addEventHandlers();
+        addHandlers();
+
     }
 
     protected abstract void nextTern();
 
     protected abstract void addHandlers();
+
+    protected abstract void startGame();
 
     protected void changeTern() {
         countDownLimit = 30;
@@ -699,7 +693,7 @@ public abstract class GameBoard extends BorderPane {
 
         // Check 2nd diagonals
         for (int i = 0; i < boardSize; i++) {
-            if (position[i][boardSize - 1 - i].getText().equals("")
+            if (position[i][boardSize - 1 - i].getText() != ""
                     && position[i][boardSize - 1 - i].getText().equals(tempDiagonal)) {
                 indexes[i][0] = i;
                 indexes[i][1] = boardSize - 1 - i;
@@ -720,15 +714,15 @@ public abstract class GameBoard extends BorderPane {
                 position[winIndexes[i][0]][winIndexes[i][1]].setEffect(dropShadow1);
             }
             paneCount.setOpacity(0.0);
-            if (position[winIndexes[boardSize - 1][0]][winIndexes[boardSize - 1][1]].getText().equals("X")) {
+            if (position[winIndexes[boardSize - 1][0]][winIndexes[boardSize - 1][1]].getText() == "X") {
                 labelPlayerXNum.setText("" + (Integer.valueOf(labelPlayerXNum.getText()) + 1));
-            } else if (position[winIndexes[boardSize - 1][0]][winIndexes[boardSize - 1][1]].getText().equals("O")) {
+            } else if (position[winIndexes[boardSize - 1][0]][winIndexes[boardSize - 1][1]].getText() == "O") {
                 labelPlayerONum.setText("" + (Integer.valueOf(labelPlayerONum.getText()) + 1));
             }
         }
     }
 
-    protected void playWinVideo() {
+    public void playWinVideo() {
         PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
         pause.setOnFinished(event -> {
             String fileName = "/src/ui/video/win.mp4";
@@ -747,6 +741,25 @@ public abstract class GameBoard extends BorderPane {
         pause.play();
     }
 
+    protected void playLoseVideo() {
+        PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
+        pause.setOnFinished(event -> {
+            String fileName = "/src/ui/video/lose.mp4";
+            String directory = System.getProperty("user.dir");
+            String path = directory + fileName;
+            Media media = new Media(new File(path).toURI().toString());
+            mediaPlayer = new MediaPlayer(media);
+            MediaView mediaView = new MediaView(mediaPlayer);
+            mediaPlayer.setAutoPlay(true);
+            mediaView.setLayoutX(5.0);
+            mediaView.setLayoutY(5.0);
+            lose.setOpacity(1.0);
+            lose.getChildren().add(mediaView);
+            lose.setDisable(false);
+        });
+        pause.play();
+    }
+
     protected void addEventHandlers() {
         btnClose.setOnAction((e) -> {
             isRunning = false;
@@ -755,8 +768,6 @@ public abstract class GameBoard extends BorderPane {
 
         btnMin.setOnAction((e) -> {
             ClientApp.stage.setIconified(true);
-            Message message = new Message("Send Message To Target Player", 6, 7);
-            sendMessage(message);
         });
 
         win.setOnMouseClicked((e) -> {
@@ -765,8 +776,17 @@ public abstract class GameBoard extends BorderPane {
             win.setDisable(true);
         });
 
+        lose.setOnMouseClicked((e) -> {
+            mediaPlayer.pause();
+            lose.setOpacity(0.0);
+            lose.setDisable(true);
+        });
+
         btnNewGame.setOnAction((e) -> {
+            isRunning = false;
             countThread.stop();
+            recordedGame = "";
+            isRecord = false;
             startGame();
         });
 
@@ -805,28 +825,19 @@ public abstract class GameBoard extends BorderPane {
         labelDrawNum.setText("" + (Integer.valueOf(labelDrawNum.getText()) + 1));
     }
 
-    protected abstract void startGame();
+    protected void saveRecordFile() {
 
-    private void sendMessage(Message message) {
-
-        Gson gson= new Gson();
-        String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.SENDMESSAGE)
-                , JsonHandler.serelizeObject(message));
-        
-        sendRequest(gsonRequest);
-    }
-
-    public void sendRequest(String gsonRequest) {
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            Logger.getLogger(GameBoard.class.getName()).log(Level.SEVERE, null, ex);
+        Date date = new Date();
+        try (FileOutputStream outputStream = new FileOutputStream("C:/files/" + player1Name + "/Game Record at "
+                + date.getDate() + "-" + (date.getMonth() + 1) + "-" + (date.getYear() + 1900) + "-" + date.getHours() + "=" + date.getMinutes() + ".bin", true)) {
+            try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream))) {
+                writer.write(recordedGame);
+                writer.flush();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException ex) {
+            Logger.getLogger(OnlineGame.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    public void displayMessage(String srcPlayerName, String message) {
-        Platform.runLater(() -> {
-            Util.showAlertDialog(Alert.AlertType.CONFIRMATION, srcPlayerName, message);
-        });
     }
 }

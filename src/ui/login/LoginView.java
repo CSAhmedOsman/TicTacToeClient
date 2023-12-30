@@ -37,6 +37,9 @@ public class LoginView extends Pane {
     protected final DropShadow dropShadow;
     protected final Button btnMinimize;
     protected final DropShadow dropShadow0;
+    
+    //_________________________ My Work ___________________________
+    private LoginController loginController;
 
     public LoginView() {
 
@@ -258,8 +261,8 @@ public class LoginView extends Pane {
 
         tfEmail.setText("a@a.com");
         pfPassword.setText("Aa#01234");
-        new LoginController(this);
-        ClientApp.currentScreen= this;
+        loginController = new LoginController(this);
+        ClientApp.curDisplayedScreen = this;
     }
     
     public String getEmail() {

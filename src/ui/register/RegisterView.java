@@ -250,7 +250,8 @@ public class RegisterView extends Pane {
         getChildren().add(btnMinimize);
 
         RegisterController registerController = new RegisterController(this);
-        ClientApp.currentScreen = this;
+        
+        ClientApp.curDisplayedScreen= this;
     }
     
     public String getUsername() {

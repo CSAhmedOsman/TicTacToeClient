@@ -2,6 +2,7 @@ package client;
 
 import com.google.gson.reflect.TypeToken;
 import data.Player;
+import data.GameInfo;
 import utils.PlayerStorage;
 import exception.NotConnectedException;
 import java.io.DataInputStream;
@@ -16,9 +17,10 @@ import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import ui.lobby.LobbyView;
-import ui.GameBoard;
 import utils.JsonHandler;
 import ui.login.LoginView;
+import ui.OnlineGame;
+import ui.UserProfileUI;
 import utils.Constants;
 import utils.Util;
 
@@ -42,6 +44,7 @@ public class Client {
     private static Client singletonClient;
 
     private Client() {
+
     }
 
     public static Client getClient() {
@@ -72,6 +75,8 @@ public class Client {
             out.close();
             mySocket.close();
             isConnected = false;
+            thread.stop();
+            thread = null;
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -101,7 +106,8 @@ public class Client {
     }
 
     private void handleResponse(String gsonResponce) {
-        Type listType= new TypeToken<ArrayList<Object>>() {}.getType();
+        Type listType = new TypeToken<ArrayList<Object>>() {
+        }.getType();
         responceData = JsonHandler.deserializeArray(gsonResponce, listType);
 
         int action = Integer.valueOf(responceData.get(0));
@@ -119,29 +125,23 @@ public class Client {
             case Constants.REQUEST:
                 request();
                 break;
-            case 5:
-                //TODO accept();
-                break;
-            case 6:
-                //TODO updateBoard();
-                break;
-            case 7:
-                //TODO logout();
-                break;
-            case 8:
-                // TODO save();
-                break;
-            case 9:
-                //TODO finish();
+            case Constants.BROADCAST_MESSAGE:
+                recieveBroadcastMessage();
                 break;
             case Constants.SENDMESSAGE:
                 recieveMessage();
                 break;
-            case 11:
-                //TODO getAvailablePlayer();
+            case Constants.SENDINVITE:
+                recieveInvit();
                 break;
-            case Constants.BROADCAST_MESSAGE:
-                recieveBroadcastMessage();
+            case Constants.ACCEPTGAME:
+                startGame();
+                break;
+            case Constants.SENDMOVE:
+                handleMove();
+                break;
+            case Constants.EXIT_PLAYER_GAME:
+                handleExit();
                 break;
             case Constants.ADD_FRIEND:
                 addFriend();
@@ -155,7 +155,24 @@ public class Client {
             case Constants.UN_BLOCK_PLAYER:
                 unBlockPlayer();
                 break;
+            case Constants.SETDATAOFPLAYER:
+                getDataOfPlayer();
+                break;
         }
+    }
+
+    private void getDataOfPlayer() {
+        String name = (String) responceData.get(1);
+        String email = (String) responceData.get(2);
+        String pass = (String) responceData.get(3);
+
+        Player player = new Player(name, email, pass);
+
+        System.out.println(name + " " + email + " " + pass);
+        UserProfileUI userProfileUI = (UserProfileUI) ClientApp.curDisplayedScreen;
+        Platform.runLater(() -> {
+            userProfileUI.setData(player);
+        });
     }
 
     private void register() {
@@ -167,7 +184,7 @@ public class Client {
         } else {
             // Maybe Throw
             Platform.runLater(() -> {
-                Util.showAlertDialog(Alert.AlertType.ERROR, "Register Error", "This Email is Already Login");
+                Util.showAlertDialog(Alert.AlertType.ERROR, "Register Error", "SomeThing Wrong Happen. Check For The Network.");
             });
         }
     }
@@ -193,8 +210,7 @@ public class Client {
     private void getAvailablePlayers() {
         Type playersType = new TypeToken<ArrayList<Player>>() {}.getType();
         ArrayList<Player> getAvailablePlayers = JsonHandler.deserializeArray(responceData.get(1), playersType);
-
-        LobbyView lobbyScreen = (LobbyView) ClientApp.currentScreen;
+        LobbyView lobbyScreen = (LobbyView) ClientApp.curDisplayedScreen;
         lobbyScreen.displayAvailablePlayers(getAvailablePlayers);
     }
 
@@ -213,7 +229,7 @@ public class Client {
     private void recieveBroadcastMessage() {
         String srcPlayerName = responceData.get(1);
         String message = responceData.get(2);
-        LobbyView lobbyScreen = (LobbyView) ClientApp.currentScreen;
+        LobbyView lobbyScreen = (LobbyView) ClientApp.curDisplayedScreen;
         lobbyScreen.displayMessage(srcPlayerName, message);
     }
 
@@ -221,14 +237,79 @@ public class Client {
         String message = responceData.get(1);
         String sourceplayerName = responceData.get(2);
 
-        GameBoard gameBoard = (GameBoard) ClientApp.currentScreen;
-        gameBoard.displayMessage(sourceplayerName, message);
+        OnlineGame onlineGame = (OnlineGame) ClientApp.curDisplayedScreen;
+        onlineGame.displayMessage(sourceplayerName, message);
+    }
+
+    private void recieveInvit() {
+        Type gameType = new TypeToken<GameInfo>() {
+        }.getType();
+        GameInfo game = JsonHandler.deserializeArray(responceData.get(1), gameType);
+        int type = Integer.valueOf(responceData.get(2));
+        switch (type) {
+            case 1:
+                Platform.runLater(() -> {
+                    Util.invitationAlert(Alert.AlertType.CONFIRMATION, game, "Invitation To play", 1);
+                });
+                break;
+            case 2:
+                Platform.runLater(() -> {
+                    Util.invitationAlert(Alert.AlertType.CONFIRMATION, game, "New Game", 2);
+                });
+                break;
+            default:
+                Platform.runLater(() -> {
+                    Util.invitationAlert(Alert.AlertType.CONFIRMATION, game, "Exit Game", 3);
+                });
+                break;
+        }
+
+    }
+
+    private void startGame() {
+        Type gameType = new TypeToken<GameInfo>() {
+        }.getType();
+        GameInfo info = JsonHandler.deserializeArray(responceData.get(1), gameType);
+
+        boolean myTurn = Boolean.valueOf(responceData.get(2));
+        int type = Integer.valueOf(responceData.get(3));
+        OnlineGame onlineGame;
+        switch (type) {
+            case 1:
+                onlineGame = new OnlineGame(info, myTurn);
+                Util.displayScreen(onlineGame);
+                break;
+            case 2:
+                onlineGame = (OnlineGame) ClientApp.curDisplayedScreen;
+                Platform.runLater(() -> onlineGame.startGame());
+                break;
+            default:
+                onlineGame = (OnlineGame) ClientApp.curDisplayedScreen;
+                Platform.runLater(() -> onlineGame.exitGame());
+                break;
+        }
+    }
+
+    private void handleMove() {
+        String playable = responceData.get(1);
+        int x = Integer.valueOf(responceData.get(2));
+        int y = Integer.valueOf(responceData.get(3));
+        System.out.println("playable=" + playable + "x=" + x + "y=" + y);
+        Platform.runLater(() -> {
+            OnlineGame onlineGame = (OnlineGame) ClientApp.curDisplayedScreen;
+            onlineGame.setMove(playable, (int) x, (int) y);
+        });
+
+    }
+
+    private void handleExit() {
+        OnlineGame game = (OnlineGame) ClientApp.curDisplayedScreen;
+        Platform.runLater(() -> game.exitGame());
     }
 
     private void addFriend() {
         boolean isFriend = Boolean.valueOf(responceData.get(1));
-
-        LobbyView lobbyScreen = (LobbyView) ClientApp.currentScreen;
+        LobbyView lobbyScreen = (LobbyView) ClientApp.curDisplayedScreen;
 
         if (isFriend) {
             lobbyScreen.addFriend();
@@ -238,7 +319,7 @@ public class Client {
     private void removeFriend() {
         boolean isNotFriend = Boolean.valueOf(responceData.get(1));
 
-        LobbyView lobbyScreen = (LobbyView) ClientApp.currentScreen;
+        LobbyView lobbyScreen = (LobbyView) ClientApp.curDisplayedScreen;
 
         if (isNotFriend) {
             lobbyScreen.removeFriend();
@@ -248,7 +329,7 @@ public class Client {
     private void blockPlayer() {
         boolean isBlockedPlayer = Boolean.valueOf(responceData.get(1));
 
-        LobbyView lobbyScreen = (LobbyView) ClientApp.currentScreen;
+        LobbyView lobbyScreen = (LobbyView) ClientApp.curDisplayedScreen;
 
         if (isBlockedPlayer) {
             lobbyScreen.blockPlayer();
@@ -258,7 +339,7 @@ public class Client {
     private void unBlockPlayer() {
         boolean isUnBlocked = Boolean.valueOf(responceData.get(1));
 
-        LobbyView lobbyScreen = (LobbyView) ClientApp.currentScreen;
+        LobbyView lobbyScreen = (LobbyView) ClientApp.curDisplayedScreen;
 
         if (isUnBlocked) {
             lobbyScreen.unBlockPlayer();
