@@ -1,13 +1,14 @@
 package ui;
 
+import utils.JsonHandler;
 import client.Client;
 import client.ClientApp;
+import com.google.gson.Gson;
 import data.Message;
 import data.Player;
 import exception.NotConnectedException;
 import java.io.File;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.PauseTransition;
@@ -808,8 +809,14 @@ public abstract class GameBoard extends BorderPane {
 
     private void sendMessage(Message message) {
 
-        String gsonRequest = JsonHandler.serializeJson(Constants.SENDMESSAGE, message);
+        Gson gson= new Gson();
+        String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.SENDMESSAGE)
+                , JsonHandler.serelizeObject(message));
         
+        sendRequest(gsonRequest);
+    }
+
+    public void sendRequest(String gsonRequest) {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {

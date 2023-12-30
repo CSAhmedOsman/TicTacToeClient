@@ -10,12 +10,13 @@ import client.ClientApp;
 import com.google.gson.Gson;
 import data.Player;
 import exception.NotConnectedException;
-import java.util.ArrayList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
+import utils.JsonHandler;
 import utils.Constants;
 import utils.PasswordEncryptor;
 import utils.Util;
+import utils.Validating;
 
 /**
  *
@@ -34,19 +35,15 @@ public class RegisterController {
     }
 
     private void handleRegister(ActionEvent event) {
-        Player player = view.makeNewPlayer();
+        Player player = makeNewPlayer();
 
         if(player== null)
             return;
         
         player.setPassword(PasswordEncryptor.encryptPassword(player.getPassword()));
         
-        Gson gson= new Gson();
-        ArrayList jsonArr= new ArrayList();
-        jsonArr.add(Constants.REGISTER);
-        jsonArr.add(player);
-        
-        String gsonRequest = gson.toJson(jsonArr);
+        String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.REGISTER), 
+                JsonHandler.serelizeObject(player));
         
         try {
             Client.getClient().sendRequest(gsonRequest);
@@ -55,6 +52,22 @@ public class RegisterController {
         }
     }
 
+    public Player makeNewPlayer() {
+        String username= view.getUsername();
+        String email= view.getEmail();
+        String password= view.getPassword();
+        String confirmPassword= view.getConfirmPassword();
+        
+        Player player= null;
+        
+        if(!Validating.validateRegister(username, email, password, confirmPassword)) 
+            return player;
+        
+        player = new Player(username, email, password);
+        
+        return player;
+    }
+    
     private void handleClose(ActionEvent event) {
         Client.getClient().closeConnection();
         ClientApp.stage.close();

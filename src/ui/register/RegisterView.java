@@ -1,15 +1,9 @@
 package ui.register;
 
-import client.Client;
 import client.ClientApp;
-import data.Player;
-import com.google.gson.Gson;
-import exception.NotConnectedException;
-import java.util.ArrayList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -21,11 +15,6 @@ import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import utils.Constants;
-import utils.PasswordEncryptor;
-import utils.Util;
-import utils.Validating;
 
 public class RegisterView extends Pane {
 
@@ -262,22 +251,6 @@ public class RegisterView extends Pane {
 
         RegisterController registerController = new RegisterController(this);
         ClientApp.currentScreen = this;
-    }
-    
-    public Player makeNewPlayer() {
-        String username= tfUsername.getText();
-        String email= tfEmail.getText();
-        String password= pfPassword.getText();
-        String confirmPassword= pfConfirmPassword.getText();
-        
-        Player player= null;
-        
-        if(!Validating.validateRegister(username, email, password, confirmPassword)) 
-            return player;
-        
-        player = new Player(username, email, password);
-        
-        return player;
     }
     
     public String getUsername() {

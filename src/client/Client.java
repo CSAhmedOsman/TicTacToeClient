@@ -1,11 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package client;
 
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import data.Player;
 import utils.PlayerStorage;
@@ -23,6 +17,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import ui.lobby.LobbyView;
 import ui.GameBoard;
+import utils.JsonHandler;
 import ui.login.LoginView;
 import utils.Constants;
 import utils.Util;
@@ -32,13 +27,16 @@ import utils.Util;
  * @author w
  */
 public class Client {
-    
+
+    private static final String IP_ADDRESS = "127.0.0.1";
+    private static final int PORT = 5005;
+
     private Thread thread;
 
     private Socket mySocket;
     private DataInputStream in;
     private PrintStream out;
-    private ArrayList responceData;
+    private ArrayList<String> responceData;
     private boolean isConnected;
 
     private static Client singletonClient;
@@ -58,7 +56,7 @@ public class Client {
 
     public void connect() {
         try {
-            mySocket = new Socket(Constants.IP_ADDRESS, Constants.PORT);
+            mySocket = new Socket(IP_ADDRESS, PORT);
             in = new DataInputStream(mySocket.getInputStream());
             out = new PrintStream(mySocket.getOutputStream());
             isConnected = true;
@@ -73,7 +71,7 @@ public class Client {
             in.close();
             out.close();
             mySocket.close();
-            isConnected= false;
+            isConnected = false;
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -89,7 +87,7 @@ public class Client {
     private void startListening() {
         thread = new Thread(() -> {
             try {
-                while (isConnected&& mySocket != null && !(mySocket.isClosed())) {
+                while (isConnected && mySocket != null && !(mySocket.isClosed())) {
                     String gsonResponse = in.readLine();
                     if (!gsonResponse.isEmpty()) {
                         handleResponse(gsonResponse);
@@ -103,14 +101,12 @@ public class Client {
     }
 
     private void handleResponse(String gsonResponce) {
+        Type listType= new TypeToken<ArrayList<Object>>() {}.getType();
+        responceData = JsonHandler.deserializeArray(gsonResponce, listType);
 
-        Type listType = new TypeToken<ArrayList<Object>>() {
-        }.getType();
-        Gson gson = new Gson();
-        responceData = gson.fromJson(gsonResponce, listType);
-        double action = (double) responceData.get(0);
+        int action = Integer.valueOf(responceData.get(0));
 
-        switch ((int) action) {
+        switch (action) {
             case Constants.REGISTER:
                 register();
                 break;
@@ -140,7 +136,6 @@ public class Client {
                 break;
             case Constants.SENDMESSAGE:
                 recieveMessage();
-
                 break;
             case 11:
                 //TODO getAvailablePlayer();
@@ -164,7 +159,7 @@ public class Client {
     }
 
     private void register() {
-        boolean registerStatus = (boolean) responceData.get(1);
+        boolean registerStatus = Boolean.valueOf(responceData.get(1));
 
         if (registerStatus) {
             Parent loginScreen = new LoginView();
@@ -178,13 +173,12 @@ public class Client {
     }
 
     private void login() {
-
-        double playerId = (double) responceData.get(1);
+        int playerId = Integer.valueOf(responceData.get(1));
         if (playerId >= 0) {
-            Parent lobbyScreen = new LobbyView((int) playerId);
+            Parent lobbyScreen = new LobbyView(playerId);
 
             Util.displayScreen(lobbyScreen);
-            PlayerStorage.saveUserId((int) playerId);
+            PlayerStorage.saveUserId(playerId);
         } else if (playerId == -1) {
             Platform.runLater(() -> {
                 Util.showAlertDialog(Alert.AlertType.ERROR, "Login Error", "Your Email Or Password is Incorrect.");
@@ -197,55 +191,42 @@ public class Client {
     }
 
     private void getAvailablePlayers() {
-        System.out.println("getAvailablePlayers in client");
-        ArrayList<Player> getAvailablePlayers = new ArrayList<>();
-        Player player;
-        double id, score;
-        String name;
-
-        for (int i = 1; i < responceData.size(); i += 3) {
-            id = (double) responceData.get(i);
-            name = (String) responceData.get(i + 1);
-            score = (double) responceData.get(i + 2);
-            player = new Player((int) id, name, (int) score);
-            getAvailablePlayers.add(player);
-            System.out.println("player Data :" + player.getId() + " " + player.getName() + " " + player.getScore());
-        }
+        Type playersType = new TypeToken<ArrayList<Player>>() {}.getType();
+        ArrayList<Player> getAvailablePlayers = JsonHandler.deserializeArray(responceData.get(1), playersType);
 
         LobbyView lobbyScreen = (LobbyView) ClientApp.currentScreen;
         lobbyScreen.displayAvailablePlayers(getAvailablePlayers);
     }
 
     private void request() {
-        double senderId = (double) responceData.get(1);
-        String sendername = (String) responceData.get(2);
-        double senderScore = (double) responceData.get(3);
+        int senderId = Integer.valueOf(responceData.get(1));
+        String sendername = responceData.get(2);
+        int senderScore = Integer.valueOf(responceData.get(3));
 
         if (sendername != null) {
             System.out.println("Request handled successfully");
         } else {
             System.out.println("Failed to handle the request");
-
         }
     }
 
     private void recieveBroadcastMessage() {
-        String srcPlayerName = (String) responceData.get(1);
-        String message = (String) responceData.get(2);
+        String srcPlayerName = responceData.get(1);
+        String message = responceData.get(2);
         LobbyView lobbyScreen = (LobbyView) ClientApp.currentScreen;
         lobbyScreen.displayMessage(srcPlayerName, message);
     }
 
     private void recieveMessage() {
-        String message = (String) responceData.get(1);
-        String sourceplayerName = (String) responceData.get(2);
+        String message = responceData.get(1);
+        String sourceplayerName = responceData.get(2);
 
         GameBoard gameBoard = (GameBoard) ClientApp.currentScreen;
         gameBoard.displayMessage(sourceplayerName, message);
     }
 
     private void addFriend() {
-        boolean isFriend = (boolean) responceData.get(1);
+        boolean isFriend = Boolean.valueOf(responceData.get(1));
 
         LobbyView lobbyScreen = (LobbyView) ClientApp.currentScreen;
 
@@ -255,7 +236,7 @@ public class Client {
     }
 
     private void removeFriend() {
-        boolean isNotFriend = (boolean) responceData.get(1);
+        boolean isNotFriend = Boolean.valueOf(responceData.get(1));
 
         LobbyView lobbyScreen = (LobbyView) ClientApp.currentScreen;
 
@@ -265,7 +246,7 @@ public class Client {
     }
 
     private void blockPlayer() {
-        boolean isBlockedPlayer = (boolean) responceData.get(1);
+        boolean isBlockedPlayer = Boolean.valueOf(responceData.get(1));
 
         LobbyView lobbyScreen = (LobbyView) ClientApp.currentScreen;
 
@@ -275,7 +256,7 @@ public class Client {
     }
 
     private void unBlockPlayer() {
-        boolean isUnBlocked = (boolean) responceData.get(1);
+        boolean isUnBlocked = Boolean.valueOf(responceData.get(1));
 
         LobbyView lobbyScreen = (LobbyView) ClientApp.currentScreen;
 

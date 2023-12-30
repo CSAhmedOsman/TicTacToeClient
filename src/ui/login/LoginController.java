@@ -11,13 +11,11 @@ package ui.login;
  */
 import client.Client;
 import client.ClientApp;
-import com.google.gson.Gson;
 import data.Player;
 import exception.NotConnectedException;
 import javafx.event.ActionEvent;
-import java.util.ArrayList;
 import javafx.scene.control.Alert;
-import ui.JsonHandler;
+import utils.JsonHandler;
 import utils.Constants;
 import utils.PasswordEncryptor;
 import utils.Util;
@@ -25,18 +23,18 @@ import utils.Validating;
 
 public class LoginController {
 
-    private final LoginView view;
+    private final LoginView loginView;
 
-    public LoginController(LoginView view) {
-        this.view = view;
+    public LoginController(LoginView loginView) {
+        this.loginView = loginView;
 
-        setListeners(view);
+        setListeners(loginView);
     }
 
-    private void setListeners(LoginView view1) {
-        view1.setLoginButtonAction(this::onLoginBtnClicked);
-        view1.setCloseButtonAction(this::handleClose);
-        view1.setMinimizeButtonAction(this::handleMinimize);
+    private void setListeners(LoginView loginView) {
+        loginView.setLoginBtnAction(this::onLoginBtnClicked);
+        loginView.setCloseBtnAction(this::handleClose);
+        loginView.setMinimizeBtnAction(this::handleMinimize);
     }
 
     private void onLoginBtnClicked(ActionEvent event) {
@@ -47,8 +45,13 @@ public class LoginController {
 
         player.setPassword(PasswordEncryptor.encryptPassword(player.getPassword()));
 
-        String gsonRequest = JsonHandler.serializeJson(Constants.LOGIN, player);        
+        String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.LOGIN), 
+                JsonHandler.serelizeObject(player));
         
+        sendRequest(gsonRequest);
+    }
+
+    public void sendRequest(String gsonRequest) {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
@@ -57,8 +60,8 @@ public class LoginController {
     }
 
     public Player getCurrentPlayer() {
-        String email = view.getEmail();
-        String password = view.getPassword();
+        String email = loginView.getEmail();
+        String password = loginView.getPassword();
 
         Player player = null;
 

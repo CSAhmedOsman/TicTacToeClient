@@ -2,7 +2,6 @@ package ui.lobby;
 
 import client.Client;
 import client.ClientApp;
-import com.google.gson.Gson;
 import data.Player;
 import exception.NotConnectedException;
 import java.util.ArrayList;
@@ -12,7 +11,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
-import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -30,7 +28,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-import ui.JsonHandler;
+import utils.JsonHandler;
 import utils.Constants;
 import utils.Util;
 
@@ -200,7 +198,7 @@ public class LobbyView extends AnchorPane {
 
         imageView.setFitHeight(45.0);
         imageView.setFitWidth(40.0);
-        imageView.setImage(new Image(getClass().getResource("images/back.png").toExternalForm()));
+        //imageView.setImage(new Image(getClass().getResource("images/back.png").toExternalForm()));
         btnBack.setGraphic(pane);
 
         pane0.setLayoutX(13.0);
@@ -270,7 +268,7 @@ public class LobbyView extends AnchorPane {
 
         //______________My Work_______________
         LobbyController lobbyController = new LobbyController(this);
-        lobbyController.makePlayerOnline(playerId);
+        //lobbyController.makePlayerOnline(playerId);
         lobbyController.getAvailablePlayers();
 
         textArea.setEditable(false);
@@ -342,8 +340,8 @@ public class LobbyView extends AnchorPane {
 
         requestButton.setOnAction((e) -> {
             
-            String gsonRequest = JsonHandler.serializeJson(Constants.REQUEST, 
-                    playerId, player.getId());
+            String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.REQUEST), 
+                    String.valueOf(playerId), String.valueOf(player.getId()));
             try {
                 Client.getClient().sendRequest(gsonRequest);
             } catch (NotConnectedException ex) {
@@ -359,19 +357,19 @@ public class LobbyView extends AnchorPane {
         return playerBox;
     }
     
-    public void setCloseButtonAction(EventHandler<ActionEvent> eventHandler) {
+    public void setCloseBtnListener(EventHandler<ActionEvent> eventHandler) {
         btnClose.setOnAction(eventHandler);
     }
 
-    public void setMinimizeButtonAction(EventHandler<ActionEvent> eventHandler) {
+    public void setMinBtnListener(EventHandler<ActionEvent> eventHandler) {
         btnMin.setOnAction(eventHandler);
     }
 
-    public void setBackButtonAction(EventHandler<ActionEvent> eventHandler) {
+    public void setBackBtnListener(EventHandler<ActionEvent> eventHandler) {
         btnBack.setOnAction(eventHandler);
     }
 
-    public void setSendButtonAction(EventHandler<ActionEvent> eventHandler) {
+    public void setSendBtnListener(EventHandler<ActionEvent> eventHandler) {
         btnSend.setOnAction(eventHandler);
     }
 

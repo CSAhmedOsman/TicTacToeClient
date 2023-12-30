@@ -270,15 +270,15 @@ public class LoginView extends Pane {
         return pfPassword.getText();
     }
 
-    public void setLoginButtonAction(EventHandler<ActionEvent> eventHandler) {
+    public void setLoginBtnAction(EventHandler<ActionEvent> eventHandler) {
         btnLogin.setOnAction(eventHandler);
     }
 
-    public void setCloseButtonAction(EventHandler<ActionEvent> eventHandler) {
+    public void setCloseBtnAction(EventHandler<ActionEvent> eventHandler) {
         btnClose.setOnAction(eventHandler);
     }
 
-    public void setMinimizeButtonAction(EventHandler<ActionEvent> eventHandler) {
+    public void setMinimizeBtnAction(EventHandler<ActionEvent> eventHandler) {
         btnMinimize.setOnAction(eventHandler);
     }
 }

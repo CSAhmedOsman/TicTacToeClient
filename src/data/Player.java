@@ -113,4 +113,9 @@ public class Player {
     public void setIsPlaying(boolean isPlaying) {
         this.isPlaying = isPlaying;
     }
+
+    @Override
+    public String toString() {
+        return "Player{" + "id=" + id + ", name=" + name + ", email=" + email + ", password=" + password + ", score=" + score + ", isOnline=" + isOnline + ", isPlaying=" + isPlaying + '}';
+    }
 }
