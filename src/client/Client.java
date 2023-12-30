@@ -230,8 +230,8 @@ public class Client {
         }
 
         LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.curDisplayedScreen;
-        Platform.runLater(()->{
-            lobbyScreen.displayAvailablePlayers(getAvailablePlayers);        
+        Platform.runLater(() -> {
+            lobbyScreen.displayAvailablePlayers(getAvailablePlayers);
         });
     }
 
@@ -270,13 +270,13 @@ public class Client {
         String jsonString = (String) responceData.get(1);
         GameInfo info = gson.fromJson(jsonString, GameInfo.class);
         double type = (double) responceData.get(2);
-        if ((int) type == 2) {
-            Platform.runLater(() -> {
-                Util.invitationAlert(Alert.AlertType.CONFIRMATION, info, "New Game", 2);
-            });
-        } else if ((int) type == 1) {
+        if ((int) type == 1) {
             Platform.runLater(() -> {
                 Util.invitationAlert(Alert.AlertType.CONFIRMATION, info, "Invitation To play", 1);
+            });
+        } else if ((int) type == 2) {
+            Platform.runLater(() -> {
+                Util.invitationAlert(Alert.AlertType.CONFIRMATION, info, "New Game", 2);
             });
         } else {
             Platform.runLater(() -> {
