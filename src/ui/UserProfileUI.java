@@ -6,8 +6,6 @@ import com.google.gson.Gson;
 import data.Player;
 import exception.NotConnectedException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
@@ -23,6 +21,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import ui.lobby.LobbyView;
 import utils.Constants;
 import utils.Util;
 
@@ -303,7 +302,7 @@ public class UserProfileUI extends BorderPane {
             ClientApp.stage.setIconified(true);
         });
         btnBack.setOnAction((ActionEvent event) -> {
-            Parent root = new LobbyScreenUI(player.getId());
+            Parent root = new LobbyView(player.getId());
             Util.displayScreen(root);
         });
 

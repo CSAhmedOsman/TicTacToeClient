@@ -12,6 +12,8 @@ import javafx.event.ActionEvent;
 import javafx.scene.Parent;
 import utils.JsonHandler;
 import ui.ModesScreenUI;
+import ui.UnBlockUI;
+import ui.UserProfileUI;
 import utils.Constants;
 import utils.Util;
 
@@ -34,6 +36,8 @@ public class LobbyController {
         lobbyView.setMinBtnListener(this::onMinBtnClicked);
         lobbyView.setBackBtnListener(this::onBackBtnClicked);
         lobbyView.setSendBtnListener(this::onSendBtnClicked);
+        lobbyView.setProfileBtnListener(this::onProfileBtnClicked);
+        lobbyView.setUnBlockBtnListener(this::onUnBlockBtnClicked);
     }
 
     private void onCloseBtnClicked(ActionEvent event) {
@@ -51,56 +55,69 @@ public class LobbyController {
 
     public void onSendBtnClicked(ActionEvent event) {
         String broadcastMessage = lobbyView.getMessageText();
-        if (broadcastMessage.trim().isEmpty())
+        if (broadcastMessage.trim().isEmpty()) {
             return;
+        }
         sendMessageToAll(lobbyView.getPlayerId(), broadcastMessage);
         lobbyView.clearMessageText();
+    }
+
+    public void onProfileBtnClicked(ActionEvent event) {
+        Parent root = new UserProfileUI(lobbyView.playerId);
+        Util.displayScreen(root);
+        lobbyView.isRunning = false;
+        //thread.stop();
+    }
+
+    public void onUnBlockBtnClicked(ActionEvent event) {
+        Parent root = new UnBlockUI();
+        Util.displayScreen(root);
     }
 
     public void getAvailablePlayers() {
         String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.GET_AVAILIABLE_PLAYERS));
         sendRequest(gsonRequest);
     }
-    
+
     public void sendMessageToAll(int sourceId, String broadcastMessage) {
-        String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.BROADCAST_MESSAGE), 
+        String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.BROADCAST_MESSAGE),
                 String.valueOf(sourceId), broadcastMessage);
-        
+
         sendRequest(gsonRequest);
     }
 
     public void addFriend(int playerId, int friendId) {
-        String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.ADD_FRIEND), 
+        String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.ADD_FRIEND),
                 String.valueOf(playerId), String.valueOf(friendId));
-        
+
         sendRequest(gsonRequest);
     }
 
     public void removeFriend(int playerId, int friendId) {
-        
+
         String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.REMOVE_FRIEND), String.valueOf(playerId), String.valueOf(friendId));
-        
+
         sendRequest(gsonRequest);
     }
 
     public void blockPlayer(int playerId, int blockedId) {
         String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.BLOCK_PLAYER), String.valueOf(playerId), String.valueOf(blockedId));
-        
+
         sendRequest(gsonRequest);
     }
 
     public void unBlockPlayer(int playerId, int blockedId) {
         String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.UN_BLOCK_PLAYER), String.valueOf(playerId), String.valueOf(blockedId));
-        
+
         sendRequest(gsonRequest);
     }
 
     public void makePlayerOnline(int playerId) {
         String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.ONLINE), String.valueOf(playerId));
-        
+
         sendRequest(gsonRequest);
     }
-    
+
     private void sendRequest(String gsonRequest) {
         try {
             Client.getClient().sendRequest(gsonRequest);
