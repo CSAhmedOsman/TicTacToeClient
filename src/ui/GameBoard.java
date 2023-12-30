@@ -157,7 +157,7 @@ public abstract class GameBoard extends BorderPane {
         player2Name = "Player2";
         recordedGame = "";
         isRecord = false;
-        ClientApp.currentScreen = this;
+        ClientApp.curDisplayedScreen = this;
     }
 
     public GameBoard() {
@@ -607,13 +607,11 @@ public abstract class GameBoard extends BorderPane {
         addHandlers();
     }
 
+    protected abstract void startGame();
+
     protected abstract void nextTern();
 
-    protected abstract void startGame();
-
     protected abstract void addHandlers();
-
-    protected abstract void startGame();
 
     protected void changeTern() {
         countDownLimit = 30;
@@ -836,6 +834,9 @@ public abstract class GameBoard extends BorderPane {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
             Logger.getLogger(GameBoard.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     protected void saveRecordFile() {
 
         Date date = new Date();
