@@ -2,10 +2,8 @@ package ui;
 
 import client.Client;
 import client.ClientApp;
-import com.google.gson.Gson;
 import data.Player;
 import exception.NotConnectedException;
-import java.util.ArrayList;
 import javafx.event.ActionEvent;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
@@ -23,6 +21,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import ui.lobby.LobbyView;
 import utils.Constants;
+import utils.JsonHandler;
 import utils.Util;
 
 public class UserProfileUI extends BorderPane {
@@ -267,13 +266,11 @@ public class UserProfileUI extends BorderPane {
     }
 
     private void getData() {
+        String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.SET_DATA_OF_PLAYER));
+        sendRequest(gsonRequest);
+    }
 
-        Gson gson = new Gson();
-        ArrayList<Object> jsonArr = new ArrayList<>();
-        jsonArr.add(Constants.SETDATAOFPLAYER);
-        jsonArr.add(player.getId());
-
-        String gsonRequest = gson.toJson(jsonArr);
+    public void sendRequest(String gsonRequest) {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {

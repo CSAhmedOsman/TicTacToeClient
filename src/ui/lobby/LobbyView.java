@@ -13,7 +13,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
-import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -421,8 +420,6 @@ public class LobbyView extends AnchorPane {
             Gson gson = new Gson();
             ArrayList<Object> jsonArr = new ArrayList<>();
             jsonArr.add(Constants.REQUEST);
-
-            jsonArr.add(playerId);
             jsonArr.add(player.getId());
 
             String gsonRequest = gson.toJson(jsonArr);

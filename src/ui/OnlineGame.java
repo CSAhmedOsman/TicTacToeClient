@@ -7,17 +7,8 @@ package ui;
 
 import client.ClientApp;
 import client.Client;
-import com.google.gson.Gson;
 import data.GameInfo;
-import data.Message;
 import exception.NotConnectedException;
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -31,6 +22,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import utils.Constants;
+import utils.JsonHandler;
 import utils.Util;
 
 /**
@@ -234,22 +226,10 @@ public class OnlineGame extends GameBoard {
     }
 
     private void sendMove(String playable, int indexi, int indexj) {
-        Gson gson = new Gson();
-        ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.SENDMOVE);
-        jsonRequest.add(playable);
-        jsonRequest.add(indexi);
-        jsonRequest.add(indexj);
-        jsonRequest.add(destPlayerId);
+        String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.SEND_MOVE), playable, 
+                String.valueOf(indexi), String.valueOf(indexj), String.valueOf(destPlayerId));
 
-        String gsonRequest = gson.toJson(jsonRequest);
-
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            Logger.getLogger(OnlineGame.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+        sendRequest(gsonRequest);
     }
 
     public void setMove(String current_player, int x, int y) {
@@ -289,13 +269,13 @@ public class OnlineGame extends GameBoard {
         }
     }
 
-    private void sendMessage(Message message) {
-        Gson gson = new Gson();
-        ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.SENDMESSAGE);
-        jsonRequest.add(message);
+    private void sendMessage(String message, int destination) {
+        String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.SENDMESSAGE), 
+                message, String.valueOf(destination));
+        sendRequest(gsonRequest);
+    }
 
-        String gsonRequest = gson.toJson(jsonRequest);
+    public void sendRequest(String gsonRequest) {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
@@ -310,35 +290,15 @@ public class OnlineGame extends GameBoard {
     }
 
     public void newGameAlert(int type) {
-        Gson gson = new Gson();
-        ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.SENDINVITE);
-        jsonRequest.add(info);
-        jsonRequest.add(type);
-        String gsonRequest = gson.toJson(jsonRequest);
-
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            Logger.getLogger(ModesScreenUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+        String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.SEND_INVITE), 
+                JsonHandler.serelizeObject(info), String.valueOf(type));
+        sendRequest(gsonRequest);
     }
 
     public void exitGameAlert(int type) {
-        Gson gson = new Gson();
-        ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.SENDINVITE);
-        jsonRequest.add(info);
-        jsonRequest.add(type);
-        String gsonRequest = gson.toJson(jsonRequest);
-
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            Logger.getLogger(ModesScreenUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+        String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.SEND_INVITE), 
+                JsonHandler.serelizeObject(info), String.valueOf(type));
+        sendRequest(gsonRequest);
     }
 
     public void exitGame() {
@@ -349,17 +309,8 @@ public class OnlineGame extends GameBoard {
     }
 
     public void updateMyScore(int type) {
-        Gson gson = new Gson();
-        ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.UPDATESCORE);
-        jsonRequest.add(info);
-        jsonRequest.add(type);
-        String gsonRequest = gson.toJson(jsonRequest);
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            Logger.getLogger(ModesScreenUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+        String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.UPDATE_SCORE),
+                JsonHandler.serelizeObject(info), String.valueOf(type));
+        sendRequest(gsonRequest);
     }
 }

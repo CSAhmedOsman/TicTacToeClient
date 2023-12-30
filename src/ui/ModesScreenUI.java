@@ -4,7 +4,6 @@ import ui.login.LoginView;
 import client.Client;
 import utils.Util;
 import client.ClientApp;
-import com.google.gson.Gson;
 import data.GameInfo;
 import exception.NotConnectedException;
 import java.util.ArrayList;
@@ -26,6 +25,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import utils.Animation;
 import utils.Constants;
+import utils.JsonHandler;
 
 public class ModesScreenUI extends Pane {
 
@@ -420,19 +420,17 @@ public class ModesScreenUI extends Pane {
     }
 
     public static void sendInvit(GameInfo info,int type) {
-        Gson gson = new Gson();
-        ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.SENDINVITE);
-        jsonRequest.add(info);
-        jsonRequest.add(type);
-        System.out.println("sentInvite");
-        String gsonRequest = gson.toJson(jsonRequest);
-       
+        String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.SEND_INVITE)
+                , JsonHandler.serelizeObject(info), String.valueOf(type));
+        
+        sendRequest(gsonRequest);
+    }
+
+    public static void sendRequest(String gsonRequest) {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
             Logger.getLogger(ModesScreenUI.class.getName()).log(Level.SEVERE, null, ex);
         }
-      
     }
 }

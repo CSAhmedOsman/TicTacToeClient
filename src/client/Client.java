@@ -131,13 +131,13 @@ public class Client {
             case Constants.SENDMESSAGE:
                 recieveMessage();
                 break;
-            case Constants.SENDINVITE:
+            case Constants.SEND_INVITE:
                 recieveInvit();
                 break;
             case Constants.ACCEPTGAME:
                 startGame();
                 break;
-            case Constants.SENDMOVE:
+            case Constants.SEND_MOVE:
                 handleMove();
                 break;
             case Constants.EXIT_PLAYER_GAME:
@@ -155,7 +155,7 @@ public class Client {
             case Constants.UN_BLOCK_PLAYER:
                 unBlockPlayer();
                 break;
-            case Constants.SETDATAOFPLAYER:
+            case Constants.SET_DATA_OF_PLAYER:
                 getDataOfPlayer();
                 break;
         }

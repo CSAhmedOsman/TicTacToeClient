@@ -58,7 +58,7 @@ public class LobbyController {
         if (broadcastMessage.trim().isEmpty()) {
             return;
         }
-        sendMessageToAll(lobbyView.getPlayerId(), broadcastMessage);
+        sendMessageToAll(broadcastMessage);
         lobbyView.clearMessageText();
     }
 
@@ -79,23 +79,22 @@ public class LobbyController {
         sendRequest(gsonRequest);
     }
 
-    public void sendMessageToAll(int sourceId, String broadcastMessage) {
-        String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.BROADCAST_MESSAGE),
-                String.valueOf(sourceId), broadcastMessage);
-
+    public void sendMessageToAll(String broadcastMessage) {
+        String gsonRequest = JsonHandler.serializeJson(
+                String.valueOf(Constants.BROADCAST_MESSAGE), broadcastMessage);
         sendRequest(gsonRequest);
     }
 
-    public void addFriend(int playerId, int friendId) {
+    public void addFriend(int friendId) {
         String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.ADD_FRIEND),
-                String.valueOf(playerId), String.valueOf(friendId));
+                String.valueOf(friendId));
 
         sendRequest(gsonRequest);
     }
 
-    public void removeFriend(int playerId, int friendId) {
+    public void removeFriend(int friendId) {
 
-        String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.REMOVE_FRIEND), String.valueOf(playerId), String.valueOf(friendId));
+        String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.REMOVE_FRIEND), String.valueOf(friendId));
 
         sendRequest(gsonRequest);
     }
@@ -106,14 +105,14 @@ public class LobbyController {
         sendRequest(gsonRequest);
     }
 
-    public void unBlockPlayer(int playerId, int blockedId) {
-        String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.UN_BLOCK_PLAYER), String.valueOf(playerId), String.valueOf(blockedId));
+    public void unBlockPlayer(int blockedId) {
+        String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.UN_BLOCK_PLAYER), String.valueOf(blockedId));
 
         sendRequest(gsonRequest);
     }
 
-    public void makePlayerOnline(int playerId) {
-        String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.ONLINE), String.valueOf(playerId));
+    public void makePlayerOnline() {
+        String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.ONLINE));
 
         sendRequest(gsonRequest);
     }

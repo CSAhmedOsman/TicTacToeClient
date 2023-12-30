@@ -7,7 +7,6 @@ package ui.register;
 
 import client.Client;
 import client.ClientApp;
-import com.google.gson.Gson;
 import data.Player;
 import exception.NotConnectedException;
 import javafx.event.ActionEvent;
