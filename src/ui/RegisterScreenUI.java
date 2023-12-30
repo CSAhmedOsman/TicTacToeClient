@@ -263,7 +263,7 @@ public class RegisterScreenUI extends Pane {
         
         setListeners(ClientApp.stage);
         
-        ClientApp.currentScreen= this;
+        ClientApp.curDisplayedScreen= this;
     }
     
     private void setListeners(Stage stage) {

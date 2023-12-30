@@ -282,7 +282,7 @@ public class SelectGameLevel extends AnchorPane {
 
         setListeners();
         
-        ClientApp.currentScreen= this;
+        ClientApp.curDisplayedScreen= this;
     }
 
     protected void setListeners() {

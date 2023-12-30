@@ -260,20 +260,17 @@ public class LoginScreenUI extends Pane {
         Animation.setAnimatedNodeIn(btnClose);
         Animation.setAnimatedNodeIn(btnMinimize);
 
+        ClientApp.curDisplayedScreen = this;
         tfEmail.setText("a@a.com");
-        pfPassword.setText("Aa#01234");
-        
-        ClientApp.currentScreen= this;
+        pfPassword.setText("Aa#12345");
     }
 
     private void setListeners() {
-
         btnLogin.setOnAction((ActionEvent event) -> {
             Player player = getCurrentPlayer();
             if (player == null) {
                 return;
             }
-
             player.setPassword(PasswordEncryptor.encryptPassword(player.getPassword()));
             Gson gson = new Gson();
             ArrayList jsonRequest = new ArrayList();
@@ -284,7 +281,7 @@ public class LoginScreenUI extends Pane {
             try {
                 Client.getClient().sendRequest(gsonRequest);
             } catch (NotConnectedException ex) {
-                Util.showAlertDialog(Alert.AlertType.ERROR, "Server", "The Server is Closed\n"+ex.getMessage());
+                Util.showAlertDialog(Alert.AlertType.ERROR, "Server", "The Server is Closed\n" + ex.getMessage());
             }
         });
 

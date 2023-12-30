@@ -1,7 +1,14 @@
 package ui;
 
+import client.Client;
 import utils.Util;
 import client.ClientApp;
+import com.google.gson.Gson;
+import data.GameInfo;
+import exception.NotConnectedException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
@@ -17,6 +24,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import utils.Animation;
+import utils.Constants;
 
 public class ModesScreenUI extends Pane {
 
@@ -76,7 +84,7 @@ public class ModesScreenUI extends Pane {
         dropShadow3 = new DropShadow();
         btnMin = new Button();
         dropShadow4 = new DropShadow();
-        
+
         setMaxHeight(USE_PREF_SIZE);
         setMaxWidth(USE_PREF_SIZE);
         setMinHeight(USE_PREF_SIZE);
@@ -346,21 +354,21 @@ public class ModesScreenUI extends Pane {
         getChildren().add(btnClose);
         getChildren().add(btnGamesHistory);
         getChildren().add(btnMin);
-        
+
         //___________________My Work________________________
         addEventHandlers();
-        
+
         Animation.setButtonHoverFunctionality(btnGamesHistory);
         
-        ClientApp.currentScreen= this;
+        ClientApp.curDisplayedScreen= this;
     }
-    
+
     public ModesScreenUI(int playerId) {
-        
+
     }
-    
+
     public ModesScreenUI() {
-        
+
     }
 
     protected void addEventHandlers() {
@@ -369,7 +377,10 @@ public class ModesScreenUI extends Pane {
         });
 
         btnMin.setOnAction((e) -> {
-            ClientApp.stage.setIconified(true);
+            //ClientApp.stage.setIconified(true);
+            GameInfo info = new GameInfo("ahmed", "abdo", 8, 9,10,11);
+            sendInvit(info,1);
+
         });
 
         btnOfline.setOnAction((e) -> {
@@ -399,15 +410,34 @@ public class ModesScreenUI extends Pane {
     }
 
     private void animateOut(Parent destination) {
-        
+
         Animation.setAnimatedNodeOut(btnGamesHistory);
         Animation.setAnimatedNodeOut(btnClose);
         Animation.setAnimatedNodeOut(btnLogout);
         Animation.setAnimatedNodeOut(btnOfline);
         Animation.setAnimatedNodeOut(btnOnline);
         Animation.setAnimatedNodeOut(btnWithPc);
-        
+
         Animation.setAnimatedRootOut(this, destination);
-        
+
     }
+
+    public static void sendInvit(GameInfo info,int type) {
+        Gson gson = new Gson();
+        ArrayList jsonRequest = new ArrayList();
+        jsonRequest.add(Constants.SENDINVITE);
+        jsonRequest.add(info);
+        jsonRequest.add(type);
+        System.out.println("sentInvite");
+        String gsonRequest = gson.toJson(jsonRequest);
+       
+        try {
+            Client.getClient().sendRequest(gsonRequest);
+        } catch (NotConnectedException ex) {
+            Logger.getLogger(ModesScreenUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+      
+    }
+
+   
 }

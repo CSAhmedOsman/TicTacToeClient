@@ -24,6 +24,8 @@ public class RobotGame extends GameBoard {
 
     public RobotGame(int level) {
         super("Robot");
+        pane.getChildren().add(win);
+        pane.getChildren().add(lose);
         this.level = level;
         startGame();
     }
@@ -76,7 +78,7 @@ public class RobotGame extends GameBoard {
                             bestScore = Math.max(bestScore, minimax(board, depth + 1, true)); // mid
                         } else {
                             bestScore = Math.max(bestScore, minimax(board, depth + 3, true)); // high
-                       }
+                        }
                         board[i][j].setText("");
                     }
                 }
@@ -105,11 +107,11 @@ public class RobotGame extends GameBoard {
 
     private int evaluate(Button[][] board) {
         int[][] winIndexes = winIndex();
-        if (winIndexes[boardSize-1][1] != -1) {
+        if (winIndexes[boardSize - 1][1] != -1) {
 
-            if (board[winIndexes[boardSize-1][0]][winIndexes[boardSize-1][1]].getText().equals("O")) {
+            if (board[winIndexes[boardSize - 1][0]][winIndexes[boardSize - 1][1]].getText().equals("O")) {
                 return 1;
-            } else if (board[winIndexes[boardSize-1][0]][winIndexes[boardSize-1][1]].getText().equals("X")) {
+            } else if (board[winIndexes[boardSize - 1][0]][winIndexes[boardSize - 1][1]].getText().equals("X")) {
                 return -1;
             }
         }
@@ -140,7 +142,7 @@ public class RobotGame extends GameBoard {
 
         //----------Game Limits counter thread
         countThread = new Thread(() -> {
-            while (isRunning && winIndex()[boardSize-1][1] == -1) {
+            while (isRunning && winIndex()[boardSize - 1][1] == -1) {
                 try {
                     if (countDownLimit > 1) {
                         drawCount();
@@ -160,13 +162,13 @@ public class RobotGame extends GameBoard {
     @Override
     protected void nextTern() {
         int[][] winIndexes = winIndex();
-        if ((playedKey < boardSize * boardSize) && winIndexes[boardSize-1][1] == -1) {
+        if ((playedKey < boardSize * boardSize) && winIndexes[boardSize - 1][1] == -1) {
             changeTern();
             if (!isXTurn) {
                 robotTern();
             }
         } else {
-            if (winIndexes[boardSize-1][1] != -1) {
+            if (winIndexes[boardSize - 1][1] != -1) {
                 for (int i = 0; i < boardSize; i++) {
                     for (int j = 0; j < boardSize; j++) {
                         position[i][j].setDisable(true);
@@ -175,12 +177,16 @@ public class RobotGame extends GameBoard {
                 winner(winIndexes);
                 if (isXTurn) {
                     playWinVideo();
+                } else {
+                    playLoseVideo();
                 }
             } else {
                 drawer();
             }
-            /*
-            if (isRecord) {}*/
+            recordedGame += isXTurn ? "X" : "O";
+            if (isRecord) {
+            saveRecordFile();
+            }
         }
     }
 
@@ -206,7 +212,7 @@ public class RobotGame extends GameBoard {
 
     protected void robotTern() {
         int[][] winIndexes = winIndex();
-        if ((playedKey < boardSize * boardSize) && winIndexes[boardSize-1][1] == -1) {
+        if ((playedKey < boardSize * boardSize) && winIndexes[boardSize - 1][1] == -1) {
             PauseTransition pause = new PauseTransition(Duration.seconds(1));
             pause.setOnFinished(event -> {
                 int robotMove = findBestMove();

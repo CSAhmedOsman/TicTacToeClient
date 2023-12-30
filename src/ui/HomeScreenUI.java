@@ -293,7 +293,7 @@ public class HomeScreenUI extends AnchorPane {
 
         animateIn();
         
-        ClientApp.currentScreen = this;
+        ClientApp.curDisplayedScreen = this;
     }
 
     private void setListeners(Stage stage) {

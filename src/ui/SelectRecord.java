@@ -88,6 +88,7 @@ public class SelectRecord extends AnchorPane {
     final long numberOfSeconds = 1L;
     private Button[][] buttons = new Button[3][3];
     private Thread simulationThread;
+    String turn;
 
     public SelectRecord() {
 
@@ -135,7 +136,7 @@ public class SelectRecord extends AnchorPane {
         dropShadow14 = new DropShadow();
         lableTurnPlayer = new Label();
         dropShadow15 = new DropShadow();
-
+        turn = "";
         setMaxHeight(USE_PREF_SIZE);
         setMaxWidth(USE_PREF_SIZE);
         setMinHeight(USE_PREF_SIZE);
@@ -511,19 +512,20 @@ public class SelectRecord extends AnchorPane {
 
         String directoryPath = "C:\\files";
         addTextFilesToListView(directoryPath);
-        
-        ClientApp.currentScreen= this;
+
+        ClientApp.curDisplayedScreen = this;
+
     }
 
     private void setListeners(Stage stage) {
         btnMin.setOnAction(e -> {
             stage.setIconified(true); // This will minimize the window
         });
-        
+
         btnClose.setOnAction(e -> {
             System.exit(0);
         });
-        
+
         btnBack.setOnAction((e) -> {
             Parent selectMode = new ModesScreenUI();
             Util.displayScreen(selectMode);
@@ -592,38 +594,44 @@ public class SelectRecord extends AnchorPane {
     private void simulateMovesFromRecord(String record) {
         clearBoard(); // Clear the board before simulating moves
         String[] moves = record.split("\n");
+        String turn = moves[moves.length - 1];
         List<String> movesList = Arrays.asList(moves);
-        simulationThread = new Thread(() -> {
-            for (String move : movesList) {
-                String[] player = move.split(", ");
-                String[] moveDetails = move.split(": ");
-                String[] coordinates = moveDetails[1].split(", ");
-                int rowIndex = Integer.parseInt(coordinates[0]);
-                int columnIndex = Integer.parseInt(coordinates[1]);
-                Button button = buttons[rowIndex][columnIndex];
+
+        simulationThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < moves.length - 1; i++) {
+                    String[] player = moves[i].split(", ");
+                    String[] moveDetails = moves[i].split(": ");
+                    String[] coordinates = moveDetails[1].split(", ");
+                    int rowIndex = Integer.parseInt(coordinates[0]);
+                    int columnIndex = Integer.parseInt(coordinates[1]);
+                    Button button = buttons[rowIndex][columnIndex];
+                    Platform.runLater(() -> {
+                        lableTurnPlayer.setText("Turn: " + player[0] + " " + player[1]);
+                        button.setText(player[1]);
+                    });
+
+                    try {
+                        Thread.sleep(1000); // Sleep for 2 seconds between moves
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        Thread.currentThread().interrupt();
+                    }
+                }
+                Platform.runLater(() -> recordsListView.setDisable(false));
                 Platform.runLater(() -> {
-                    lableTurnPlayer.setText("Turn: " + player[0] + " " + player[1]);
-                    button.setText(player[1]);
+                    String type;
+                    type = checkWin();
+                    if (type.equals("Draw")) {
+                        lableTurnPlayer.setText("You Draw");
+                    } else if (type.equals(turn)) {
+                        lableTurnPlayer.setText("You Win");
+                    } else {
+                        lableTurnPlayer.setText("You Lose");
+                    }
                 });
-                try {
-                    Thread.sleep(1000); // Sleep for 2 seconds between moves
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    Thread.currentThread().interrupt();
-                }
             }
-            Platform.runLater(() -> recordsListView.setDisable(false));
-            Platform.runLater(() -> {
-                String type;
-                type = checkWin();
-                if (type.equals("X")) {
-                    lableTurnPlayer.setText("You Win");
-                } else if (type.equals("O")) {
-                    lableTurnPlayer.setText("You Lose");
-                } else {
-                    lableTurnPlayer.setText("You Draw");
-                }
-            });
         });
         simulationThread.start();
     }
