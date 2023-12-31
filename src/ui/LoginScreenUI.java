@@ -8,11 +8,14 @@ import exception.NotConnectedException;
 import java.util.ArrayList;
 import javafx.event.ActionEvent;
 import javafx.scene.Cursor;
+import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
@@ -40,6 +43,9 @@ public class LoginScreenUI extends Pane {
     protected final DropShadow dropShadow;
     protected final Button btnMinimize;
     protected final DropShadow dropShadow0;
+    protected final Button btnBack;
+    protected final ImageView imageView;
+    protected final Pane pane;
 
     public LoginScreenUI() {
 
@@ -61,6 +67,12 @@ public class LoginScreenUI extends Pane {
         dropShadow = new DropShadow();
         btnMinimize = new Button();
         dropShadow0 = new DropShadow();
+        btnBack = new Button();
+        imageView = new ImageView();
+        pane = new Pane();
+
+        pane.setPrefHeight(45.0);
+        pane.setPrefWidth(51.0);
 
         setMaxHeight(USE_PREF_SIZE);
         setMaxWidth(USE_PREF_SIZE);
@@ -193,7 +205,7 @@ public class LoginScreenUI extends Pane {
         pfPassword.setStyle("-fx-background-radius: 50;");
         pfPassword.setFont(new Font(23.0));
 
-        btnLogin.setLayoutX(254.0);
+        btnLogin.setLayoutX(200.0);
         btnLogin.setLayoutY(368.0);
         btnLogin.setMnemonicParsing(false);
         btnLogin.setOpacity(0.72);
@@ -234,6 +246,20 @@ public class LoginScreenUI extends Pane {
 
         btnMinimize.setEffect(dropShadow0);
 
+        btnBack.setLayoutX(14.0);
+        btnBack.setLayoutY(12.0);
+        btnBack.setMnemonicParsing(false);
+        btnBack.setPrefHeight(45.0);
+        btnBack.setPrefWidth(51.0);
+        btnBack.setStyle("-fx-background-color: #ffbdbd;");
+        btnBack.setTextFill(javafx.scene.paint.Color.valueOf("#da0a0a"));
+
+        imageView.setFitHeight(45.0);
+        imageView.setFitWidth(40.0);
+        imageView.setImage(new Image(getClass().getResource("images/back.png").toExternalForm()));
+        btnBack.setGraphic(pane);
+
+        getChildren().add(btnBack);
         getChildren().add(ellipse);
         getChildren().add(ellipse0);
         getChildren().add(rectangle);
@@ -250,6 +276,7 @@ public class LoginScreenUI extends Pane {
         getChildren().add(btnLogin);
         getChildren().add(btnClose);
         getChildren().add(btnMinimize);
+        pane.getChildren().add(imageView);
 
         //______________My Work_______________
         setListeners();
@@ -261,12 +288,20 @@ public class LoginScreenUI extends Pane {
         Animation.setAnimatedNodeIn(btnMinimize);
 
         ClientApp.curDisplayedScreen = this;
-        tfEmail.setText("a@a.com");
-        pfPassword.setText("Aa#12345");
+        tfEmail.setText("a@gmail.com");
+        pfPassword.setText("Aa#123456");
     }
 
     private void setListeners() {
+        btnBack.setOnAction((ActionEvent event) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
+            Parent root = new HomeScreenUI();
+            Util.displayScreen(root);
+        });
         btnLogin.setOnAction((ActionEvent event) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             Player player = getCurrentPlayer();
             if (player == null) {
                 return;
@@ -275,8 +310,7 @@ public class LoginScreenUI extends Pane {
             Gson gson = new Gson();
             ArrayList jsonRequest = new ArrayList();
             jsonRequest.add(Constants.LOGIN);
-            jsonRequest.add((String)gson.toJson(player));
-
+            jsonRequest.add((String) gson.toJson(player));
             String gsonRequest = gson.toJson(jsonRequest);
             try {
                 Client.getClient().sendRequest(gsonRequest);
@@ -286,10 +320,14 @@ public class LoginScreenUI extends Pane {
         });
 
         btnClose.setOnAction((ActionEvent event) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             ClientApp.stage.close();
         });
 
         btnMinimize.setOnAction((ActionEvent event) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             ClientApp.stage.setIconified(true);
         });
     }

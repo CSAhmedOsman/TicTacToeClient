@@ -519,14 +519,20 @@ public class SelectRecord extends AnchorPane {
 
     private void setListeners(Stage stage) {
         btnMin.setOnAction(e -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             stage.setIconified(true); // This will minimize the window
         });
 
         btnClose.setOnAction(e -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             System.exit(0);
         });
 
         btnBack.setOnAction((e) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             Parent selectMode = new ModesScreenUI();
             Util.displayScreen(selectMode);
         });

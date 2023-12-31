@@ -5,6 +5,7 @@
  */
 package ui;
 
+import client.ClientApp;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -22,7 +23,9 @@ import javafx.application.Platform;
 public class LocalGame extends GameBoard {
 
     public LocalGame() {
-          pane.getChildren().add(win);
+        ClientApp.curDisplayedScreen = this;
+        pane.getChildren().add(win);
+        addHandlers();
         startGame();
     }
 
@@ -46,8 +49,6 @@ public class LocalGame extends GameBoard {
         btnRecordeGame.setDisable(false);
 
         //------------Handlers------
-        addHandlers();
-
         //----------Game Limits countDownLimit thread
         countThread = new Thread(() -> {
             while (isRunning && (winIndex()[boardSize - 1][1] == -1)) {
@@ -72,20 +73,21 @@ public class LocalGame extends GameBoard {
         if ((playedKey < boardSize * boardSize) && winIndexes[boardSize - 1][1] == -1) {
             changeTern();
         } else {
-            if (winIndexes[boardSize - 1][1] != -1) {
-                for (int i = 0; i < boardSize; i++) {
+             for (int i = 0; i < boardSize; i++) {
                     for (int j = 0; j < boardSize; j++) {
                         position[i][j].setDisable(true);
                     }
                 }
+            if (winIndexes[boardSize - 1][1] != -1) {
                 winner(winIndexes);
-                playWinVideo();
+                playVideo("win");
+                
             } else {
                 drawer();
-                playLoseVideo();
+                playVideo("draw");
             }
             // save file if recorded ---
-            recordedGame +=isXTurn ? "X" : "O";
+            recordedGame += isXTurn ? "X" : "O";
             if (isRecord) {
                 saveRecordFile();
             }

@@ -5,6 +5,7 @@
  */
 package ui;
 
+import client.ClientApp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,7 +28,9 @@ public class RobotGame extends GameBoard {
         pane.getChildren().add(win);
         pane.getChildren().add(lose);
         this.level = level;
+        addHandlers();
         startGame();
+        ClientApp.curDisplayedScreen = this;
     }
 
     private int findBestMove() {
@@ -137,9 +140,6 @@ public class RobotGame extends GameBoard {
         btnRecordeGame.setDisable(false);
 
         //------------Handlers------
-        addEventHandlers();
-        addHandlers();
-
         //----------Game Limits counter thread
         countThread = new Thread(() -> {
             while (isRunning && winIndex()[boardSize - 1][1] == -1) {
@@ -176,16 +176,17 @@ public class RobotGame extends GameBoard {
                 }
                 winner(winIndexes);
                 if (isXTurn) {
-                    playWinVideo();
+                    playVideo("win");
                 } else {
-                    playLoseVideo();
+                    playVideo("lose");
                 }
             } else {
                 drawer();
+                playVideo("draw");
             }
             recordedGame += isXTurn ? "X" : "O";
             if (isRecord) {
-            saveRecordFile();
+                saveRecordFile();
             }
         }
     }

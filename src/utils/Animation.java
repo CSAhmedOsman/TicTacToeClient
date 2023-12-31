@@ -26,35 +26,25 @@ public class Animation {
 
     public static void setAnimatedRootIn(Parent root) {
 
-        // Set up TranslateTransition for sliding in
-        TranslateTransition translateIn = new TranslateTransition(ANIMATION_DURATION, root);
-        translateIn.setFromX(ClientApp.stage.getWidth());
-        translateIn.setToX(0);
-
         // Set up FadeTransition for fading in
         FadeTransition fadeIn = new FadeTransition(ANIMATION_DURATION, root);
         fadeIn.setFromValue(0);
         fadeIn.setToValue(1);
 
         // Play the animation for appearing
-        translateIn.play();
+       
         fadeIn.play();
         ClientApp.stage.show();
     }
 
     public static void setAnimatedRootOut(Parent source, Parent destination) {
-        // Set up TranslateTransition for sliding out
-        TranslateTransition translateOut = new TranslateTransition(ANIMATION_DURATION, source);
-        translateOut.setFromX(0);
-        translateOut.setToX(ClientApp.stage.getWidth());
-
+        
         // Set up FadeTransition for fading out
         FadeTransition fadeOut = new FadeTransition(ANIMATION_DURATION, source);
         fadeOut.setFromValue(1);
         fadeOut.setToValue(0);
 
         // Play the animation for disappearing after a delay (you can adjust the delay as needed)
-        translateOut.play();
         fadeOut.play();
         fadeOut.setOnFinished((ActionEvent event) -> {
             Util.displayScreen(destination);
@@ -100,7 +90,7 @@ public class Animation {
     
     public static void setButtonHoverFunctionality(Button button) {
         // Set initial size
-        double initialWidth = 300;
+        double initialWidth = 270;
         double initialHeight = 40;
         button.setPrefSize(initialWidth, initialHeight);
         

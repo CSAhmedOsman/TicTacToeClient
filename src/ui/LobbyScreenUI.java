@@ -3,6 +3,7 @@ package ui;
 import client.Client;
 import client.ClientApp;
 import com.google.gson.Gson;
+import data.GameInfo;
 import data.Player;
 import exception.NotConnectedException;
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import utils.Constants;
+import utils.AlertContstants;
 import utils.Util;
 
 public class LobbyScreenUI extends AnchorPane {
@@ -325,40 +327,54 @@ public class LobbyScreenUI extends AnchorPane {
         //______________My Work_______________
         makePlayerOnline(playerId);
 
-        textArea.setEditable(false);
         textArea.setWrapText(true);
-        textArea.setStyle("-fx-font-family: 'Arial'; -fx-font-size: 18; -fx-font-type: 'bold';");
+        textArea.setEditable(false);
+        textArea.setStyle("-fx-text-fill: black; -fx-font-family:'Franklin Gothic Demi Cond'; -fx-font-size: 30; -fx-font-type:'bold';");
     }
 
     private void setListeners() {
 
         btnClose.setOnAction((ActionEvent event) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
+            isRunning = false;
             ClientApp.stage.close();
         });
 
         btnMin.setOnAction((ActionEvent event) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             ClientApp.stage.setIconified(true);
         });
         btnBack.setOnAction((ActionEvent event) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             Parent root = new ModesScreenUI();
             Util.displayScreen(root);
         });
 
         btnSend.setOnAction((ActionEvent event) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             String broadcastMessage = tfMessage.getText();
             if (broadcastMessage.trim().isEmpty()) {
                 return;
             }
             sendMessageToAll(playerId, broadcastMessage);
             tfMessage.clear();
+
         });
         profile.setOnAction((ActionEvent e) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
+            isRunning = false;
             Parent root = new UserProfileUI(playerId);
             Util.displayScreen(root);
-            isRunning = false;
             //thread.stop();
         });
         unBlock.setOnAction((e) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             Platform.runLater(() -> {
                 Parent root = new UnBlockUI(playerId);
                 Util.displayScreen(root);
@@ -366,18 +382,21 @@ public class LobbyScreenUI extends AnchorPane {
             });
         });
         logout.setOnAction((e) -> {
-           Gson gson = new Gson();
-        ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.LOGOUT);
-        jsonRequest.add(playerId);
-      
-        String gsonRequest = gson.toJson(jsonRequest);
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            System.out.println(ex.getMessage());
-            ex.printStackTrace();
-        }
+            ClientApp.playerId=-1;
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
+            Gson gson = new Gson();
+            ArrayList jsonRequest = new ArrayList();
+            jsonRequest.add(Constants.LOGOUT);
+            jsonRequest.add(playerId);
+
+            String gsonRequest = gson.toJson(jsonRequest);
+            try {
+                Client.getClient().sendRequest(gsonRequest);
+            } catch (NotConnectedException ex) {
+                System.out.println(ex.getMessage());
+                ex.printStackTrace();
+            }
         });
 
     }
@@ -519,7 +538,7 @@ public class LobbyScreenUI extends AnchorPane {
             List<HBox> nonFriendBoxes = new ArrayList<>();
             int i = 0;
             for (Player player : availablePlayers) {
-               
+
                 String friend = isFriend.get(i);
                 i = i + 1;
 
@@ -532,9 +551,9 @@ public class LobbyScreenUI extends AnchorPane {
                     nonFriendBoxes.add(playerBox);
                 }
             }
-            
+
             playerListView.getItems().clear();
-            
+
             List<HBox> finalPlayerList = new ArrayList<>(friendBoxes);
             finalPlayerList.addAll(nonFriendBoxes);
 
@@ -581,7 +600,6 @@ public class LobbyScreenUI extends AnchorPane {
         blockButton.setPrefHeight(30.0);
         blockButton.setPrefWidth(50.0);
 
-        
         Button addFriendButton = new Button();
         addFriendButton.setStyle("-fx-background-radius: 100; -fx-background-color: #EA93A3;");
         addFriendButton.setTextFill(javafx.scene.paint.Color.valueOf("#ffffff"));
@@ -593,7 +611,6 @@ public class LobbyScreenUI extends AnchorPane {
         addFriendButton.setPrefHeight(30.0);
         addFriendButton.setPrefWidth(50.0);
 
-        
         if (isFriend.equalsIgnoreCase("true")) {
             addFriendButton.setText("Remove");
             addFriendButton.setOnAction((e) -> {
@@ -616,19 +633,11 @@ public class LobbyScreenUI extends AnchorPane {
         imageView.setImage(new Image(getClass().getResource("images/" + ((player.getId()) % 3) + ".png").toExternalForm()));
 
         requestButton.setOnAction((e) -> {
-            Gson gson = new Gson();
-            ArrayList<Object> jsonArr = new ArrayList<>();
-            jsonArr.add(Constants.REQUEST);
-
-            jsonArr.add(playerId);
-            jsonArr.add(player.getId());
-
-            String gsonRequest = gson.toJson(jsonArr);
-            try {
-                Client.getClient().sendRequest(gsonRequest);
-            } catch (NotConnectedException ex) {
-                Logger.getLogger(LobbyScreenUI.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            isRunning = false;
+            sendInvit(playerId, player.getId(), AlertContstants.INVITE_TO_PLAY);
+            Parent waitingRoom = new WaitingRoom(playerId);
+            Util.displayScreen(waitingRoom);
+            //   thread.suspend();
         });
 
         blockButton.setOnAction((e) -> {
@@ -645,7 +654,7 @@ public class LobbyScreenUI extends AnchorPane {
 
         VBox Data = new VBox(playerInfo, buttons);
         Data.setAlignment(Pos.CENTER_LEFT);
-       
+
         playerBox.getChildren().addAll(imageView, Data);
         playerBox.setSpacing(20);
 
@@ -657,5 +666,22 @@ public class LobbyScreenUI extends AnchorPane {
             System.out.println("Desplay Message");
             Util.showAlertDialog(Alert.AlertType.CONFIRMATION, srcPlayerName, message);
         });
+    }
+
+    public static void sendInvit(int myId, int detsId, int type) {
+        Gson gson = new Gson();
+        ArrayList jsonRequest = new ArrayList();
+        jsonRequest.add(Constants.SEND_INVITE);
+        jsonRequest.add(myId);
+        jsonRequest.add(detsId);
+        jsonRequest.add(type);
+        String gsonRequest = gson.toJson(jsonRequest);
+
+        try {
+            Client.getClient().sendRequest(gsonRequest);
+        } catch (NotConnectedException ex) {
+            Logger.getLogger(ModesScreenUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 }

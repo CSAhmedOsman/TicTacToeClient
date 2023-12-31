@@ -148,6 +148,7 @@ public class UnBlockUI extends BorderPane {
         pane.getChildren().add(imageView);
         pane.getChildren().add(blockList);
         pane.getChildren().add(label);
+
         ClientApp.curDisplayedScreen = this;
     }
 

@@ -32,6 +32,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import utils.Constants;
 import utils.Util;
+import utils.AlertContstants;
 
 /**
  *
@@ -73,9 +74,10 @@ public class OnlineGame extends GameBoard {
         borderMessage.setStyle("-fx-background-radius: 20;");
 
         BorderPane.setAlignment(taMessage, javafx.geometry.Pos.CENTER);
-        taMessage.setDisable(true);
+        taMessage.setEditable(false);
         taMessage.setPrefWidth(0.0);
-        taMessage.setStyle("-fx-textColor: black; -fx-background-radius: 10;");
+        taMessage.setWrapText(true);
+        taMessage.setStyle("-fx-text-fill: black; -fx-font-family:'Franklin Gothic Demi Cond'; -fx-font-size: 30; -fx-font-type:'bold';");
         borderMessage.setCenter(taMessage);
 
         BorderPane.setAlignment(flowPane, javafx.geometry.Pos.CENTER);
@@ -114,13 +116,13 @@ public class OnlineGame extends GameBoard {
         pane.getChildren().add(paneMessage);
         pane.getChildren().add(win);
         pane.getChildren().add(lose);
+        pane.getChildren().add(draw);
         myId = info.getSrcPlayerId();
         destPlayerId = info.getDestPlayerId();
 
         this.myTurn = myTurn;
-
+        addHandlers();
         startGame();
-
     }
 
     @Override
@@ -159,7 +161,7 @@ public class OnlineGame extends GameBoard {
                     }
                     Thread.sleep(1000);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(GameBoard.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(OnlineGame.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
@@ -174,24 +176,24 @@ public class OnlineGame extends GameBoard {
             changeTern();
             myTurn = !myTurn;
         } else {
+
             if (winIndexes[boardSize - 1][1] != -1) {
-                for (int i = 0; i < boardSize; i++) {
-                    for (int j = 0; j < boardSize; j++) {
-                        position[i][j].setDisable(true);
-                    }
-                }
                 winner(winIndexes);
                 if (myTurn) {
-                    playWinVideo();
-                    updateMyScore(1);
+                    playVideo("win");
+                    for (int i = 0; i < boardSize; i++) {
+                        for (int j = 0; j < boardSize; j++) {
+                            position[i][j].setDisable(true);
+                        }
+                    }
+                    updateMyScore(AlertContstants.WIN_UPDATE_SCORE);
                 } else {
-                    playLoseVideo();
+                    playVideo("lose");
                 }
-
             } else {
                 drawer();
-                updateMyScore(2);
-
+                playVideo("draw");
+                updateMyScore(AlertContstants.DRAW_UPDATE_SCORE);
             }
             // save file if recorded ---
             recordedGame += myTurn && isXTurn ? "X" : "O";
@@ -220,23 +222,33 @@ public class OnlineGame extends GameBoard {
                 });
             }
         }
+        btnSendMessage.setOnAction((event) -> {
+            Message message = new Message(tfMessage.getText(), info.getSrcPlayerId(), info.getDestPlayerId());
+            taMessage.appendText(info.getSrcPlayerName() + " : " + tfMessage.getText() + "\n");
+            sendMessage(message);
+            tfMessage.setText("");
+        });
         btnNewGame.setOnAction((e) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             isRunning = false;
             countThread.stop();
             recordedGame = "";
             isRecord = false;
-            newGameAlert(2);
+            newGameAlert(AlertContstants.INVITE_TO_NEW_GAME);
         });
         btnExitGame.setOnAction((e) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             isRunning = false;
-            exitGameAlert(3);
+            exitGameAlert(AlertContstants.INVITE_TO_EXIT_GAME);
         });
     }
 
     private void sendMove(String playable, int indexi, int indexj) {
         Gson gson = new Gson();
         ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.SENDMOVE);
+        jsonRequest.add(Constants.SEND_MOVE);
         jsonRequest.add(playable);
         jsonRequest.add(indexi);
         jsonRequest.add(indexj);
@@ -266,7 +278,9 @@ public class OnlineGame extends GameBoard {
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
                 if (position[i][j].getText() == "") {
-                    position[i][j].setDisable(!myTurn);
+                    if (!hasWinner(winIndex())) {
+                        position[i][j].setDisable(!myTurn);
+                    }
                 }
             }
         }
@@ -290,11 +304,11 @@ public class OnlineGame extends GameBoard {
     }
 
     private void sendMessage(Message message) {
+
         Gson gson = new Gson();
         ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.SENDMESSAGE);
+        jsonRequest.add(Constants.SEND_MESSAGE);
         jsonRequest.add(message);
-
         String gsonRequest = gson.toJson(jsonRequest);
         try {
             Client.getClient().sendRequest(gsonRequest);
@@ -304,16 +318,15 @@ public class OnlineGame extends GameBoard {
     }
 
     public void displayMessage(String srcPlayerName, String message) {
-        Platform.runLater(() -> {
-            Util.showAlertDialog(Alert.AlertType.CONFIRMATION, srcPlayerName, message);
-        });
+        taMessage.appendText(srcPlayerName + " : " + message + "\n");
     }
 
     public void newGameAlert(int type) {
         Gson gson = new Gson();
         ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.SENDINVITE);
-        jsonRequest.add(info);
+        jsonRequest.add(Constants.SEND_INVITE);
+        jsonRequest.add(info.getSrcPlayerId());
+        jsonRequest.add(info.getDestPlayerId());
         jsonRequest.add(type);
         String gsonRequest = gson.toJson(jsonRequest);
 
@@ -328,8 +341,9 @@ public class OnlineGame extends GameBoard {
     public void exitGameAlert(int type) {
         Gson gson = new Gson();
         ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.SENDINVITE);
-        jsonRequest.add(info);
+        jsonRequest.add(Constants.SEND_INVITE);
+        jsonRequest.add(info.getSrcPlayerId());
+        jsonRequest.add(info.getDestPlayerId());
         jsonRequest.add(type);
         String gsonRequest = gson.toJson(jsonRequest);
 
@@ -344,14 +358,14 @@ public class OnlineGame extends GameBoard {
     public void exitGame() {
         isRunning = false;
         countThread.stop();
-        Parent root = new ModesScreenUI();
+        Parent root = new LobbyScreenUI(info.getSrcPlayerId());
         Util.displayScreen(root);
     }
 
     public void updateMyScore(int type) {
         Gson gson = new Gson();
         ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.UPDATESCORE);
+        jsonRequest.add(Constants.UPDATE_SCORE);
         jsonRequest.add(info);
         jsonRequest.add(type);
         String gsonRequest = gson.toJson(jsonRequest);
@@ -360,6 +374,5 @@ public class OnlineGame extends GameBoard {
         } catch (NotConnectedException ex) {
             Logger.getLogger(ModesScreenUI.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 }

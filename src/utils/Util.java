@@ -36,8 +36,10 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import ui.GameBoard;
+import ui.LobbyScreenUI;
 import ui.LocalGame;
 import ui.OnlineGame;
+import utils.AlertContstants;
 
 /**
  *
@@ -72,7 +74,6 @@ public class Util {
                 messageLabel,
                 okButton
         );
-
         // Make the dialog draggable
         dialogPane.setOnMousePressed((MouseEvent event) -> {
             xOffset = event.getSceneX();
@@ -119,7 +120,6 @@ public class Util {
     }
 
     public static void displayScreen(Parent root) {
-
         Scene scene = new Scene(root);
         Platform.runLater(() -> {
             ClientApp.stage.setScene(scene);
@@ -143,7 +143,7 @@ public class Util {
         Alert alert = new Alert(alertType);
         alert.setTitle(message + " Request");
         alert.setHeaderText("You've received an " + message + ".");
-        alert.setContentText("From Name = " + info.getSrcPlayerName() + " and has Score= " + info.getSrcPlayerScore());
+        alert.setContentText("From : " + info.getSrcPlayerName() + " and has Score : " + info.getSrcPlayerScore());
 
         // Add accept and reject buttons to the alert
         ButtonType acceptButton = new ButtonType("Accept");
@@ -157,39 +157,44 @@ public class Util {
                 + "-fx-border-color: #8400CC; "
                 + "-fx-border-width: 2px; "
                 + "-fx-border-radius: 5px;"
-                +  "-fx-text-fill: #FFFFFF;");
-        
+                + "-fx-text-fill: #FFFFFF;");
+
         alert.getDialogPane().lookup(".header-panel").setStyle(
                 "-fx-background-color: #A500CC; "
                 + "-fx-font-weight: bold;"
-                +"-fx-font-size: 16px;"
-                +"-fx-text-fill: #FFFFFF;");
+                + "-fx-font-size: 16px;"
+                + "-fx-text-fill: #FFFFFF;");
 
         alert.getDialogPane().lookup(".content.label").setStyle(
                 "-fx-font-style: italic;"
                 + "-fx-font-weight: bold;"
-                +"-fx-font-size: 16px;"
-                +"-fx-text-fill: #FFFFFF;");
+                + "-fx-font-size: 16px;"
+                + "-fx-text-fill: #FFFFFF;");
         alert.showAndWait().ifPresent(buttonType -> {
             if (buttonType == acceptButton) {
-                acceptGame(info.getSrcPlayerId(), info.getDestPlayerId(), type);
+                acceptInvite(info.getSrcPlayerId(), info.getDestPlayerId(), type);
             } else if (buttonType == rejectButton) {
-                if (type == 3) {
-                    exitPlayerGame(info.getSrcPlayerId());
+                rejectInvite(info.getSrcPlayerId(), info.getDestPlayerId(), type);
+                if (ClientApp.curDisplayedScreen instanceof OnlineGame) {
                     OnlineGame game = (OnlineGame) ClientApp.curDisplayedScreen;
                     Platform.runLater(() -> {
                         game.playWinVideo();
-                        game.updateMyScore(1);
+                        game.updateMyScore(AlertContstants.WIN_UPDATE_SCORE);
+                        exitPlayerGame(info.getSrcPlayerId());
+                        Platform.runLater(() -> game.exitGame());
                     });
-                }
+                       
+
+                } 
             }
+
         });
     }
 
-    private static void acceptGame(int srcPlayerId, int destPlayerId, int type) {
+    private static void acceptInvite(int srcPlayerId, int destPlayerId, int type) {
         Gson gson = new Gson();
         ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.ACCEPTGAME);
+        jsonRequest.add(Constants.ACCEPT_INVITE);
         jsonRequest.add(srcPlayerId);
         jsonRequest.add(destPlayerId);
         jsonRequest.add(type);
@@ -200,7 +205,23 @@ public class Util {
             Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-   private static void exitPlayerGame(int srcPlayerId){
+
+    private static void rejectInvite(int srcPlayerId, int destPlayerId, int type) {
+        Gson gson = new Gson();
+        ArrayList jsonRequest = new ArrayList();
+        jsonRequest.add(Constants.REJECT_INVITE);
+        jsonRequest.add(srcPlayerId);
+        jsonRequest.add(destPlayerId);
+        jsonRequest.add(type);
+        String gsonRequest = gson.toJson(jsonRequest);
+        try {
+            Client.getClient().sendRequest(gsonRequest);
+        } catch (NotConnectedException ex) {
+            Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private static void exitPlayerGame(int srcPlayerId) {
         Gson gson = new Gson();
         ArrayList jsonRequest = new ArrayList();
         jsonRequest.add(Constants.EXIT_PLAYER_GAME);

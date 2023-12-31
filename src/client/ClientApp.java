@@ -32,14 +32,15 @@ public class ClientApp extends Application {
 
     public static Stage stage;
     public static Pane curDisplayedScreen;
-    public SoundManager soundManager;
+    public static SoundManager soundManager;
+    public static int playerId;
 
     @Override
     public void start(Stage stage) throws Exception {
-
+        playerId = -1;
+        soundManager = SoundManager.getInstance();
+        soundManager.playBackgroundMusic();
         ClientApp.stage = stage;
-        soundManager = new SoundManager();
-        soundManager.playSound();
 
         Parent splashScreen = new SplashScreenUI();
         //Hide top bar of the stage
@@ -48,13 +49,13 @@ public class ClientApp extends Application {
         Util.displayScreen(splashScreen);
 
         int savedUserId = PlayerStorage.loadUserId();
-        
 
-       /* if (savedUserId == -1) {
+        /* if (savedUserId == -1) {
             Parent login = new LoginScreenUI();
             Util.displayScreen(login);
         } else {
-            Parent lobby = new LobbyScreenUI((int) savedUserId);
+            playerId = savedUserId;
+            Parent lobby = new LobbyScreenUI(savedUserId);
             Util.displayScreen(lobby);
         }*/
     }
