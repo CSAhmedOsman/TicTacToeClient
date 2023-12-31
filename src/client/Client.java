@@ -214,20 +214,9 @@ public class Client {
     }
 
     private void getAvailablePlayers() {
-        System.out.println("getAvailablePlayers in client");
-        ArrayList<Player> getAvailablePlayers = new ArrayList<>();
-        Player player;
-        double id, score;
-        String name;
-
-        for (int i = 1; i < responceData.size(); i += 3) {
-            id = (double) responceData.get(i);
-            name = (String) responceData.get(i + 1);
-            score = (double) responceData.get(i + 2);
-            player = new Player((int) id, name, (int) score);
-            getAvailablePlayers.add(player);
-            System.out.println("player Data :" + player.getId() + " " + player.getName() + " " + player.getScore());
-        }
+        Type playerType = new TypeToken<ArrayList<Player>>() {
+        }.getType();
+        ArrayList<Player> getAvailablePlayers = new Gson().fromJson((String) responceData.get(1), playerType);
 
         LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.curDisplayedScreen;
         Platform.runLater(() -> {

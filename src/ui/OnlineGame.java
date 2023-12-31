@@ -53,6 +53,9 @@ public class OnlineGame extends GameBoard {
     public OnlineGame(GameInfo info, boolean myTurn) {
         super(info.getSrcPlayerName(), info.getDestPlayerName());
         ClientApp.curDisplayedScreen = this;
+        labelPlayerXNum.setText(String.valueOf(info.getPrevSrcScore()));
+        labelPlayerONum.setText(String.valueOf(info.getPrevDestScore()));
+
         this.info = info;
         paneMessage = new Pane();
         borderMessage = new BorderPane();

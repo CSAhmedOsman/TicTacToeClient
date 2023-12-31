@@ -33,6 +33,7 @@ public class ClientApp extends Application {
     public static Stage stage;
     public static Pane curDisplayedScreen;
     public SoundManager soundManager;
+    public static int savedUserId;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -47,10 +48,10 @@ public class ClientApp extends Application {
 
         Util.displayScreen(splashScreen);
 
-        int savedUserId = PlayerStorage.loadUserId();
-        
+        savedUserId = PlayerStorage.loadUserId();
 
-       /* if (savedUserId == -1) {
+
+        /* if (savedUserId == -1) {
             Parent login = new LoginScreenUI();
             Util.displayScreen(login);
         } else {

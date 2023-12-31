@@ -262,7 +262,7 @@ public class LoginScreenUI extends Pane {
 
         ClientApp.curDisplayedScreen = this;
         tfEmail.setText("a@a.com");
-        pfPassword.setText("Aa#12345");
+        pfPassword.setText("Aa#0123456");
     }
 
     private void setListeners() {
@@ -275,7 +275,7 @@ public class LoginScreenUI extends Pane {
             Gson gson = new Gson();
             ArrayList jsonRequest = new ArrayList();
             jsonRequest.add(Constants.LOGIN);
-            jsonRequest.add(player);
+            jsonRequest.add(gson.toJson(player));
 
             String gsonRequest = gson.toJson(jsonRequest);
             try {

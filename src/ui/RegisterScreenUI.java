@@ -255,9 +255,9 @@ public class RegisterScreenUI extends Pane {
         getChildren().add(rectangle2);
         getChildren().add(ellipse1);
         getChildren().add(tfEmail);
-        getChildren().add(btnRegister);
         getChildren().add(pfPassword);
         getChildren().add(pfConfirmPassword);
+        getChildren().add(btnRegister);
         getChildren().add(btnClose);
         getChildren().add(btnMinimize);
         

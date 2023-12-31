@@ -241,13 +241,11 @@ public class LobbyScreenUI extends AnchorPane {
         pane0.setPrefHeight(384.0);
         textArea.setStyle("-fx-textColor: black; -fx-background-radius: 10;-fx-background-color: white");
         textArea.setDisable(true);
-        
-        
+
         borderPane.setPrefHeight(385.0);
         borderPane.setPrefWidth(300.0);
-        
+
         borderPane.setCenter(textArea);
-        
 
         BorderPane.setAlignment(flowPane, javafx.geometry.Pos.CENTER);
         flowPane.setPrefHeight(49.0);
@@ -566,7 +564,7 @@ public class LobbyScreenUI extends AnchorPane {
         requestButton.setOnAction((e) -> {
             Gson gson = new Gson();
             ArrayList<Object> jsonArr = new ArrayList<>();
-            jsonArr.add(Constants.REQUEST);
+            jsonArr.add(Constants.GET_PREV_SCORE);
 
             jsonArr.add(playerId);
             jsonArr.add(player.getId());
@@ -574,6 +572,7 @@ public class LobbyScreenUI extends AnchorPane {
             String gsonRequest = gson.toJson(jsonArr);
             try {
                 Client.getClient().sendRequest(gsonRequest);
+                isRunning = false;
             } catch (NotConnectedException ex) {
                 Logger.getLogger(LobbyScreenUI.class.getName()).log(Level.SEVERE, null, ex);
             }

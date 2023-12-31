@@ -42,7 +42,7 @@ public class WaitingRoom extends AnchorPane {
     protected int countDownSec;
     protected boolean isRunning;
     
-    public WaitingRoom() {
+    public WaitingRoom(int playerId) {
         
         isRunning = true;
         countDownSec = 30;
@@ -265,7 +265,7 @@ public class WaitingRoom extends AnchorPane {
                 try {
                     if (countDownMSec <= 0 && countDownSec <= 0) {
                         isRunning = false;
-                        utils.Util.displayScreen(new ModesScreenUI());
+                        utils.Util.displayScreen(new LobbyScreenUI(playerId));
                     } else {
                         if (countDownMSec <= 0) {
                             countDownMSec = 99;

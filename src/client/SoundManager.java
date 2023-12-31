@@ -14,7 +14,7 @@ public class SoundManager {
     private static MediaPlayer mediaPlayer;
 
     public SoundManager() {
-        fileName = "/src/Audio/bgm2.mp3";
+        fileName = "/src/Audio/bgm 2.mp3";
         directory = System.getProperty("user.dir");
         path = directory + fileName;
         media = new Media(new File(path).toURI().toString());
