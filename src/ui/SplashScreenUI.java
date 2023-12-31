@@ -229,20 +229,26 @@ public class SplashScreenUI extends AnchorPane {
         //_____________________My Work_______________________
         setListeners(ClientApp.stage);
         Animation.setButtonHoverFunctionality(btnNext);
-        ClientApp.curDisplayedScreen= this;
+        ClientApp.curDisplayedScreen = this;
     }
 
     private void setListeners(Stage stage) {
         btnNext.setOnAction((ActionEvent event) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             Parent homeScreen = new HomeScreenUI();
             Util.displayScreen(homeScreen);
         });
-        
+
         btnClose.setOnAction((ActionEvent event) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             stage.close();
         });
-        
+
         btnMinimize.setOnAction((ActionEvent event) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             stage.setIconified(true);
         });
     }

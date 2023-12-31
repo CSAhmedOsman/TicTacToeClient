@@ -32,6 +32,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import utils.Constants;
 import utils.Util;
+import utils.AlertContstants;
 
 /**
  *
@@ -114,6 +115,7 @@ public class OnlineGame extends GameBoard {
         pane.getChildren().add(paneMessage);
         pane.getChildren().add(win);
         pane.getChildren().add(lose);
+        pane.getChildren().add(draw);
         myId = info.getSrcPlayerId();
         destPlayerId = info.getDestPlayerId();
 
@@ -159,7 +161,7 @@ public class OnlineGame extends GameBoard {
                     }
                     Thread.sleep(1000);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(GameBoard.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(OnlineGame.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
@@ -182,16 +184,16 @@ public class OnlineGame extends GameBoard {
                 }
                 winner(winIndexes);
                 if (myTurn) {
-                    playWinVideo();
-                    updateMyScore(1);
+                    playVideo("/src/ui/video/win.mp4",win);
+                    updateMyScore(AlertContstants.WIN_UPDATE_SCORE);
                 } else {
-                    playLoseVideo();
+                    playVideo("/src/ui/video/lose.mp4",lose);
                 }
 
             } else {
                 drawer();
-                updateMyScore(2);
-
+                playVideo("/src/ui/video/draw.mp4",draw);
+                updateMyScore(AlertContstants.DRAW_UPDATE_SCORE);
             }
             // save file if recorded ---
             recordedGame += myTurn && isXTurn ? "X" : "O";
@@ -221,22 +223,26 @@ public class OnlineGame extends GameBoard {
             }
         }
         btnNewGame.setOnAction((e) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             isRunning = false;
             countThread.stop();
             recordedGame = "";
             isRecord = false;
-            newGameAlert(2);
+            newGameAlert(AlertContstants.INVITE_TO_NEW_GAME);
         });
         btnExitGame.setOnAction((e) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             isRunning = false;
-            exitGameAlert(3);
+            exitGameAlert(AlertContstants.INVITE_TO_EXIT_GAME);
         });
     }
 
     private void sendMove(String playable, int indexi, int indexj) {
         Gson gson = new Gson();
         ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.SENDMOVE);
+        jsonRequest.add(Constants.SEND_MOVE);
         jsonRequest.add(playable);
         jsonRequest.add(indexi);
         jsonRequest.add(indexj);
@@ -292,7 +298,7 @@ public class OnlineGame extends GameBoard {
     private void sendMessage(Message message) {
         Gson gson = new Gson();
         ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.SENDMESSAGE);
+        jsonRequest.add(Constants.SEND_MESSAGE);
         jsonRequest.add(message);
 
         String gsonRequest = gson.toJson(jsonRequest);
@@ -312,8 +318,9 @@ public class OnlineGame extends GameBoard {
     public void newGameAlert(int type) {
         Gson gson = new Gson();
         ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.SENDINVITE);
-        jsonRequest.add(info);
+        jsonRequest.add(Constants.SEND_INVITE);
+        jsonRequest.add(info.getSrcPlayerId());
+        jsonRequest.add(info.getDestPlayerId());
         jsonRequest.add(type);
         String gsonRequest = gson.toJson(jsonRequest);
 
@@ -328,8 +335,9 @@ public class OnlineGame extends GameBoard {
     public void exitGameAlert(int type) {
         Gson gson = new Gson();
         ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.SENDINVITE);
-        jsonRequest.add(info);
+        jsonRequest.add(Constants.SEND_INVITE);
+        jsonRequest.add(info.getSrcPlayerId());
+        jsonRequest.add(info.getDestPlayerId());
         jsonRequest.add(type);
         String gsonRequest = gson.toJson(jsonRequest);
 
@@ -344,14 +352,14 @@ public class OnlineGame extends GameBoard {
     public void exitGame() {
         isRunning = false;
         countThread.stop();
-        Parent root = new ModesScreenUI();
+        Parent root = new LobbyScreenUI(info.getSrcPlayerId());
         Util.displayScreen(root);
     }
 
     public void updateMyScore(int type) {
         Gson gson = new Gson();
         ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.UPDATESCORE);
+        jsonRequest.add(Constants.UPDATE_SCORE);
         jsonRequest.add(info);
         jsonRequest.add(type);
         String gsonRequest = gson.toJson(jsonRequest);
@@ -360,6 +368,5 @@ public class OnlineGame extends GameBoard {
         } catch (NotConnectedException ex) {
             Logger.getLogger(ModesScreenUI.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 }

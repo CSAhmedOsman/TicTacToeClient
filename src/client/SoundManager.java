@@ -1,32 +1,51 @@
 package client;
 
-import java.io.File;
-import javafx.scene.media.AudioClip;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import java.io.File;
 
 public class SoundManager {
 
-    private static String directory;
-    private static String path;
-    private static String fileName;
-    private static Media media;
-    private static MediaPlayer mediaPlayer;
+    private static SoundManager instance = null;
+    private MediaPlayer bgMusicPlayer;
+    private MediaPlayer clickSoundPlayer;
 
-    public SoundManager() {
-        fileName = "/src/Audio/bgm2.mp3";
-        directory = System.getProperty("user.dir");
-        path = directory + fileName;
-        media = new Media(new File(path).toURI().toString());
-        mediaPlayer = new MediaPlayer(media);
-        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+    private SoundManager() {
+        String pathSound = "/src/Audio/bgm2.mp3"; // Replace with your background music file path
+        String pathClick = "/src/Audio/click.wav"; // Replace with your click sound file path
+        String directorySound = System.getProperty("user.dir");
+        String bgMusicFile = directorySound + pathSound;
+        String clickSoundFile = directorySound + pathClick;
+
+        Media bgMusicMedia = new Media(new File(bgMusicFile).toURI().toString());
+        Media clickSoundMedia = new Media(new File(clickSoundFile).toURI().toString());
+
+        bgMusicPlayer = new MediaPlayer(bgMusicMedia);
+        clickSoundPlayer = new MediaPlayer(clickSoundMedia);
+
+        bgMusicPlayer.setCycleCount(MediaPlayer.INDEFINITE);
     }
 
-    public void playSound() {
-        mediaPlayer.play();
+    public static SoundManager getInstance() {
+        if (instance == null) {
+            instance = new SoundManager();
+        }
+        return instance;
     }
 
-    public void stopSound() {
-        mediaPlayer.stop();
+    public void playBackgroundMusic() {
+        bgMusicPlayer.play();
+    }
+
+    public void stopBackgroundMusic() {
+        bgMusicPlayer.stop();
+    }
+
+    public void playClickSound() {
+        clickSoundPlayer.play();
+    }
+
+    public void stopClickSound() {
+        clickSoundPlayer.stop();
     }
 }

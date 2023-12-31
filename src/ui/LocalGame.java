@@ -5,6 +5,7 @@
  */
 package ui;
 
+import client.ClientApp;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -22,6 +23,7 @@ import javafx.application.Platform;
 public class LocalGame extends GameBoard {
 
     public LocalGame() {
+        ClientApp.curDisplayedScreen=this;
           pane.getChildren().add(win);
         startGame();
     }
@@ -79,10 +81,10 @@ public class LocalGame extends GameBoard {
                     }
                 }
                 winner(winIndexes);
-                playWinVideo();
+                playVideo("/src/ui/video/win.mp4",win);
             } else {
                 drawer();
-                playLoseVideo();
+                playVideo("/src/ui/video/lose.mp4",lose);
             }
             // save file if recorded ---
             recordedGame +=isXTurn ? "X" : "O";

@@ -2,6 +2,7 @@ package ui;
 
 import client.Client;
 import client.ClientApp;
+import client.SoundManager;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.Cursor;
@@ -46,9 +47,8 @@ public class HomeScreenUI extends AnchorPane {
     protected final DropShadow dropShadow3;
     protected final Button btnMinimize;
     protected final DropShadow dropShadow4;
-
     public HomeScreenUI() {
-
+        
         rectangle = new Rectangle();
         label = new Label();
         dropShadow = new DropShadow();
@@ -71,7 +71,6 @@ public class HomeScreenUI extends AnchorPane {
         dropShadow3 = new DropShadow();
         btnMinimize = new Button();
         dropShadow4 = new DropShadow();
-
         setMaxHeight(USE_PREF_SIZE);
         setMaxWidth(USE_PREF_SIZE);
         setMinHeight(USE_PREF_SIZE);
@@ -299,30 +298,42 @@ public class HomeScreenUI extends AnchorPane {
     private void setListeners(Stage stage) {
 
         btnLogin.setOnAction((ActionEvent event) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             Parent loginScreen = new LoginScreenUI();
             animateOut(loginScreen);
         });
 
         btnSignUp.setOnAction((ActionEvent event) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             Parent registerScreen = new RegisterScreenUI();
             animateOut(registerScreen);
         });
 
         btnOffLine.setOnAction((ActionEvent event) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             Parent modesScreen = new ModesScreenUI();
             animateOut(modesScreen);
         });
 
         btnBack.setOnAction((ActionEvent event) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             Parent splashScreen = new SplashScreenUI();
             animateOut(splashScreen);
         });
 
         btnClose.setOnAction((ActionEvent event) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             stage.close();
         });
 
         btnMinimize.setOnAction((ActionEvent event) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             stage.setIconified(true);
         });
     }

@@ -1,5 +1,6 @@
 package ui;
 
+import client.ClientApp;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -111,6 +112,7 @@ public  class UnBlockUI extends BorderPane {
         pane.getChildren().add(imageView);
         pane.getChildren().add(blockList);
         pane.getChildren().add(label);
+         ClientApp.curDisplayedScreen=this;
 
     }
 }

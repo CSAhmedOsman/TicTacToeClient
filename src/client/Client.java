@@ -30,6 +30,7 @@ import ui.ModesScreenUI;
 import ui.OnlineGame;
 import ui.UserProfileUI;
 import utils.Constants;
+import utils.AlertContstants;
 import utils.Util;
 
 /**
@@ -133,16 +134,16 @@ public class Client {
             case Constants.BROADCAST_MESSAGE:
                 recieveBroadcastMessage();
                 break;
-            case Constants.SENDMESSAGE:
+            case Constants.SEND_MESSAGE:
                 recieveMessage();
                 break;
-            case Constants.SENDINVITE:
+            case Constants.SEND_INVITE:
                 recieveInvit();
                 break;
-            case Constants.ACCEPTGAME:
-                startGame();
+            case Constants.ACCEPT_INVITE:
+                acceptInvite();
                 break;
-            case Constants.SENDMOVE:
+            case Constants.SEND_MOVE:
                 handleMove();
                 break;
             case Constants.EXIT_PLAYER_GAME:
@@ -162,6 +163,9 @@ public class Client {
                 break;
             case Constants.SETDATAOFPLAYER:
                 getDataOfPlayer();
+                break;
+            case Constants.REJECT_INVITE:
+                rejectInvite();
                 break;
         }
     }
@@ -215,7 +219,12 @@ public class Client {
 
     private void getAvailablePlayers() {
         System.out.println("getAvailablePlayers in client");
-        ArrayList<Player> getAvailablePlayers = new ArrayList<>();
+        Gson gson = new Gson();
+        Type listType = new TypeToken<ArrayList<Player>>() {
+        }.getType();
+        ArrayList<Player> getAvailablePlayers = gson.fromJson((String) responceData.get(1), listType);
+
+        /*      ArrayList<Player> getAvailablePlayers = new ArrayList<>();
         Player player;
         double id, score;
         String name;
@@ -228,11 +237,13 @@ public class Client {
             getAvailablePlayers.add(player);
             System.out.println("player Data :" + player.getId() + " " + player.getName() + " " + player.getScore());
         }
-
-        LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.curDisplayedScreen;
-        Platform.runLater(()->{
-            lobbyScreen.displayAvailablePlayers(getAvailablePlayers);        
-        });
+         */
+        if (ClientApp.curDisplayedScreen instanceof LobbyScreenUI) {
+            LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.curDisplayedScreen;
+            Platform.runLater(() -> lobbyScreen.displayAvailablePlayers(getAvailablePlayers));
+        } else {
+            System.out.println("Current Display Screen is not LobbyScreenUi");
+        }
     }
 
     private void request() {
@@ -270,41 +281,46 @@ public class Client {
         String jsonString = (String) responceData.get(1);
         GameInfo info = gson.fromJson(jsonString, GameInfo.class);
         double type = (double) responceData.get(2);
-        if ((int) type == 2) {
-            Platform.runLater(() -> {
-                Util.invitationAlert(Alert.AlertType.CONFIRMATION, info, "New Game", 2);
-            });
-        } else if ((int) type == 1) {
-            Platform.runLater(() -> {
-                Util.invitationAlert(Alert.AlertType.CONFIRMATION, info, "Invitation To play", 1);
-            });
-        } else {
-            Platform.runLater(() -> {
-                Util.invitationAlert(Alert.AlertType.CONFIRMATION, info, "Exit Game", 3);
-            });
+        switch ((int) type) {
+            case AlertContstants.INVITE_TO_PLAY:
+                Platform.runLater(() -> {
+                    Util.invitationAlert(Alert.AlertType.CONFIRMATION, info, "Invitation To play", AlertContstants.INVITE_TO_PLAY);
+                });
+                break;
+            case AlertContstants.INVITE_TO_NEW_GAME:
+                Platform.runLater(() -> {
+                    Util.invitationAlert(Alert.AlertType.CONFIRMATION, info, "New Game", AlertContstants.INVITE_TO_NEW_GAME);
+                });
+                break;
+            default:
+                Platform.runLater(() -> {
+                    Util.invitationAlert(Alert.AlertType.CONFIRMATION, info, "Exit Game", AlertContstants.INVITE_TO_EXIT_GAME);
+                });
+                break;
         }
-
     }
 
-    private void startGame() {
+    private void acceptInvite() {
         Gson gson = new Gson();
         String jsonString = (String) responceData.get(1);
         GameInfo info = gson.fromJson(jsonString, GameInfo.class);
 
         boolean myTurn = (boolean) responceData.get(2);
         double type = (double) responceData.get(3);
-        if ((int) type == 2) {
+        if ((int) type == AlertContstants.INVITE_TO_PLAY) {
+            Parent onlineGame = new OnlineGame(info, myTurn);
+            Platform.runLater(() -> Util.displayScreen(onlineGame));
+        } else if ((int) type == AlertContstants.INVITE_TO_NEW_GAME) {
             OnlineGame game = (OnlineGame) ClientApp.curDisplayedScreen;
             Platform.runLater(() -> game.startGame());
-
-        } else if ((int) type == 1) {
-            Parent onlineGame = new OnlineGame(info, myTurn);
-            Util.displayScreen(onlineGame);
         } else {
-            OnlineGame game = (OnlineGame) ClientApp.curDisplayedScreen;
-            Platform.runLater(() -> game.exitGame());
+            if (ClientApp.curDisplayedScreen instanceof OnlineGame) {
+                OnlineGame game = (OnlineGame) ClientApp.curDisplayedScreen;
+                Platform.runLater(() -> game.exitGame());
+            } else {
+                System.out.println("Current Display Screen is not OnlineGame");
+            }
         }
-
     }
 
     private void handleMove() {
@@ -363,5 +379,22 @@ public class Client {
             lobbyScreen.unBlockPlayer();
         }
     }
+
+    private void rejectInvite() {
+        Gson gson = new Gson();
+        String jsonString = (String) responceData.get(1);
+        GameInfo info = gson.fromJson(jsonString, GameInfo.class);
+        boolean myTurn = (boolean) responceData.get(2);
+        double type = (double) responceData.get(3);
+        if ((int) type == AlertContstants.INVITE_TO_PLAY) {
+            Parent lobbyScreen = new LobbyScreenUI(info.getSrcPlayerId());
+            Platform.runLater(() -> Util.displayScreen(lobbyScreen));
+        } else if ((int) type == AlertContstants.INVITE_TO_NEW_GAME) {
+            Parent lobbyScreen = new LobbyScreenUI(info.getSrcPlayerId());
+            Platform.runLater(() -> Util.displayScreen(lobbyScreen));
+        } 
+    }
+
+   
 
 }

@@ -269,14 +269,20 @@ public class RegisterScreenUI extends Pane {
     private void setListeners(Stage stage) {
         
         btnRegister.setOnAction((ActionEvent event) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             register();
         });
         
         btnClose.setOnAction((ActionEvent event) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             stage.close();
         });
         
         btnMinimize.setOnAction((ActionEvent event) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             stage.setIconified(true);
         });
     }

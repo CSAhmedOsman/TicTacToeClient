@@ -368,75 +368,65 @@ public class ModesScreenUI extends Pane {
     }
 
     public ModesScreenUI() {
-
+        
     }
 
     protected void addEventHandlers() {
         btnClose.setOnAction((e) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             Platform.exit();
         });
 
         btnMin.setOnAction((e) -> {
-            //ClientApp.stage.setIconified(true);
-            GameInfo info = new GameInfo("ahmed", "abdo", 8, 9,10,11);
-            sendInvit(info,1);
-
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
+            ClientApp.stage.setIconified(true);
         });
 
         btnOfline.setOnAction((e) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             Parent localGame = new LocalGame();
             animateOut(localGame);
         });
 
         btnWithPc.setOnAction((e) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             Parent selectGame = new SelectGameLevel();
             animateOut(selectGame);
         });
 
         btnOnline.setOnAction((e) -> {
-            Util.showAlertDialog(Alert.AlertType.INFORMATION, "Future work", "Will be Added Soon.");
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
+       //     Parent lobbyScreen = new LobbyScreenUI();
+       //     animateOut(lobbyScreen);
         });
 
         btnLogout.setOnAction((e) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             Parent homeScreen = new LoginScreenUI();
             animateOut(homeScreen);
         });
 
         btnGamesHistory.setOnAction((event) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             Parent homeScreen = new SelectRecord();
             animateOut(homeScreen);
         });
     }
 
     private void animateOut(Parent destination) {
-
         Animation.setAnimatedNodeOut(btnGamesHistory);
         Animation.setAnimatedNodeOut(btnClose);
         Animation.setAnimatedNodeOut(btnLogout);
         Animation.setAnimatedNodeOut(btnOfline);
         Animation.setAnimatedNodeOut(btnOnline);
         Animation.setAnimatedNodeOut(btnWithPc);
-
         Animation.setAnimatedRootOut(this, destination);
-
-    }
-
-    public static void sendInvit(GameInfo info,int type) {
-        Gson gson = new Gson();
-        ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.SENDINVITE);
-        jsonRequest.add(info);
-        jsonRequest.add(type);
-        System.out.println("sentInvite");
-        String gsonRequest = gson.toJson(jsonRequest);
-       
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            Logger.getLogger(ModesScreenUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-      
-    }
-
-   
+    }  
 }

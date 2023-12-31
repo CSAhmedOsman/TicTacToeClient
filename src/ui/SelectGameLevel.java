@@ -287,29 +287,41 @@ public class SelectGameLevel extends AnchorPane {
 
     protected void setListeners() {
         btnClose.setOnAction((e) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             Platform.exit();
         });
 
         btnMin.setOnAction((e) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             ClientApp.stage.setIconified(true);
         });
 
         btnBack.setOnAction((e) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             Parent root = new ModesScreenUI();
             Util.displayScreen(root);
         });
 
         btnLow.setOnAction((e) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             Parent root = new RobotGame(1);
             Util.displayScreen(root);
         });
 
         btnMiddle.setOnAction((e) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             Parent root = new RobotGame(2);
             Util.displayScreen(root);
         });
 
         btnHigh.setOnAction((e) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             Parent root = new RobotGame(3);
             Util.displayScreen(root);
         });

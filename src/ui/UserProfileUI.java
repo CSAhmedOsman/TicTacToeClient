@@ -191,7 +191,6 @@ public class UserProfileUI extends BorderPane {
         btnEdit.setEffect(dropShadow2);
         btnEdit.setFont(new Font("Arial Rounded MT Bold", 14.0));
         btnEdit.setCursor(Cursor.HAND);*/
-
         text.setFill(javafx.scene.paint.Color.WHITE);
         text.setLayoutX(95.0);
         text.setLayoutY(306.0);
@@ -231,7 +230,7 @@ public class UserProfileUI extends BorderPane {
         email.setPrefWidth(270.0);
         email.setStyle("-fx-background-radius: 50; -fx-background-color: white;");
         email.setDisable(true);
-        
+
         name.setLayoutX(184.0);
         name.setLayoutY(279.0);
         name.setOpacity(1.0);
@@ -256,11 +255,11 @@ public class UserProfileUI extends BorderPane {
         pane.getChildren().add(password);
         pane.getChildren().add(email);
         pane.getChildren().add(name);
-
+        ClientApp.curDisplayedScreen = this;
     }
 
     public UserProfileUI(int playerId) {
-        ClientApp.curDisplayedScreen = this;
+      
         player = new Player(playerId, null, 0);
         getData();
         setListeners();
@@ -296,13 +295,19 @@ public class UserProfileUI extends BorderPane {
     private void setListeners() {
 
         btnClose.setOnAction((ActionEvent event) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             ClientApp.stage.close();
         });
 
         btnMin.setOnAction((ActionEvent event) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             ClientApp.stage.setIconified(true);
         });
         btnBack.setOnAction((ActionEvent event) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             Parent root = new LobbyScreenUI(player.getId());
             Util.displayScreen(root);
         });
@@ -323,7 +328,6 @@ public class UserProfileUI extends BorderPane {
                 Logger.getLogger(LobbyScreenUI.class.getName()).log(Level.SEVERE, null, ex);
             }
         });*/
-
     }
 
 }

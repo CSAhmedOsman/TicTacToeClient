@@ -45,6 +45,7 @@ public abstract class GameBoard extends BorderPane {
     protected final Pane pane;
     protected final Pane win;
     protected final Pane lose;
+    protected final Pane draw;
     protected final Ellipse backgroundET;
     protected final Rectangle backgroundRTX;
     protected final Rectangle backgroundRTX2;
@@ -108,6 +109,7 @@ public abstract class GameBoard extends BorderPane {
         pane = new Pane();
         win = new Pane();
         lose = new Pane();
+        draw = new Pane();
         backgroundET = new Ellipse();
         backgroundRTX = new Rectangle();
         backgroundRTX2 = new Rectangle();
@@ -157,7 +159,6 @@ public abstract class GameBoard extends BorderPane {
         player2Name = "Player2";
         recordedGame = "";
         isRecord = false;
-        init();
         ClientApp.curDisplayedScreen = this;
     }
 
@@ -491,6 +492,14 @@ public abstract class GameBoard extends BorderPane {
         lose.setDisable(true);
         lose.setStyle("-fx-background-radius: 10; -fx-background-color: #FD6D84;");
 
+        draw.setLayoutX(116.0);
+        draw.setLayoutY(115.0);
+        draw.setPrefHeight(240.0);
+        draw.setPrefWidth(320.0);
+        draw.setOpacity(0.0);
+        draw.setDisable(true);
+        draw.setStyle("-fx-background-radius: 10; -fx-background-color: #FD6D84;");
+
         backgroundPosition.setArcHeight(20.0);
         backgroundPosition.setArcWidth(20.0);
         backgroundPosition.setFill(javafx.scene.paint.Color.valueOf("#e4e4e4"));
@@ -746,11 +755,10 @@ public abstract class GameBoard extends BorderPane {
         });
         pause.play();
     }
-
-    protected void playLoseVideo() {
+    protected void playVideo(String fileName,Pane pane) {
         PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
         pause.setOnFinished(event -> {
-            String fileName = "/src/ui/video/lose.mp4";
+          //  String fileName = "/src/ui/video/draw.mp4";
             String directory = System.getProperty("user.dir");
             String path = directory + fileName;
             Media media = new Media(new File(path).toURI().toString());
@@ -759,36 +767,53 @@ public abstract class GameBoard extends BorderPane {
             mediaPlayer.setAutoPlay(true);
             mediaView.setLayoutX(5.0);
             mediaView.setLayoutY(5.0);
-            lose.setOpacity(1.0);
-            lose.getChildren().add(mediaView);
-            lose.setDisable(false);
+            pane.setOpacity(1.0);
+            pane.getChildren().add(mediaView);
+            pane.setDisable(false);
         });
         pause.play();
     }
 
     protected void addEventHandlers() {
         btnClose.setOnAction((e) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             isRunning = false;
             Platform.exit();
         });
 
         btnMin.setOnAction((e) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             ClientApp.stage.setIconified(true);
         });
 
         win.setOnMouseClicked((e) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             mediaPlayer.pause();
             win.setOpacity(0.0);
             win.setDisable(true);
         });
 
         lose.setOnMouseClicked((e) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             mediaPlayer.pause();
             lose.setOpacity(0.0);
             lose.setDisable(true);
         });
+        draw.setOnMouseClicked((e) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
+            mediaPlayer.pause();
+            draw.setOpacity(0.0);
+            draw.setDisable(true);
+        });
 
         btnNewGame.setOnAction((e) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             isRunning = false;
             countThread.stop();
             recordedGame = "";
@@ -797,11 +822,15 @@ public abstract class GameBoard extends BorderPane {
         });
 
         btnRecordeGame.setOnAction((e) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             isRecord = true;
             btnRecordeGame.setDisable(true);
         });
 
         btnExitGame.setOnAction((e) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             isRunning = false;
             Parent root = new ModesScreenUI();
             Util.displayScreen(root);
@@ -834,7 +863,7 @@ public abstract class GameBoard extends BorderPane {
     protected void saveRecordFile() {
 
         Date date = new Date();
-        try (FileOutputStream outputStream = new FileOutputStream("C:/files/" + player1Name + "/Game Record at "
+        try (FileOutputStream outputStream = new FileOutputStream("C:/files/Game Record at "
                 + date.getDate() + "-" + (date.getMonth() + 1) + "-" + (date.getYear() + 1900) + "-" + date.getHours() + "=" + date.getMinutes() + ".bin", true)) {
             try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream))) {
                 writer.write(recordedGame);

@@ -5,6 +5,7 @@
  */
 package ui;
 
+import client.ClientApp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +29,7 @@ public class RobotGame extends GameBoard {
         pane.getChildren().add(lose);
         this.level = level;
         startGame();
+        ClientApp.curDisplayedScreen=this;
     }
 
     private int findBestMove() {
@@ -176,12 +178,13 @@ public class RobotGame extends GameBoard {
                 }
                 winner(winIndexes);
                 if (isXTurn) {
-                    playWinVideo();
+                    playVideo("/src/ui/video/win.mp4",win);
                 } else {
-                    playLoseVideo();
+                    playVideo("/src/ui/video/lose.mp4",lose);
                 }
             } else {
                 drawer();
+                playVideo("/src/ui/video/draw.mp4",draw);
             }
             recordedGame += isXTurn ? "X" : "O";
             if (isRecord) {

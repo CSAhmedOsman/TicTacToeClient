@@ -261,12 +261,14 @@ public class LoginScreenUI extends Pane {
         Animation.setAnimatedNodeIn(btnMinimize);
 
         ClientApp.curDisplayedScreen = this;
-        tfEmail.setText("a@a.com");
-        pfPassword.setText("Aa#12345");
+        tfEmail.setText("a@gmail.com");
+        pfPassword.setText("Aa#123456");
     }
 
     private void setListeners() {
         btnLogin.setOnAction((ActionEvent event) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             Player player = getCurrentPlayer();
             if (player == null) {
                 return;
@@ -275,8 +277,8 @@ public class LoginScreenUI extends Pane {
             Gson gson = new Gson();
             ArrayList jsonRequest = new ArrayList();
             jsonRequest.add(Constants.LOGIN);
-            jsonRequest.add(player);
-
+            String playerData = gson.toJson(player);
+            jsonRequest.add(playerData);
             String gsonRequest = gson.toJson(jsonRequest);
             try {
                 Client.getClient().sendRequest(gsonRequest);
@@ -286,10 +288,14 @@ public class LoginScreenUI extends Pane {
         });
 
         btnClose.setOnAction((ActionEvent event) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             ClientApp.stage.close();
         });
 
         btnMinimize.setOnAction((ActionEvent event) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
             ClientApp.stage.setIconified(true);
         });
     }
