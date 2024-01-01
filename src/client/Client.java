@@ -50,6 +50,16 @@ public class Client {
 
     private static Client singletonClient;
 
+    static {
+        getClient();
+    }
+
+    {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            closeConnection();
+        }));
+    }
+
     private Client() {
 
     }
@@ -221,8 +231,8 @@ public class Client {
         double playerId = (double) responceData.get(1);
         if (playerId >= 0) {
             Parent lobbyScreen = new LobbyScreenUI((int) playerId);
-            ClientApp.playerId =(int) playerId;
-          
+            ClientApp.playerId = (int) playerId;
+
             Util.displayScreen(lobbyScreen);
             PlayerStorage.saveUserId((int) playerId);
 

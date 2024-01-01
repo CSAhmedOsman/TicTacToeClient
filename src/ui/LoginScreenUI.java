@@ -259,7 +259,7 @@ public class LoginScreenUI extends Pane {
         imageView.setImage(new Image(getClass().getResource("images/back.png").toExternalForm()));
         btnBack.setGraphic(pane);
 
-        getChildren().add(btnBack);
+        
         getChildren().add(ellipse);
         getChildren().add(ellipse0);
         getChildren().add(rectangle);
@@ -277,6 +277,7 @@ public class LoginScreenUI extends Pane {
         getChildren().add(btnClose);
         getChildren().add(btnMinimize);
         pane.getChildren().add(imageView);
+        getChildren().add(btnBack);
 
         //______________My Work_______________
         setListeners();
@@ -288,8 +289,8 @@ public class LoginScreenUI extends Pane {
         Animation.setAnimatedNodeIn(btnMinimize);
 
         ClientApp.curDisplayedScreen = this;
-        tfEmail.setText("a@gmail.com");
-        pfPassword.setText("Aa#123456");
+      //  tfEmail.setText("a@gmail.com");
+     //   pfPassword.setText("Aa#123456");
     }
 
     private void setListeners() {

@@ -14,6 +14,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -49,7 +50,10 @@ public class ModesScreenUI extends Pane {
     protected final ImageView imageView2;
     protected final ImageView imageView3;
     protected final ImageView imageView4;
-    protected final Button btnLogout;
+    protected final Pane paneWithPc;
+    protected final Pane paneOfline;
+    protected final Pane paneOnline;
+  
     protected final ImageView imageView5;
     protected final Button btnClose;
     protected final DropShadow dropShadow3;
@@ -78,13 +82,17 @@ public class ModesScreenUI extends Pane {
         imageView2 = new ImageView();
         imageView3 = new ImageView();
         imageView4 = new ImageView();
-        btnLogout = new Button();
+   
         imageView5 = new ImageView();
         btnClose = new Button();
         dropShadow3 = new DropShadow();
         btnMin = new Button();
         dropShadow4 = new DropShadow();
 
+        paneWithPc = new Pane();
+        paneOfline = new Pane();
+        paneOnline = new Pane();
+        
         setMaxHeight(USE_PREF_SIZE);
         setMaxWidth(USE_PREF_SIZE);
         setMinHeight(USE_PREF_SIZE);
@@ -206,31 +214,43 @@ public class ModesScreenUI extends Pane {
         btnWithPc.setLayoutY(256.0);
         btnWithPc.setMnemonicParsing(false);
         btnWithPc.setPrefHeight(160.0);
-        btnWithPc.setPrefWidth(181.0);
+        btnWithPc.setPrefWidth(180.0);
         btnWithPc.setStyle("-fx-background-radius: 30; -fx-background-color: #fff7f7;");
-        btnWithPc.setText("VS");
         btnWithPc.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
         btnWithPc.setFont(new Font("Arial Rounded MT Bold", 35.0));
+
+        paneWithPc.setPrefHeight(160.0);
+        paneWithPc.setPrefWidth(180.0);
+        paneWithPc.setStyle("-fx-background-radius: 30; -fx-background-color: #fff7f7;");
+        btnWithPc.setGraphic(paneWithPc);
 
         btnOfline.setLayoutX(260.0);
         btnOfline.setLayoutY(256.0);
         btnOfline.setMnemonicParsing(false);
         btnOfline.setPrefHeight(160.0);
-        btnOfline.setPrefWidth(181.0);
+        btnOfline.setPrefWidth(180.0);
         btnOfline.setStyle("-fx-background-radius: 30; -fx-background-color: #fff7f7;");
-        btnOfline.setText("VS");
         btnOfline.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
         btnOfline.setFont(new Font("Arial Rounded MT Bold", 34.0));
+
+        paneOfline.setPrefHeight(160.0);
+        paneOfline.setPrefWidth(180.0);
+        paneOfline.setStyle("-fx-background-radius: 30; -fx-background-color: #fff7f7;");
+        btnOfline.setGraphic(paneOfline);
 
         btnOnline.setLayoutX(472.0);
         btnOnline.setLayoutY(256.0);
         btnOnline.setMnemonicParsing(false);
         btnOnline.setPrefHeight(160.0);
-        btnOnline.setPrefWidth(181.0);
+        btnOnline.setPrefWidth(180.0);
         btnOnline.setStyle("-fx-background-radius: 30; -fx-background-color: #fff7f7;");
-        btnOnline.setText("VS");
         btnOnline.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
         btnOnline.setFont(new Font("Arial Rounded MT Bold", 35.0));
+
+        paneOnline.setPrefHeight(160.0);
+        paneOnline.setPrefWidth(180.0);
+        paneOnline.setStyle("-fx-background-radius: 30; -fx-background-color: #fff7f7;");
+        btnOnline.setGraphic(paneOnline);
 
         btnGamesHistory.setLayoutX(227.0);
         btnGamesHistory.setLayoutY(500.0);
@@ -242,56 +262,43 @@ public class ModesScreenUI extends Pane {
         btnGamesHistory.setTextFill(javafx.scene.paint.Color.WHITE);
         btnGamesHistory.setFont(new Font("Franklin Gothic Demi Cond", 33.0));
         btnGamesHistory.setCursor(Cursor.HAND);
-
-        imageView.setFitHeight(60.0);
-        imageView.setFitWidth(92.0);
-        imageView.setLayoutX(133.0);
-        imageView.setLayoutY(353.0);
-        imageView.setImage(new Image(getClass().getResource("images/robot.png").toExternalForm()));
+        imageView.setFitHeight(70.0);
+        imageView.setFitWidth(75.0);
+        imageView.setLayoutX(-30.0);
+        imageView.setLayoutY(-10.0);
+        imageView.setImage(new Image(getClass().getResource("images/player.png").toExternalForm()));
 
         imageView0.setFitHeight(60.0);
-        imageView0.setFitWidth(64.0);
-        imageView0.setLayoutX(274.0);
-        imageView0.setLayoutY(264.0);
-        imageView0.setImage(new Image(getClass().getResource("images/boy.jpg").toExternalForm()));
+        imageView0.setFitWidth(90.0);
+        imageView0.setLayoutX(75.0);
+        imageView0.setLayoutY(80.0);
+        imageView0.setImage(new Image(getClass().getResource("images/robot.png").toExternalForm()));
 
         imageView1.setFitHeight(60.0);
-        imageView1.setFitWidth(64.0);
-        imageView1.setLayoutX(46.0);
-        imageView1.setLayoutY(256.0);
-        imageView1.setImage(new Image(getClass().getResource("images/player.png").toExternalForm()));
+        imageView1.setFitWidth(60.0);
+        imageView1.setLayoutX(-20.0);
+        imageView1.setLayoutY(0.0);
+        imageView1.setImage(new Image(getClass().getResource("images/boy.jpg").toExternalForm()));
 
         imageView2.setFitHeight(60.0);
-        imageView2.setFitWidth(64.0);
-        imageView2.setLayoutX(368.0);
-        imageView2.setLayoutY(353.0);
+        imageView2.setFitWidth(60.0);
+        imageView2.setLayoutX(90.0);
+        imageView2.setLayoutY(80.0);
         imageView2.setImage(new Image(getClass().getResource("images/girl.jpg").toExternalForm()));
 
-        imageView3.setFitHeight(60.0);
-        imageView3.setFitWidth(64.0);
-        imageView3.setLayoutX(581.0);
-        imageView3.setLayoutY(353.0);
-        imageView3.setImage(new Image(getClass().getResource("images/world-grid.png").toExternalForm()));
+        imageView3.setFitHeight(70.0);
+        imageView3.setFitWidth(75.0);
+        imageView3.setLayoutX(-30.0);
+        imageView3.setLayoutY(-10.0);
+        imageView3.setImage(new Image(getClass().getResource("images/player.png").toExternalForm()));
 
         imageView4.setFitHeight(60.0);
-        imageView4.setFitWidth(64.0);
-        imageView4.setLayoutX(480.0);
-        imageView4.setLayoutY(256.0);
-        imageView4.setImage(new Image(getClass().getResource("images/player.png").toExternalForm()));
+        imageView4.setFitWidth(60.0);
+        imageView4.setLayoutX(80.0);
+        imageView4.setLayoutY(80.0);
+        imageView4.setImage(new Image(getClass().getResource("images/world-grid.png").toExternalForm()));
 
-        btnLogout.setLayoutX(15.0);
-        btnLogout.setLayoutY(11.0);
-        btnLogout.setMnemonicParsing(false);
-        btnLogout.setPrefHeight(40.0);
-        btnLogout.setPrefWidth(55.0);
-        btnLogout.setStyle("-fx-background-color: F1AAAA;");
-        btnLogout.setTextFill(javafx.scene.paint.Color.valueOf("#f8baba"));
 
-        imageView5.setFitHeight(40.0);
-        imageView5.setFitWidth(40.0);
-        imageView5.setLayoutX(17.0);
-        imageView5.setLayoutY(11.0);
-        imageView5.setImage(new Image(getClass().getResource("images/back.png").toExternalForm()));
 
         btnClose.setLayoutX(636.0);
         btnClose.setLayoutY(20.0);
@@ -329,6 +336,22 @@ public class ModesScreenUI extends Pane {
         dropShadow4.setSpread(0.69);
         btnMin.setEffect(dropShadow4);
 
+        Label vs = new Label("VS");
+        vs.setLayoutX(45.0);
+        vs.setLayoutY(50.0);
+        vs.setFont(new Font("Arial Rounded MT Bold", 35.0));
+        paneWithPc.getChildren().add(vs);
+        vs = new Label("VS");
+        vs.setLayoutX(45.0);
+        vs.setLayoutY(50.0);
+        vs.setFont(new Font("Arial Rounded MT Bold", 35.0));
+        paneOfline.getChildren().add(vs);
+        vs = new Label("VS");
+        vs.setLayoutX(45.0);
+        vs.setLayoutY(50.0);
+        vs.setFont(new Font("Arial Rounded MT Bold", 35.0));
+        paneOnline.getChildren().add(vs);
+
         getChildren().add(ellipse);
         getChildren().add(ellipse0);
         getChildren().add(rectangle);
@@ -343,18 +366,16 @@ public class ModesScreenUI extends Pane {
         getChildren().add(btnWithPc);
         getChildren().add(btnOfline);
         getChildren().add(btnOnline);
-        getChildren().add(imageView);
-        getChildren().add(imageView0);
-        getChildren().add(imageView1);
-        getChildren().add(imageView2);
-        getChildren().add(imageView3);
-        getChildren().add(imageView4);
-        getChildren().add(btnLogout);
-        getChildren().add(imageView5);
+        paneWithPc.getChildren().add(imageView);
+        paneWithPc.getChildren().add(imageView0);
+        paneOfline.getChildren().add(imageView1);
+        paneOfline.getChildren().add(imageView2);
+        paneOnline.getChildren().add(imageView3);
+        paneOnline.getChildren().add(imageView4);
+    
         getChildren().add(btnClose);
         getChildren().add(btnGamesHistory);
         getChildren().add(btnMin);
-        
 
         //___________________My Work________________________
         addEventHandlers();
@@ -406,16 +427,9 @@ public class ModesScreenUI extends Pane {
                 Parent lobbyScreen = new LobbyScreenUI(ClientApp.playerId);
                 animateOut(lobbyScreen);
             } else {
-                Parent loginScreen = new LoginScreenUI();
-                animateOut(loginScreen);
+                Parent homeScreen = new HomeScreenUI();
+                animateOut(homeScreen);
             }
-        });
-
-        btnLogout.setOnAction((e) -> {
-            ClientApp.soundManager.stopClickSound();
-            ClientApp.soundManager.playClickSound();
-            Parent homeScreen = new LoginScreenUI();
-            animateOut(homeScreen);
         });
 
         btnGamesHistory.setOnAction((event) -> {
@@ -429,7 +443,6 @@ public class ModesScreenUI extends Pane {
     private void animateOut(Parent destination) {
         Animation.setAnimatedNodeOut(btnGamesHistory);
         Animation.setAnimatedNodeOut(btnClose);
-        Animation.setAnimatedNodeOut(btnLogout);
         Animation.setAnimatedNodeOut(btnOfline);
         Animation.setAnimatedNodeOut(btnOnline);
         Animation.setAnimatedNodeOut(btnWithPc);

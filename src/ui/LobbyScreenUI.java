@@ -36,6 +36,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import utils.Constants;
 import utils.AlertContstants;
+import utils.PlayerStorage;
 import utils.Util;
 
 public class LobbyScreenUI extends AnchorPane {
@@ -383,6 +384,7 @@ public class LobbyScreenUI extends AnchorPane {
         });
         logout.setOnAction((e) -> {
             ClientApp.playerId=-1;
+            PlayerStorage.saveUserId(-1);
             ClientApp.soundManager.stopClickSound();
             ClientApp.soundManager.playClickSound();
             Gson gson = new Gson();

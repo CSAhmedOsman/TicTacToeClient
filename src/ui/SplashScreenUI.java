@@ -236,8 +236,8 @@ public class SplashScreenUI extends AnchorPane {
         btnNext.setOnAction((ActionEvent event) -> {
             ClientApp.soundManager.stopClickSound();
             ClientApp.soundManager.playClickSound();
-            Parent homeScreen = new HomeScreenUI();
-            Util.displayScreen(homeScreen);
+            Parent modeeScreen = new ModesScreenUI();
+            Util.displayScreen(modeeScreen);
         });
 
         btnClose.setOnAction((ActionEvent event) -> {

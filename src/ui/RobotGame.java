@@ -179,6 +179,11 @@ public class RobotGame extends GameBoard {
                     playVideo("win");
                 } else {
                     playVideo("lose");
+                    if (winIndexes[boardSize - 1][1] != -1) {
+                        for (int i = 0; i < boardSize; i++) {
+                            position[winIndexes[i][0]][winIndexes[i][1]].setStyle("-fx-background-radius: 10; -fx-background-color: #E00205;");
+                        }
+                    }
                 }
             } else {
                 drawer();

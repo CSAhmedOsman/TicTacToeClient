@@ -47,8 +47,9 @@ public class HomeScreenUI extends AnchorPane {
     protected final DropShadow dropShadow3;
     protected final Button btnMinimize;
     protected final DropShadow dropShadow4;
+
     public HomeScreenUI() {
-        
+
         rectangle = new Rectangle();
         label = new Label();
         dropShadow = new DropShadow();
@@ -201,7 +202,7 @@ public class HomeScreenUI extends AnchorPane {
         btnOffLine.setPrefHeight(82.0);
         btnOffLine.setPrefWidth(305.0);
         btnOffLine.setStyle("-fx-background-radius: 100; -fx-background-color: #EA93A3;");
-        btnOffLine.setText("Play Offline");
+        btnOffLine.setText("Back");
         btnOffLine.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
         btnOffLine.setFont(new Font("Gill Sans Ultra Bold Condensed", 39.0));
         btnOffLine.setCursor(Cursor.HAND);
@@ -291,7 +292,7 @@ public class HomeScreenUI extends AnchorPane {
         Animation.setButtonHoverFunctionality(btnOffLine);
 
         animateIn();
-        
+
         ClientApp.curDisplayedScreen = this;
     }
 
@@ -300,8 +301,14 @@ public class HomeScreenUI extends AnchorPane {
         btnLogin.setOnAction((ActionEvent event) -> {
             ClientApp.soundManager.stopClickSound();
             ClientApp.soundManager.playClickSound();
-            Parent loginScreen = new LoginScreenUI();
-            animateOut(loginScreen);
+            if (ClientApp.playerId == -1) {
+                Parent loginScreen = new LoginScreenUI();
+                animateOut(loginScreen);
+            } else {
+                Parent loginScreen = new HomeScreenUI();
+                animateOut(loginScreen);
+            }
+
         });
 
         btnSignUp.setOnAction((ActionEvent event) -> {
@@ -321,8 +328,8 @@ public class HomeScreenUI extends AnchorPane {
         btnBack.setOnAction((ActionEvent event) -> {
             ClientApp.soundManager.stopClickSound();
             ClientApp.soundManager.playClickSound();
-            Parent splashScreen = new SplashScreenUI();
-            animateOut(splashScreen);
+            Parent modesScreen = new ModesScreenUI();
+            animateOut(modesScreen);
         });
 
         btnClose.setOnAction((ActionEvent event) -> {

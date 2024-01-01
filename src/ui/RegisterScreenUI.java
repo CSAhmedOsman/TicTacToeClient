@@ -10,11 +10,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.scene.Cursor;
+import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
@@ -47,12 +50,15 @@ public class RegisterScreenUI extends Pane {
     protected final DropShadow dropShadow;
     protected final Button btnMinimize;
     protected final DropShadow dropShadow0;
-    
+    protected final Button btnBack;
+    protected final ImageView imageView;
+    protected final Pane pane;
+
     // Button Click Behaviour
-    int initWidth= 230;
-    int initHeight= 60;
+    int initWidth = 230;
+    int initHeight = 60;
     double sizeIncreasePercentage = 20;
-    
+
     // UI Servese Repo DB
     public RegisterScreenUI() {
 
@@ -73,6 +79,12 @@ public class RegisterScreenUI extends Pane {
         dropShadow = new DropShadow();
         btnMinimize = new Button();
         dropShadow0 = new DropShadow();
+        btnBack = new Button();
+        imageView = new ImageView();
+        pane = new Pane();
+
+        pane.setPrefHeight(45.0);
+        pane.setPrefWidth(51.0);
 
         setMaxHeight(USE_PREF_SIZE);
         setMaxWidth(USE_PREF_SIZE);
@@ -244,7 +256,20 @@ public class RegisterScreenUI extends Pane {
         btnMinimize.setCursor(Cursor.HAND);
 
         btnMinimize.setEffect(dropShadow0);
+        btnBack.setLayoutX(14.0);
+        btnBack.setLayoutY(12.0);
+        btnBack.setMnemonicParsing(false);
+        btnBack.setPrefHeight(45.0);
+        btnBack.setPrefWidth(51.0);
+        btnBack.setStyle("-fx-background-color: #ffbdbd;");
+        btnBack.setTextFill(javafx.scene.paint.Color.valueOf("#da0a0a"));
 
+        imageView.setFitHeight(45.0);
+        imageView.setFitWidth(40.0);
+        imageView.setImage(new Image(getClass().getResource("images/back.png").toExternalForm()));
+        btnBack.setGraphic(pane);
+
+        getChildren().add(btnBack);
         getChildren().add(ellipse);
         getChildren().add(ellipse0);
         getChildren().add(rectangle);
@@ -260,26 +285,31 @@ public class RegisterScreenUI extends Pane {
         getChildren().add(pfConfirmPassword);
         getChildren().add(btnClose);
         getChildren().add(btnMinimize);
-        
+        pane.getChildren().add(imageView);
         setListeners(ClientApp.stage);
-        
-        ClientApp.curDisplayedScreen= this;
+
+        ClientApp.curDisplayedScreen = this;
     }
-    
+
     private void setListeners(Stage stage) {
-        
+        btnBack.setOnAction((ActionEvent event) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
+            Parent root = new HomeScreenUI();
+            Util.displayScreen(root);
+        });
         btnRegister.setOnAction((ActionEvent event) -> {
             ClientApp.soundManager.stopClickSound();
             ClientApp.soundManager.playClickSound();
             register();
         });
-        
+
         btnClose.setOnAction((ActionEvent event) -> {
             ClientApp.soundManager.stopClickSound();
             ClientApp.soundManager.playClickSound();
             stage.close();
         });
-        
+
         btnMinimize.setOnAction((ActionEvent event) -> {
             ClientApp.soundManager.stopClickSound();
             ClientApp.soundManager.playClickSound();
@@ -288,41 +318,43 @@ public class RegisterScreenUI extends Pane {
     }
 
     private void register() {
-        
-        Player player= makeNewPlayer();
-        
-        if(player== null)
+
+        Player player = makeNewPlayer();
+
+        if (player == null) {
             return;
-        
+        }
+
         player.setPassword(PasswordEncryptor.encryptPassword(player.getPassword()));
-        
-        Gson gson= new Gson();
-        ArrayList jsonArr= new ArrayList();
+
+        Gson gson = new Gson();
+        ArrayList jsonArr = new ArrayList();
         jsonArr.add(Constants.REGISTER);
-        jsonArr.add((String)gson.toJson(player));
-        
+        jsonArr.add((String) gson.toJson(player));
+
         String gsonRequest = gson.toJson(jsonArr);
-        
+
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
             Util.showAlertDialog(Alert.AlertType.ERROR, "Server", "The Server is Closed");
         }
     }
-    
+
     private Player makeNewPlayer() {
-        String username= tfUsername.getText();
-        String email= tfEmail.getText();
-        String password= pfPassword.getText();
-        String confirmPassword= pfConfirmPassword.getText();
-        
-        Player player= null;
-        
-        if(!Validating.validateRegister(username, email, password, confirmPassword)) 
+        String username = tfUsername.getText();
+        String email = tfEmail.getText();
+        String password = pfPassword.getText();
+        String confirmPassword = pfConfirmPassword.getText();
+
+        Player player = null;
+
+        if (!Validating.validateRegister(username, email, password, confirmPassword)) {
             return player;
-        
+        }
+
         player = new Player(username, email, password);
-        
+
         return player;
     }
 }

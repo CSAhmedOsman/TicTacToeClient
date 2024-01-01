@@ -21,6 +21,7 @@ import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import ui.LobbyScreenUI;
 import ui.LoginScreenUI;
+import ui.ModesScreenUI;
 import ui.SplashScreenUI;
 import utils.Util;
 
@@ -37,7 +38,7 @@ public class ClientApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        playerId = -1;
+
         soundManager = SoundManager.getInstance();
         soundManager.playBackgroundMusic();
         ClientApp.stage = stage;
@@ -49,15 +50,8 @@ public class ClientApp extends Application {
         Util.displayScreen(splashScreen);
 
         int savedUserId = PlayerStorage.loadUserId();
+        playerId = savedUserId;
 
-        /* if (savedUserId == -1) {
-            Parent login = new LoginScreenUI();
-            Util.displayScreen(login);
-        } else {
-            playerId = savedUserId;
-            Parent lobby = new LobbyScreenUI(savedUserId);
-            Util.displayScreen(lobby);
-        }*/
     }
 
     /**

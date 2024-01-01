@@ -4,7 +4,9 @@ import client.ClientApp;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.scene.Cursor;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
@@ -15,9 +17,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import utils.Util;
 
 public class WaitingRoom extends AnchorPane {
-    
+
     protected final Rectangle rectangle;
     protected final Label label;
     protected final Label labe2;
@@ -41,9 +44,9 @@ public class WaitingRoom extends AnchorPane {
     protected int countDownMSec;
     protected int countDownSec;
     protected boolean isRunning;
-    
+
     public WaitingRoom(int playerId) {
-         ClientApp.curDisplayedScreen=this;
+        ClientApp.curDisplayedScreen = this;
         isRunning = true;
         countDownSec = 59;
         countDownMSec = 99;
@@ -67,14 +70,14 @@ public class WaitingRoom extends AnchorPane {
         pane0 = new Pane();
         imageView0 = new ImageView();
         labelCount = new Label();
-        
+
         setMaxHeight(USE_PREF_SIZE);
         setMaxWidth(USE_PREF_SIZE);
         setMinHeight(USE_PREF_SIZE);
         setMinWidth(USE_PREF_SIZE);
         setPrefHeight(600.0);
         setPrefWidth(700.0);
-        
+
         rectangle.setArcHeight(5.0);
         rectangle.setArcWidth(5.0);
         rectangle.setFill(javafx.scene.paint.Color.valueOf("#ffbdbd"));
@@ -83,13 +86,13 @@ public class WaitingRoom extends AnchorPane {
         rectangle.setStroke(javafx.scene.paint.Color.BLACK);
         rectangle.setStrokeType(javafx.scene.shape.StrokeType.INSIDE);
         rectangle.setWidth(700.0);
-        
+
         label.setLayoutX(150.0);
         label.setLayoutY(100.0);
         label.setText("Waiting Room");
         label.setTextFill(javafx.scene.paint.Color.valueOf("#431159"));
         label.setFont(new Font("Franklin Gothic Demi Cond", 72.0));
-        
+
         dropShadow.setColor(javafx.scene.paint.Color.valueOf("#e6e1f5"));
         dropShadow.setSpread(0.75);
         label.setEffect(dropShadow);
@@ -99,11 +102,11 @@ public class WaitingRoom extends AnchorPane {
         labe2.setText("Waiting for your partner to accept the request");
         labe2.setTextFill(javafx.scene.paint.Color.valueOf("#431159"));
         labe2.setFont(new Font("Franklin Gothic Demi Cond", 36.0));
-        
+
         dropShadow.setColor(javafx.scene.paint.Color.valueOf("#e6e1f5"));
         dropShadow.setSpread(0.50);
         labe2.setEffect(dropShadow);
-        
+
         circle.setFill(javafx.scene.paint.Color.valueOf("#00000078"));
         circle.setLayoutX(631.0);
         circle.setLayoutY(51.0);
@@ -111,7 +114,7 @@ public class WaitingRoom extends AnchorPane {
         circle.setRadius(111.0);
         circle.setStroke(javafx.scene.paint.Color.valueOf("#d0cbcb"));
         circle.setStrokeType(javafx.scene.shape.StrokeType.INSIDE);
-        
+
         circle0.setFill(javafx.scene.paint.Color.valueOf("#00000078"));
         circle0.setLayoutX(54.0);
         circle0.setLayoutY(548.0);
@@ -120,7 +123,7 @@ public class WaitingRoom extends AnchorPane {
         circle0.setStroke(javafx.scene.paint.Color.valueOf("#d0cbcb"));
         circle0.setStrokeType(javafx.scene.shape.StrokeType.INSIDE);
         circle0.setStrokeWidth(0.0);
-        
+
         rectangle0.setArcHeight(5.0);
         rectangle0.setArcWidth(5.0);
         rectangle0.setFill(javafx.scene.paint.Color.valueOf("#141414"));
@@ -132,7 +135,7 @@ public class WaitingRoom extends AnchorPane {
         rectangle0.setStroke(javafx.scene.paint.Color.BLACK);
         rectangle0.setStrokeType(javafx.scene.shape.StrokeType.INSIDE);
         rectangle0.setWidth(29.0);
-        
+
         rectangle1.setArcHeight(5.0);
         rectangle1.setArcWidth(5.0);
         rectangle1.setFill(javafx.scene.paint.Color.valueOf("#141414"));
@@ -144,7 +147,7 @@ public class WaitingRoom extends AnchorPane {
         rectangle1.setStroke(javafx.scene.paint.Color.BLACK);
         rectangle1.setStrokeType(javafx.scene.shape.StrokeType.INSIDE);
         rectangle1.setWidth(29.0);
-        
+
         rectangle2.setArcHeight(5.0);
         rectangle2.setArcWidth(5.0);
         rectangle2.setFill(javafx.scene.paint.Color.valueOf("#141414"));
@@ -156,7 +159,7 @@ public class WaitingRoom extends AnchorPane {
         rectangle2.setStroke(javafx.scene.paint.Color.BLACK);
         rectangle2.setStrokeType(javafx.scene.shape.StrokeType.INSIDE);
         rectangle2.setWidth(29.0);
-        
+
         btnLogin.setArcHeight(5.0);
         btnLogin.setArcWidth(5.0);
         btnLogin.setFill(javafx.scene.paint.Color.valueOf("#141414"));
@@ -168,7 +171,7 @@ public class WaitingRoom extends AnchorPane {
         btnLogin.setStroke(javafx.scene.paint.Color.BLACK);
         btnLogin.setStrokeType(javafx.scene.shape.StrokeType.INSIDE);
         btnLogin.setWidth(29.0);
-        
+
         btnBack.setLayoutX(28.0);
         btnBack.setLayoutY(50.0);
         btnBack.setMnemonicParsing(false);
@@ -176,17 +179,17 @@ public class WaitingRoom extends AnchorPane {
         btnBack.setPrefWidth(51.0);
         btnBack.setStyle("-fx-background-color: #ffbdbd;");
         btnBack.setTextFill(javafx.scene.paint.Color.valueOf("#da0a0a"));
-        
+
         pane.setPrefHeight(45.0);
         pane.setPrefWidth(51.0);
-        
+
         imageView.setFitHeight(45.0);
         imageView.setFitWidth(40.0);
         imageView.setLayoutX(1.0);
         imageView.setLayoutY(-4.0);
         imageView.setImage(new Image(getClass().getResource("images/back.png").toExternalForm()));
         btnBack.setGraphic(pane);
-        
+
         btnClose.setLayoutX(616.0);
         btnClose.setLayoutY(23.0);
         btnClose.setMinHeight(USE_PREF_SIZE);
@@ -199,11 +202,11 @@ public class WaitingRoom extends AnchorPane {
         btnClose.setTextFill(javafx.scene.paint.Color.WHITE);
         btnClose.setFont(new Font("Franklin Gothic Demi Cond", 43.0));
         btnClose.setCursor(Cursor.HAND);
-        
+
         dropShadow0.setColor(javafx.scene.paint.Color.valueOf("#fff7f7"));
         dropShadow0.setSpread(0.69);
         btnClose.setEffect(dropShadow0);
-        
+
         btnMin.setLayoutX(547.0);
         btnMin.setLayoutY(23.0);
         btnMin.setMinHeight(USE_PREF_SIZE);
@@ -218,20 +221,20 @@ public class WaitingRoom extends AnchorPane {
         btnMin.setTextOverrun(javafx.scene.control.OverrunStyle.CLIP);
         btnMin.setFont(new Font("Franklin Gothic Demi Cond", 43.0));
         btnMin.setCursor(Cursor.HAND);
-        
+
         dropShadow1.setColor(javafx.scene.paint.Color.valueOf("#fff7f7"));
         dropShadow1.setSpread(0.69);
         btnMin.setEffect(dropShadow1);
-        
+
         pane0.setLayoutX(200.0);
         pane0.setLayoutY(200.0);
         pane0.setPrefHeight(200.0);
         pane0.setPrefWidth(300.0);
-        
+
         imageView0.setFitHeight(200.0);
         imageView0.setFitWidth(300.0);
         imageView0.setImage(new Image(getClass().getResource("images/gif/loading-loader.gif").toExternalForm()));
-        
+
         labelCount.setAlignment(javafx.geometry.Pos.CENTER);
         labelCount.setContentDisplay(javafx.scene.control.ContentDisplay.CENTER);
         labelCount.setLayoutX(201.0);
@@ -239,7 +242,7 @@ public class WaitingRoom extends AnchorPane {
         labelCount.setPrefWidth(300.0);
         labelCount.setText("00:00:00");
         labelCount.setFont(new Font("Franklin Gothic Demi Cond", 48.0));
-        
+
         getChildren().add(rectangle);
         getChildren().add(label);
         getChildren().add(labe2);
@@ -259,7 +262,7 @@ public class WaitingRoom extends AnchorPane {
 
         //---------Ahmed Work----------
         addEventHandlers();
-        
+        btnBack.setDisable(true);
         Thread thread = new Thread(() -> {
             while (isRunning) {
                 try {
@@ -270,8 +273,9 @@ public class WaitingRoom extends AnchorPane {
                         if (countDownMSec <= 0) {
                             countDownMSec = 99;
                             countDownSec--;
+                        } else {
+                            btnBack.setDisable(false);
                         }
-                        //--l
                         drawCount();
                         Thread.sleep(10);
                     }
@@ -282,21 +286,28 @@ public class WaitingRoom extends AnchorPane {
         });
         thread.start();
     }
-    
+
     protected void drawCount() {
         String seconds = (countDownSec > 9 ? "" : "0") + (countDownSec);
         String mSeconds = (countDownMSec > 9 ? "" : "0") + (countDownMSec--);
         Platform.runLater(() -> labelCount.setText("00:" + seconds + ":" + mSeconds));
     }
-    
+
     protected void addEventHandlers() {
+        btnBack.setOnAction((ActionEvent event) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
+            isRunning=false;
+            Parent root = new LobbyScreenUI(ClientApp.playerId);
+            Util.displayScreen(root);
+        });
         btnClose.setOnAction((e) -> {
             ClientApp.soundManager.stopClickSound();
             ClientApp.soundManager.playClickSound();
             isRunning = false;
             Platform.exit();
         });
-        
+
         btnMin.setOnAction((e) -> {
             ClientApp.soundManager.stopClickSound();
             ClientApp.soundManager.playClickSound();
