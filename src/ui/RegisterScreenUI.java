@@ -293,7 +293,7 @@ public class RegisterScreenUI extends Pane {
         Gson gson= new Gson();
         ArrayList jsonArr= new ArrayList();
         jsonArr.add(Constants.REGISTER);
-        jsonArr.add(player);
+        jsonArr.add((String)gson.toJson(player));
         
         String gsonRequest = gson.toJson(jsonArr);
         

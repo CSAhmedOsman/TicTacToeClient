@@ -275,7 +275,7 @@ public class LoginScreenUI extends Pane {
             Gson gson = new Gson();
             ArrayList jsonRequest = new ArrayList();
             jsonRequest.add(Constants.LOGIN);
-            jsonRequest.add(player);
+            jsonRequest.add((String)gson.toJson(player));
 
             String gsonRequest = gson.toJson(jsonRequest);
             try {
