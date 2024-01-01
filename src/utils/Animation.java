@@ -13,11 +13,9 @@ import client.ClientApp;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 public class Animation {
@@ -26,17 +24,14 @@ public class Animation {
 
     public static void setAnimatedRootIn(Parent root) {
 
-        // Set up TranslateTransition for sliding in
         TranslateTransition translateIn = new TranslateTransition(ANIMATION_DURATION, root);
         translateIn.setFromX(ClientApp.stage.getWidth());
         translateIn.setToX(0);
 
-        // Set up FadeTransition for fading in
         FadeTransition fadeIn = new FadeTransition(ANIMATION_DURATION, root);
         fadeIn.setFromValue(0);
         fadeIn.setToValue(1);
 
-        // Play the animation for appearing
         translateIn.play();
         fadeIn.play();
         ClientApp.stage.show();

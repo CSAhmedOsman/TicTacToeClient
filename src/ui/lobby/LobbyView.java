@@ -215,7 +215,7 @@ public class LobbyView extends AnchorPane {
 
         imageView.setFitHeight(45.0);
         imageView.setFitWidth(40.0);
-        imageView.setImage(new Image(getClass().getResource("images/back.png").toExternalForm()));
+//        imageView.setImage(new Image(getClass().getResource("images/back.png").toExternalForm()));
         btnBack.setGraphic(pane);
 
         menuButton.setLayoutX(60.0);
@@ -234,7 +234,7 @@ public class LobbyView extends AnchorPane {
 
         imageView0.setFitHeight(31.0);
         imageView0.setFitWidth(24.0);
-        imageView0.setImage(new Image(getClass().getResource("images/menu.png").toExternalForm()));
+//        imageView0.setImage(new Image(getClass().getResource("images/menu.png").toExternalForm()));
         menuButton.setGraphic(imageView0);
 
         pane0.setLayoutX(13.0);
@@ -414,7 +414,7 @@ public class LobbyView extends AnchorPane {
         imageView.setFitWidth(70.0);
         imageView.setLayoutX(133.0);
         imageView.setLayoutY(353.0);
-        imageView.setImage(new Image(getClass().getResource("images/" + ((player.getId()) % 3) + ".png").toExternalForm()));
+//        imageView.setImage(new Image(getClass().getResource("images/" + ((player.getId()) % 3) + ".png").toExternalForm()));
 
         requestButton.setOnAction((e) -> {
             Gson gson = new Gson();

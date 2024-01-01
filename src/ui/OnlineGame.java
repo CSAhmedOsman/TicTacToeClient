@@ -270,7 +270,7 @@ public class OnlineGame extends GameBoard {
     }
 
     private void sendMessage(String message, int destination) {
-        String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.SENDMESSAGE), 
+        String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.SEND_MESSAGE), 
                 message, String.valueOf(destination));
         sendRequest(gsonRequest);
     }

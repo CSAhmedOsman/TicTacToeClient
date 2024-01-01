@@ -266,7 +266,7 @@ public class UserProfileUI extends BorderPane {
     }
 
     private void getData() {
-        String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.SET_DATA_OF_PLAYER));
+        String gsonRequest = JsonHandler.serializeJson(String.valueOf(Constants.GET_DATA_OF_PLAYER));
         sendRequest(gsonRequest);
     }
 

@@ -5,7 +5,6 @@
  */
 package utils;
 
-import data.GameInfo;
 import client.Client;
 import client.ClientApp;
 import com.google.gson.Gson;
@@ -15,16 +14,13 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.FadeTransition;
-import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.DialogPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -35,8 +31,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
-import ui.GameBoard;
-import ui.LocalGame;
 import ui.OnlineGame;
 
 /**
@@ -59,7 +53,6 @@ public class Util {
         dialogPane.setSpacing(10);
         dialogPane.setPadding(new Insets(10));
 
-        // Add content to the dialog
         javafx.scene.control.Label titleLabel = new javafx.scene.control.Label(title);
         titleLabel.setStyle("-fx-font-weight: bold;");
 
@@ -73,7 +66,6 @@ public class Util {
                 okButton
         );
 
-        // Make the dialog draggable
         dialogPane.setOnMousePressed((MouseEvent event) -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
@@ -94,7 +86,6 @@ public class Util {
             dialogStage.setY(event.getScreenY() - yOffset);
         });
 
-        // Apply fade-in animation
         dialogPane.setOpacity(0.0);
         dialogStage.setWidth(300);
         dialogStage.setHeight(150);
@@ -105,7 +96,7 @@ public class Util {
 
         fadeIn.play();
         dialogStage.setScene(new Scene(dialogPane));
-        dialogStage.initStyle(StageStyle.UNDECORATED); // Hide top bar
+        dialogStage.initStyle(StageStyle.UNDECORATED);
         dialogStage.showAndWait();
     }
 
@@ -203,7 +194,7 @@ public class Util {
    private static void exitPlayerGame(int srcPlayerId){
         Gson gson = new Gson();
         ArrayList jsonRequest = new ArrayList();
-        jsonRequest.add(Constants.EXIT_PLAYER_GAME);
+        jsonRequest.add(Constants.EXIT_GAME);
         jsonRequest.add(srcPlayerId);
         String gsonRequest = gson.toJson(jsonRequest);
         try {

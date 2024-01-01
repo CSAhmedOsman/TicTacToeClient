@@ -51,27 +51,26 @@ public class LoginController {
         sendRequest(gsonRequest);
     }
 
+    public Player getCurrentPlayer() {
+        String email = loginView.getEmail();
+        String password = loginView.getPassword();
+
+        if (!Validating.validateLogin(email, password)) {
+            return null;
+        }
+
+        
+        Player player = new Player(email, password);
+
+        return player;
+    }
+    
     public void sendRequest(String gsonRequest) {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
             Util.showAlertDialog(Alert.AlertType.ERROR, "Server", "The Server is Closed\n" + ex.getMessage());
         }
-    }
-
-    public Player getCurrentPlayer() {
-        String email = loginView.getEmail();
-        String password = loginView.getPassword();
-
-        Player player = null;
-
-        if (!Validating.validateLogin(email, password)) {
-            return player;
-        }
-
-        player = new Player(email, password);
-
-        return player;
     }
     
     private void handleClose(ActionEvent event) {
