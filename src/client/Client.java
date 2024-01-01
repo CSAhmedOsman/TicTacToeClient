@@ -23,8 +23,6 @@ import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import ui.LobbyScreenUI;
-import ui.GameBoard;
-import ui.LocalGame;
 import ui.LoginScreenUI;
 import ui.ModesScreenUI;
 import ui.OnlineGame;

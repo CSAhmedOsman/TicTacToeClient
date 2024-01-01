@@ -14,7 +14,7 @@ import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 public class PlayerStorage {
-    private static final String FILE_PATH = "user_data.txt";
+    private static final String FILE_PATH = "user_data.bin";
 
     public static void saveUserId(int userId) {
         try (FileWriter writer = new FileWriter(FILE_PATH)) {

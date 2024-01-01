@@ -5,7 +5,6 @@
  */
 package utils;
 
-import data.GameInfo;
 import client.Client;
 import client.ClientApp;
 import com.google.gson.Gson;
@@ -15,16 +14,13 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.FadeTransition;
-import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.DialogPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -35,11 +31,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
-import ui.GameBoard;
-import ui.LobbyScreenUI;
-import ui.LocalGame;
 import ui.OnlineGame;
-import utils.AlertContstants;
 
 /**
  *

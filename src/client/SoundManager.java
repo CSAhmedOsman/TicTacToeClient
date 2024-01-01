@@ -11,7 +11,7 @@ public class SoundManager {
     private MediaPlayer clickSoundPlayer;
 
     private SoundManager() {
-        String pathSound = "/src/Audio/bgm2.mp3"; // Replace with your background music file path
+        String pathSound = "/src/Audio/bgm 2.mp3"; // Replace with your background music file path
         String pathClick = "/src/Audio/click.wav"; // Replace with your click sound file path
         String directorySound = System.getProperty("user.dir");
         String bgMusicFile = directorySound + pathSound;

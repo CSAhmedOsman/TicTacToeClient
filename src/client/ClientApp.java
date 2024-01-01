@@ -5,23 +5,12 @@
  */
 package client;
 
-import data.Player;
-import java.io.File;
-import java.util.ArrayList;
 import utils.PlayerStorage;
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.stage.WindowEvent;
-import ui.LobbyScreenUI;
-import ui.LoginScreenUI;
-import ui.ModesScreenUI;
 import ui.SplashScreenUI;
 import utils.Util;
 

@@ -32,13 +32,12 @@ public class Animation {
         fadeIn.setToValue(1);
 
         // Play the animation for appearing
-       
         fadeIn.play();
         ClientApp.stage.show();
     }
 
     public static void setAnimatedRootOut(Parent source, Parent destination) {
-        
+
         // Set up FadeTransition for fading out
         FadeTransition fadeOut = new FadeTransition(ANIMATION_DURATION, source);
         fadeOut.setFromValue(1);
@@ -87,13 +86,12 @@ public class Animation {
         button.setStyle("-fx-background-color: #43115b;");
     }
 
-    
     public static void setButtonHoverFunctionality(Button button) {
         // Set initial size
         double initialWidth = 270;
         double initialHeight = 40;
         button.setPrefSize(initialWidth, initialHeight);
-        
+
         // Create fade-in and fade-out transitions
         FadeTransition fadeIn = new FadeTransition(Duration.seconds(0.5), button);
         fadeIn.setToValue(1);
@@ -114,7 +112,7 @@ public class Animation {
             button.setPrefSize(newWidth, newHeight);
             button.setTranslateX(translateX);
             button.setTranslateY(translateY);
-            
+
             // Play fade-in animation
             fadeIn.play();
         });
@@ -124,10 +122,9 @@ public class Animation {
             button.setPrefSize(initialWidth, initialHeight);
             button.setTranslateX(0); // Reset translation
             button.setTranslateY(0);
-            
+
             // Play fade-out animation
             fadeOut.play();
         });
     }
 }
-
