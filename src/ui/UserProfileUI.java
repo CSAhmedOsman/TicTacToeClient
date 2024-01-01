@@ -213,7 +213,7 @@ public class UserProfileUI extends BorderPane {
         text1.setLayoutY(456.0);
         text1.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);
         text1.setStrokeWidth(0.0);
-        text1.setText("Password");
+        text1.setText("Score");
         text1.setFont(new Font("Franklin Gothic Demi Cond", 30.0));
 
         password.setLayoutX(184.0);
@@ -284,13 +284,13 @@ public class UserProfileUI extends BorderPane {
     }
 
     public void setData(Player p) {
-        System.out.println(p.getName() + " " + p.getEmail() + " " + p.getPassword());
+        System.out.println(p.getName() + " " + p.getEmail() + " " + p.getScore());
         player.setName(p.getName());
         player.setEmail(p.getEmail());
-        player.setPassword(p.getPassword());
+        player.setScore(p.getScore());
         name.setText(p.getName());
         email.setText(p.getEmail());
-        password.setText(p.getPassword());
+        password.setText(String.valueOf(p.getScore()));
     }
 
     private void setListeners() {

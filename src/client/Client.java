@@ -28,6 +28,7 @@ import ui.LocalGame;
 import ui.LoginScreenUI;
 import ui.ModesScreenUI;
 import ui.OnlineGame;
+import ui.UnBlockUI;
 import ui.UserProfileUI;
 import utils.Constants;
 import utils.Util;
@@ -163,23 +164,44 @@ public class Client {
             case Constants.SETDATAOFPLAYER:
                 getDataOfPlayer();
                 break;
+            case Constants.BLOCKLIST:
+                getBlockPlayers();
+                break;
+                
+            case Constants.LOGOUT:
+                logout();
+                break;
         }
     }
 
     private void getDataOfPlayer() {
         String name = (String) responceData.get(1);
         String email = (String) responceData.get(2);
-        String pass = (String) responceData.get(3);
+        double score = (double) responceData.get(3);
 
-        Player player = new Player(name, email, pass);
+        Player player = new Player(name, email, (int) score);
 
-        System.out.println(name + " " + email + " " + pass);
+        System.out.println(name + " " + email + " " + score);
         UserProfileUI userProfileUI = (UserProfileUI) ClientApp.curDisplayedScreen;
         Platform.runLater(() -> {
             userProfileUI.setData(player);
         });
     }
+ 
+    private void logout() {
+        boolean logout = (boolean) responceData.get(1);
 
+        if (logout) {
+            PlayerStorage.saveUserId(-1);
+            Parent modesScreenUI = new ModesScreenUI();
+            Util.displayScreen(modesScreenUI);
+        } else {
+            
+            Platform.runLater(() -> {
+                Util.showAlertDialog(Alert.AlertType.ERROR, "Logout Error", "SomeThing Wrong Happen. Check For The Network.");
+            });
+        }
+    }
     private void register() {
         boolean registerStatus = (boolean) responceData.get(1);
 
@@ -216,22 +238,49 @@ public class Client {
     private void getAvailablePlayers() {
         System.out.println("getAvailablePlayers in client");
         ArrayList<Player> getAvailablePlayers = new ArrayList<>();
+        ArrayList<String> isFriend = new ArrayList<>();
         Player player;
         double id, score;
         String name;
 
-        for (int i = 1; i < responceData.size(); i += 3) {
-            id = (double) responceData.get(i);
-            name = (String) responceData.get(i + 1);
-            score = (double) responceData.get(i + 2);
+        for (int i = 1; i < responceData.size(); i += 4) {
+            isFriend.add((String) responceData.get(i));
+            id = (double) responceData.get(i+1);
+            name = (String) responceData.get(i + 2);
+            score = (double) responceData.get(i + 3);
             player = new Player((int) id, name, (int) score);
             getAvailablePlayers.add(player);
             System.out.println("player Data :" + player.getId() + " " + player.getName() + " " + player.getScore());
         }
 
         LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.curDisplayedScreen;
-        Platform.runLater(()->{
-            lobbyScreen.displayAvailablePlayers(getAvailablePlayers);        
+        Platform.runLater(() -> {
+            lobbyScreen.displayAvailablePlayers(isFriend,getAvailablePlayers);
+        });
+    }
+ 
+    private void getBlockPlayers() {
+        System.out.println("getBlockPlayers in client");
+        ArrayList<Player> getBlockPlayers = new ArrayList<>();
+        Player player;
+        double id, score;
+        String name;
+        if (responceData.size() >= 3) {
+
+            for (int i = 1; i < responceData.size(); i += 3) {
+                id = (double) responceData.get(i);
+                name = (String) responceData.get(i + 1);
+                score = (double) responceData.get(i + 2);
+                player = new Player((int) id, name, (int) score);
+                getBlockPlayers.add(player);
+                System.out.println("BlockPlayers Data in client :" + player.getId() + " " + player.getName() + " " + player.getScore());
+            }
+        } else {
+            System.out.println("Response data is empty");
+        }
+        UnBlockUI blockUI = (UnBlockUI) ClientApp.curDisplayedScreen;
+        Platform.runLater(() -> {
+            blockUI.displayBlockPlayers(getBlockPlayers);
         });
     }
 
@@ -327,41 +376,45 @@ public class Client {
     private void addFriend() {
         boolean isFriend = (boolean) responceData.get(1);
 
-        LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.curDisplayedScreen;
-
-        if (isFriend) {
-            lobbyScreen.addFriend();
-        }
+        Platform.runLater(() -> {
+            LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.curDisplayedScreen;
+            if (isFriend) {
+                lobbyScreen.addFriend();
+            }
+        });
     }
 
     private void removeFriend() {
         boolean isNotFriend = (boolean) responceData.get(1);
 
-        LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.curDisplayedScreen;
-
-        if (isNotFriend) {
-            lobbyScreen.removeFriend();
-        }
+        Platform.runLater(() -> {
+            LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.curDisplayedScreen;
+            if (isNotFriend) {
+                lobbyScreen.removeFriend();
+            }
+        });
     }
 
     private void blockPlayer() {
         boolean isBlockedPlayer = (boolean) responceData.get(1);
 
-        LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.curDisplayedScreen;
-
-        if (isBlockedPlayer) {
-            lobbyScreen.blockPlayer();
-        }
+        Platform.runLater(() -> {
+            LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.curDisplayedScreen;
+            if (isBlockedPlayer) {
+                lobbyScreen.blockPlayer();
+            }
+        });
     }
 
     private void unBlockPlayer() {
         boolean isUnBlocked = (boolean) responceData.get(1);
 
-        LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.curDisplayedScreen;
+        Platform.runLater(() -> {
+            LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.curDisplayedScreen;
+            if (isUnBlocked) {
+                lobbyScreen.unBlockPlayer();
+            }
+        });
 
-        if (isUnBlocked) {
-            lobbyScreen.unBlockPlayer();
-        }
     }
-
 }
