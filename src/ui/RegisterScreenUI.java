@@ -6,8 +6,6 @@ import data.Player;
 import com.google.gson.Gson;
 import exception.NotConnectedException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;

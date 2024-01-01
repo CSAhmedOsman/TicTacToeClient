@@ -3,7 +3,6 @@ package ui;
 import client.Client;
 import client.ClientApp;
 import com.google.gson.Gson;
-import data.GameInfo;
 import data.Player;
 import exception.NotConnectedException;
 import java.util.ArrayList;
@@ -69,7 +68,6 @@ public class LobbyScreenUI extends AnchorPane {
     protected final ListView<HBox> playerListView;
     int playerId;
     boolean isRunning;
-    // private static ArrayList<Player> players;
     Thread thread;
 
     {
@@ -383,7 +381,7 @@ public class LobbyScreenUI extends AnchorPane {
             });
         });
         logout.setOnAction((e) -> {
-            ClientApp.playerId=-1;
+            ClientApp.playerId = -1;
             PlayerStorage.saveUserId(-1);
             ClientApp.soundManager.stopClickSound();
             ClientApp.soundManager.playClickSound();
@@ -396,8 +394,7 @@ public class LobbyScreenUI extends AnchorPane {
             try {
                 Client.getClient().sendRequest(gsonRequest);
             } catch (NotConnectedException ex) {
-                System.out.println(ex.getMessage());
-                ex.printStackTrace();
+                Util.showAlertDialog(Alert.AlertType.ERROR, "Logout Error", "Error While connecting to server");
             }
         });
 
@@ -414,8 +411,7 @@ public class LobbyScreenUI extends AnchorPane {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
-            System.out.println(ex.getMessage());
-            ex.printStackTrace();
+                Util.showAlertDialog(Alert.AlertType.ERROR, "Prodcast Message Error", "Error While connecting to server");
         }
     }
 

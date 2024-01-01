@@ -1,12 +1,7 @@
 package ui;
 
-import client.Client;
-import data.Message;
 import client.ClientApp;
-import com.google.gson.Gson;
-import data.GameInfo;
 import data.Player;
-import exception.NotConnectedException;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,7 +9,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,7 +16,6 @@ import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
@@ -37,7 +30,6 @@ import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
-import utils.Constants;
 import utils.Util;
 
 public abstract class GameBoard extends BorderPane {
@@ -181,17 +173,6 @@ public abstract class GameBoard extends BorderPane {
         player1Name = p1;
         player2Name = p2;
         init();
-    }
-
-    // show recorded games ---
-    public GameBoard(File file) {
-        //--------add function name for handling the read files
-        // -------- don't forget to disable -- buttons with using forloop -- position[i][j].setDisable(true);
-    }
-
-    // playing online game ---
-    public GameBoard(Player player1, Socket player2) {
-        //--------add function name for handling the online gamming
     }
 
     public void init() {
@@ -623,11 +604,11 @@ public abstract class GameBoard extends BorderPane {
 
     }
 
+    protected abstract void startGame();
+
     protected abstract void nextTern();
 
     protected abstract void addHandlers();
-
-    protected abstract void startGame();
 
     protected void changeTern() {
         countDownLimit = 30;

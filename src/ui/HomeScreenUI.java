@@ -1,8 +1,6 @@
 package ui;
 
-import client.Client;
 import client.ClientApp;
-import client.SoundManager;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.Cursor;
@@ -21,7 +19,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import utils.Animation;
-import utils.Util;
 
 public class HomeScreenUI extends AnchorPane {
 

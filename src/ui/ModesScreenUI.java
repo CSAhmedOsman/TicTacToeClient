@@ -1,18 +1,9 @@
 package ui;
 
-import client.Client;
-import utils.Util;
 import client.ClientApp;
-import com.google.gson.Gson;
-import data.GameInfo;
-import exception.NotConnectedException;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
@@ -25,7 +16,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import utils.Animation;
-import utils.Constants;
 
 public class ModesScreenUI extends Pane {
 
