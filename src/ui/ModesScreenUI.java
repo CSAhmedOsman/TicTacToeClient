@@ -14,6 +14,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -27,7 +28,7 @@ import utils.Animation;
 import utils.Constants;
 
 public class ModesScreenUI extends Pane {
-    
+
     protected final Ellipse ellipse;
     protected final Ellipse ellipse0;
     protected final Rectangle rectangle;
@@ -49,13 +50,16 @@ public class ModesScreenUI extends Pane {
     protected final ImageView imageView2;
     protected final ImageView imageView3;
     protected final ImageView imageView4;
+    protected final Pane paneWithPc;
+    protected final Pane paneOfline;
+    protected final Pane paneOnline;
     protected final Button btnLogout;
     protected final ImageView imageView5;
     protected final Button btnClose;
     protected final DropShadow dropShadow3;
     protected final Button btnMin;
     protected final DropShadow dropShadow4;
-    
+
     {
         ellipse = new Ellipse();
         ellipse0 = new Ellipse();
@@ -84,7 +88,10 @@ public class ModesScreenUI extends Pane {
         dropShadow3 = new DropShadow();
         btnMin = new Button();
         dropShadow4 = new DropShadow();
-        
+        paneWithPc = new Pane();
+        paneOfline = new Pane();
+        paneOnline = new Pane();
+
         setMaxHeight(USE_PREF_SIZE);
         setMaxWidth(USE_PREF_SIZE);
         setMinHeight(USE_PREF_SIZE);
@@ -92,7 +99,7 @@ public class ModesScreenUI extends Pane {
         setPrefHeight(600.0);
         setPrefWidth(700.0);
         setStyle("-fx-background-color: F1AAAA;");
-        
+
         ellipse.setFill(javafx.scene.paint.Color.valueOf("#d9d9d9"));
         ellipse.setLayoutX(673.0);
         ellipse.setLayoutY(48.0);
@@ -102,7 +109,7 @@ public class ModesScreenUI extends Pane {
         ellipse.setStroke(javafx.scene.paint.Color.valueOf("#f1aaaa"));
         ellipse.setStrokeType(javafx.scene.shape.StrokeType.INSIDE);
         ellipse.setStyle("-fx-blend-mode: F1AAAA;");
-        
+
         ellipse0.setFill(javafx.scene.paint.Color.valueOf("#d9d9d9"));
         ellipse0.setLayoutX(-22.0);
         ellipse0.setLayoutY(535.0);
@@ -111,7 +118,7 @@ public class ModesScreenUI extends Pane {
         ellipse0.setRadiusY(80.0);
         ellipse0.setStroke(javafx.scene.paint.Color.valueOf("#f1aaaa"));
         ellipse0.setStrokeType(javafx.scene.shape.StrokeType.INSIDE);
-        
+
         rectangle.setArcHeight(5.0);
         rectangle.setArcWidth(5.0);
         rectangle.setFill(javafx.scene.paint.Color.valueOf("#d9d9d9"));
@@ -123,7 +130,7 @@ public class ModesScreenUI extends Pane {
         rectangle.setStroke(javafx.scene.paint.Color.valueOf("#f1aaaa"));
         rectangle.setStrokeType(javafx.scene.shape.StrokeType.INSIDE);
         rectangle.setWidth(20.0);
-        
+
         rectangle0.setArcHeight(5.0);
         rectangle0.setArcWidth(5.0);
         rectangle0.setFill(javafx.scene.paint.Color.valueOf("#d9d9d9"));
@@ -135,7 +142,7 @@ public class ModesScreenUI extends Pane {
         rectangle0.setStroke(javafx.scene.paint.Color.valueOf("#f1aaaa"));
         rectangle0.setStrokeType(javafx.scene.shape.StrokeType.INSIDE);
         rectangle0.setWidth(20.0);
-        
+
         text.setFill(javafx.scene.paint.Color.valueOf("#43115b"));
         text.setLayoutX(46.0);
         text.setLayoutY(153.0);
@@ -144,7 +151,7 @@ public class ModesScreenUI extends Pane {
         text.setText("Tic");
         text.setWrappingWidth(155.5634754896164);
         text.setFont(new Font("Arial Rounded MT Bold", 96.0));
-        
+
         rectangle1.setArcHeight(5.0);
         rectangle1.setArcWidth(5.0);
         rectangle1.setFill(javafx.scene.paint.Color.valueOf("#d9d9d9"));
@@ -155,7 +162,7 @@ public class ModesScreenUI extends Pane {
         rectangle1.setStroke(javafx.scene.paint.Color.valueOf("#f1aaaa"));
         rectangle1.setStrokeType(javafx.scene.shape.StrokeType.INSIDE);
         rectangle1.setWidth(20.0);
-        
+
         rectangle2.setArcHeight(5.0);
         rectangle2.setArcWidth(5.0);
         rectangle2.setFill(javafx.scene.paint.Color.valueOf("#d9d9d9"));
@@ -167,7 +174,7 @@ public class ModesScreenUI extends Pane {
         rectangle2.setStroke(javafx.scene.paint.Color.valueOf("#f1aaaa"));
         rectangle2.setStrokeType(javafx.scene.shape.StrokeType.INSIDE);
         rectangle2.setWidth(20.0);
-        
+
         ellipse1.setFill(javafx.scene.paint.Color.valueOf("#d9d9d9"));
         ellipse1.setLayoutX(68.0);
         ellipse1.setLayoutY(586.0);
@@ -177,7 +184,7 @@ public class ModesScreenUI extends Pane {
         ellipse1.setStroke(javafx.scene.paint.Color.valueOf("#f1aaaa"));
         ellipse1.setStrokeType(javafx.scene.shape.StrokeType.INSIDE);
         ellipse1.setStyle("-fx-blend-mode: CDC9C9;");
-        
+
         text0.setFill(javafx.scene.paint.Color.valueOf("#f1eff2"));
         text0.setLayoutX(194.0);
         text0.setLayoutY(153.0);
@@ -185,7 +192,7 @@ public class ModesScreenUI extends Pane {
         text0.setStrokeWidth(0.0);
         text0.setText("-T");
         text0.setFont(new Font("Arial Rounded MT Bold", 96.0));
-        
+
         text1.setFill(javafx.scene.paint.Color.valueOf("#f8f6f8"));
         text1.setLayoutX(472.0);
         text1.setLayoutY(153.0);
@@ -193,7 +200,7 @@ public class ModesScreenUI extends Pane {
         text1.setStrokeWidth(0.0);
         text1.setText("oe");
         text1.setFont(new Font("Arial Rounded MT Bold", 96.0));
-        
+
         text2.setFill(javafx.scene.paint.Color.valueOf("#772ca6"));
         text2.setLayoutX(274.0);
         text2.setLayoutY(153.0);
@@ -201,37 +208,49 @@ public class ModesScreenUI extends Pane {
         text2.setStrokeWidth(0.0);
         text2.setText("ac-T");
         text2.setFont(new Font("Arial Rounded MT Bold", 96.0));
-        
+
         btnWithPc.setLayoutX(42.0);
         btnWithPc.setLayoutY(256.0);
         btnWithPc.setMnemonicParsing(false);
         btnWithPc.setPrefHeight(160.0);
-        btnWithPc.setPrefWidth(181.0);
+        btnWithPc.setPrefWidth(180.0);
         btnWithPc.setStyle("-fx-background-radius: 30; -fx-background-color: #fff7f7;");
-        btnWithPc.setText("VS");
         btnWithPc.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
         btnWithPc.setFont(new Font("Arial Rounded MT Bold", 35.0));
-        
+
+        paneWithPc.setPrefHeight(160.0);
+        paneWithPc.setPrefWidth(180.0);
+        paneWithPc.setStyle("-fx-background-radius: 30; -fx-background-color: #fff7f7;");
+        btnWithPc.setGraphic(paneWithPc);
+
         btnOfline.setLayoutX(260.0);
         btnOfline.setLayoutY(256.0);
         btnOfline.setMnemonicParsing(false);
         btnOfline.setPrefHeight(160.0);
-        btnOfline.setPrefWidth(181.0);
+        btnOfline.setPrefWidth(180.0);
         btnOfline.setStyle("-fx-background-radius: 30; -fx-background-color: #fff7f7;");
-        btnOfline.setText("VS");
         btnOfline.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
         btnOfline.setFont(new Font("Arial Rounded MT Bold", 34.0));
-        
+
+        paneOfline.setPrefHeight(160.0);
+        paneOfline.setPrefWidth(180.0);
+        paneOfline.setStyle("-fx-background-radius: 30; -fx-background-color: #fff7f7;");
+        btnOfline.setGraphic(paneOfline);
+
         btnOnline.setLayoutX(472.0);
         btnOnline.setLayoutY(256.0);
         btnOnline.setMnemonicParsing(false);
         btnOnline.setPrefHeight(160.0);
-        btnOnline.setPrefWidth(181.0);
+        btnOnline.setPrefWidth(180.0);
         btnOnline.setStyle("-fx-background-radius: 30; -fx-background-color: #fff7f7;");
-        btnOnline.setText("VS");
         btnOnline.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
         btnOnline.setFont(new Font("Arial Rounded MT Bold", 35.0));
-        
+
+        paneOnline.setPrefHeight(160.0);
+        paneOnline.setPrefWidth(180.0);
+        paneOnline.setStyle("-fx-background-radius: 30; -fx-background-color: #fff7f7;");
+        btnOnline.setGraphic(paneOnline);
+
         btnGamesHistory.setLayoutX(227.0);
         btnGamesHistory.setLayoutY(500.0);
         btnGamesHistory.setMnemonicParsing(false);
@@ -242,43 +261,43 @@ public class ModesScreenUI extends Pane {
         btnGamesHistory.setTextFill(javafx.scene.paint.Color.WHITE);
         btnGamesHistory.setFont(new Font("Franklin Gothic Demi Cond", 33.0));
         btnGamesHistory.setCursor(Cursor.HAND);
-        
-        imageView.setFitHeight(60.0);
-        imageView.setFitWidth(92.0);
-        imageView.setLayoutX(133.0);
-        imageView.setLayoutY(353.0);
-        imageView.setImage(new Image(getClass().getResource("images/robot.png").toExternalForm()));
-        
+
+        imageView.setFitHeight(70.0);
+        imageView.setFitWidth(75.0);
+        imageView.setLayoutX(-30.0);
+        imageView.setLayoutY(-10.0);
+        imageView.setImage(new Image(getClass().getResource("images/player.png").toExternalForm()));
+
         imageView0.setFitHeight(60.0);
-        imageView0.setFitWidth(64.0);
-        imageView0.setLayoutX(274.0);
-        imageView0.setLayoutY(264.0);
-        imageView0.setImage(new Image(getClass().getResource("images/boy.jpg").toExternalForm()));
-        
+        imageView0.setFitWidth(90.0);
+        imageView0.setLayoutX(75.0);
+        imageView0.setLayoutY(80.0);
+        imageView0.setImage(new Image(getClass().getResource("images/robot.png").toExternalForm()));
+
         imageView1.setFitHeight(60.0);
-        imageView1.setFitWidth(64.0);
-        imageView1.setLayoutX(46.0);
-        imageView1.setLayoutY(256.0);
-        imageView1.setImage(new Image(getClass().getResource("images/player.png").toExternalForm()));
-        
+        imageView1.setFitWidth(60.0);
+        imageView1.setLayoutX(-20.0);
+        imageView1.setLayoutY(0.0);
+        imageView1.setImage(new Image(getClass().getResource("images/boy.jpg").toExternalForm()));
+
         imageView2.setFitHeight(60.0);
-        imageView2.setFitWidth(64.0);
-        imageView2.setLayoutX(368.0);
-        imageView2.setLayoutY(353.0);
+        imageView2.setFitWidth(60.0);
+        imageView2.setLayoutX(90.0);
+        imageView2.setLayoutY(80.0);
         imageView2.setImage(new Image(getClass().getResource("images/girl.jpg").toExternalForm()));
-        
-        imageView3.setFitHeight(60.0);
-        imageView3.setFitWidth(64.0);
-        imageView3.setLayoutX(581.0);
-        imageView3.setLayoutY(353.0);
-        imageView3.setImage(new Image(getClass().getResource("images/world-grid.png").toExternalForm()));
-        
+
+        imageView3.setFitHeight(70.0);
+        imageView3.setFitWidth(75.0);
+        imageView3.setLayoutX(-30.0);
+        imageView3.setLayoutY(-10.0);
+        imageView3.setImage(new Image(getClass().getResource("images/player.png").toExternalForm()));
+
         imageView4.setFitHeight(60.0);
-        imageView4.setFitWidth(64.0);
-        imageView4.setLayoutX(480.0);
-        imageView4.setLayoutY(256.0);
-        imageView4.setImage(new Image(getClass().getResource("images/player.png").toExternalForm()));
-        
+        imageView4.setFitWidth(60.0);
+        imageView4.setLayoutX(80.0);
+        imageView4.setLayoutY(80.0);
+        imageView4.setImage(new Image(getClass().getResource("images/world-grid.png").toExternalForm()));
+
         btnLogout.setLayoutX(15.0);
         btnLogout.setLayoutY(11.0);
         btnLogout.setMnemonicParsing(false);
@@ -286,13 +305,13 @@ public class ModesScreenUI extends Pane {
         btnLogout.setPrefWidth(55.0);
         btnLogout.setStyle("-fx-background-color: F1AAAA;");
         btnLogout.setTextFill(javafx.scene.paint.Color.valueOf("#f8baba"));
-        
+
         imageView5.setFitHeight(40.0);
         imageView5.setFitWidth(40.0);
         imageView5.setLayoutX(17.0);
         imageView5.setLayoutY(11.0);
         imageView5.setImage(new Image(getClass().getResource("images/back.png").toExternalForm()));
-        
+
         btnClose.setLayoutX(636.0);
         btnClose.setLayoutY(20.0);
         btnClose.setMinHeight(USE_PREF_SIZE);
@@ -305,11 +324,11 @@ public class ModesScreenUI extends Pane {
         btnClose.setTextFill(javafx.scene.paint.Color.WHITE);
         btnClose.setFont(new Font("Franklin Gothic Demi Cond", 43.0));
         btnClose.setCursor(Cursor.HAND);
-        
+
         dropShadow3.setColor(javafx.scene.paint.Color.valueOf("#fff7f7"));
         dropShadow3.setSpread(0.69);
         btnClose.setEffect(dropShadow3);
-        
+
         btnMin.setLayoutX(567.0);
         btnMin.setLayoutY(20.0);
         btnMin.setMinHeight(USE_PREF_SIZE);
@@ -324,11 +343,27 @@ public class ModesScreenUI extends Pane {
         btnMin.setTextOverrun(javafx.scene.control.OverrunStyle.CLIP);
         btnMin.setFont(new Font("Franklin Gothic Demi Cond", 43.0));
         btnMin.setCursor(Cursor.HAND);
-        
+
         dropShadow4.setColor(javafx.scene.paint.Color.valueOf("#fff7f7"));
         dropShadow4.setSpread(0.69);
         btnMin.setEffect(dropShadow4);
-        
+
+        Label vs = new Label("VS");
+        vs.setLayoutX(45.0);
+        vs.setLayoutY(50.0);
+        vs.setFont(new Font("Arial Rounded MT Bold", 35.0));
+        paneWithPc.getChildren().add(vs);
+        vs = new Label("VS");
+        vs.setLayoutX(45.0);
+        vs.setLayoutY(50.0);
+        vs.setFont(new Font("Arial Rounded MT Bold", 35.0));
+        paneOfline.getChildren().add(vs);
+        vs = new Label("VS");
+        vs.setLayoutX(45.0);
+        vs.setLayoutY(50.0);
+        vs.setFont(new Font("Arial Rounded MT Bold", 35.0));
+        paneOnline.getChildren().add(vs);
+
         getChildren().add(ellipse);
         getChildren().add(ellipse0);
         getChildren().add(rectangle);
@@ -343,12 +378,12 @@ public class ModesScreenUI extends Pane {
         getChildren().add(btnWithPc);
         getChildren().add(btnOfline);
         getChildren().add(btnOnline);
-        getChildren().add(imageView);
-        getChildren().add(imageView0);
-        getChildren().add(imageView1);
-        getChildren().add(imageView2);
-        getChildren().add(imageView3);
-        getChildren().add(imageView4);
+        paneWithPc.getChildren().add(imageView);
+        paneWithPc.getChildren().add(imageView0);
+        paneOfline.getChildren().add(imageView1);
+        paneOfline.getChildren().add(imageView2);
+        paneOnline.getChildren().add(imageView3);
+        paneOnline.getChildren().add(imageView4);
         getChildren().add(btnLogout);
         getChildren().add(imageView5);
         getChildren().add(btnClose);
@@ -357,71 +392,71 @@ public class ModesScreenUI extends Pane {
 
         //___________________My Work________________________
         addEventHandlers();
-        
+
         Animation.setButtonHoverFunctionality(btnGamesHistory);
-        
+
         ClientApp.curDisplayedScreen = this;
     }
-    
+
     public ModesScreenUI(int playerId) {
-        
+
     }
-    
+
     public ModesScreenUI() {
-        
+
     }
-    
+
     protected void addEventHandlers() {
         btnClose.setOnAction((e) -> {
             Platform.exit();
         });
-        
+
         btnMin.setOnAction((e) -> {
             ClientApp.stage.setIconified(true);
         });
-        
+
         btnOfline.setOnAction((e) -> {
             Parent localGame = new LocalGame();
             animateOut(localGame);
         });
-        
+
         btnWithPc.setOnAction((e) -> {
             Parent selectGame = new SelectGameLevel();
             animateOut(selectGame);
         });
-        
+
         btnOnline.setOnAction((e) -> {
             if (ClientApp.savedUserId == -1) {
                 animateOut(new LoginScreenUI());
             } else {
                 animateOut(new LobbyScreenUI(ClientApp.savedUserId));
-            }            
+            }
         });
-        
+
         btnLogout.setOnAction((e) -> {
             Parent homeScreen = new LoginScreenUI();
             animateOut(homeScreen);
         });
-        
+
         btnGamesHistory.setOnAction((event) -> {
             Parent homeScreen = new SelectRecordV2();
             animateOut(homeScreen);
         });
     }
-    
+
     private void animateOut(Parent destination) {
-        
+
         Animation.setAnimatedNodeOut(btnGamesHistory);
         Animation.setAnimatedNodeOut(btnClose);
         Animation.setAnimatedNodeOut(btnLogout);
         Animation.setAnimatedNodeOut(btnOfline);
         Animation.setAnimatedNodeOut(btnOnline);
         Animation.setAnimatedNodeOut(btnWithPc);
-        
+
         Animation.setAnimatedRootOut(this, destination);
-        
+
     }
-    
+
     public static void sendInvit(GameInfo info, int type) {
         Gson gson = new Gson();
         ArrayList jsonRequest = new ArrayList();
@@ -430,13 +465,13 @@ public class ModesScreenUI extends Pane {
         jsonRequest.add(type);
         System.out.println("sentInvite");
         String gsonRequest = gson.toJson(jsonRequest);
-        
+
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
             Logger.getLogger(ModesScreenUI.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }
-    
+
 }

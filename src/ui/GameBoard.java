@@ -175,17 +175,6 @@ public abstract class GameBoard extends BorderPane {
         init();
     }
 
-    // show recorded games ---
-    public GameBoard(File file) {
-        //--------add function name for handling the read files
-        // -------- don't forget to disable -- buttons with using forloop -- position[i][j].setDisable(true);
-    }
-
-    // playing online game ---
-    public GameBoard(Player player1, Socket player2) {
-        //--------add function name for handling the online gamming
-    }
-
     public void init() {
 
         setMaxHeight(USE_PREF_SIZE);
@@ -602,7 +591,6 @@ public abstract class GameBoard extends BorderPane {
         pane.getChildren().add(btnClose);
         pane.getChildren().add(btnMin);
 
-// pane.getChildren().add(win);
         addEventHandlers();
         addHandlers();
     }

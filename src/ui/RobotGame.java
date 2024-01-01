@@ -35,7 +35,6 @@ public class RobotGame extends GameBoard {
         int bestScore = Integer.MIN_VALUE, score;
 
         List<Integer> availableMoves = new ArrayList<>();
-
         for (int i = 0; i < (boardSize * boardSize); i++) {
             if (position[i / boardSize][i % boardSize].getText().equals("")) {
                 availableMoves.add(i);
@@ -43,12 +42,10 @@ public class RobotGame extends GameBoard {
         }
 
         Collections.shuffle(availableMoves);
-
         for (int i : availableMoves) {
             position[i / boardSize][i % boardSize].setText("O");
-            score = minimax(position, 1, false);
+            score = minimax(1, false);
             position[i / boardSize][i % boardSize].setText("");
-
             if (score == 1) {
                 return i;
             } else if (score > bestScore) {
@@ -59,8 +56,8 @@ public class RobotGame extends GameBoard {
         return bestMove;
     }
 
-    private int minimax(Button[][] board, int depth, boolean isMaximizing) {
-        int result = evaluate(board);
+    private int minimax(int depth, boolean isMaximizing) {
+        int result = evaluate();
 
         if (result != 0) {
             return result;
@@ -70,16 +67,16 @@ public class RobotGame extends GameBoard {
             int bestScore = Integer.MIN_VALUE;
             for (int i = 0; i < boardSize; i++) {
                 for (int j = 0; j < boardSize; j++) {
-                    if (board[i][j].getText().equals("")) {
-                        board[i][j].setText("O");
+                    if (position[i][j].getText() == "") {
+                        position[i][j].setText("O");
                         if (level == 1) {
-                            bestScore = Math.min(bestScore, minimax(board, 0, false)); // low
+                            bestScore = Math.min(bestScore, minimax(0, false)); // low
                         } else if (level == 2) {
-                            bestScore = Math.max(bestScore, minimax(board, depth + 1, true)); // mid
+                            bestScore = Math.max(bestScore, minimax(depth + (boardSize / 2), true)); // mid
                         } else {
-                            bestScore = Math.max(bestScore, minimax(board, depth + 3, true)); // high
+                            bestScore = Math.max(bestScore, minimax(depth + boardSize, true)); // high
                         }
-                        board[i][j].setText("");
+                        position[i][j].setText("");
                     }
                 }
             }
@@ -88,16 +85,16 @@ public class RobotGame extends GameBoard {
             int bestScore = Integer.MAX_VALUE;
             for (int i = 0; i < boardSize; i++) {
                 for (int j = 0; j < boardSize; j++) {
-                    if (board[i][j].getText().equals("")) {
-                        board[i][j].setText("X");
+                    if (position[i][j].getText().equals("")) {
+                        position[i][j].setText("X");
                         if (level == 1) {
-                            bestScore = Math.max(bestScore, minimax(board, 0, false)); // low
+                            bestScore = Math.max(bestScore, minimax(0, false)); // low
                         } else if (level == 2) {
-                            bestScore = Math.max(bestScore, minimax(board, depth + 1, true)); // mid
+                            bestScore = Math.max(bestScore, minimax(depth + (boardSize / 2), true)); // mid
                         } else {
-                            bestScore = Math.min(bestScore, minimax(board, depth + 3, true)); // high
+                            bestScore = Math.min(bestScore, minimax(depth + boardSize, true)); // high
                         }
-                        board[i][j].setText("");
+                        position[i][j].setText("");
                     }
                 }
             }
@@ -105,13 +102,12 @@ public class RobotGame extends GameBoard {
         }
     }
 
-    private int evaluate(Button[][] board) {
+    private int evaluate() {
         int[][] winIndexes = winIndex();
         if (winIndexes[boardSize - 1][1] != -1) {
-
-            if (board[winIndexes[boardSize - 1][0]][winIndexes[boardSize - 1][1]].getText().equals("O")) {
+            if (position[winIndexes[boardSize - 1][0]][winIndexes[boardSize - 1][1]].getText().equals("O")) {
                 return 1;
-            } else if (board[winIndexes[boardSize - 1][0]][winIndexes[boardSize - 1][1]].getText().equals("X")) {
+            } else if (position[winIndexes[boardSize - 1][0]][winIndexes[boardSize - 1][1]].getText().equals("X")) {
                 return -1;
             }
         }
@@ -185,7 +181,7 @@ public class RobotGame extends GameBoard {
             }
             recordedGame += isXTurn ? "X" : "O";
             if (isRecord) {
-            saveRecordFile();
+                saveRecordFile();
             }
         }
     }
@@ -214,12 +210,13 @@ public class RobotGame extends GameBoard {
         int[][] winIndexes = winIndex();
         if ((playedKey < boardSize * boardSize) && winIndexes[boardSize - 1][1] == -1) {
             PauseTransition pause = new PauseTransition(Duration.seconds(1));
+            int robotMove = findBestMove();
             pause.setOnFinished(event -> {
-                int robotMove = findBestMove();
                 if (robotMove != -1) {
+                    System.out.println("Robot Move: " + robotMove);
                     position[robotMove / boardSize][robotMove % boardSize].setText("O");
                     position[robotMove / boardSize][robotMove % boardSize].setDisable(true);
-                    recordedGame += player2Name + " O" + " cell: " + (robotMove / 3) + ", " + (robotMove % 3) + "\n";
+                    recordedGame += player2Name + " O" + " cell: " + (robotMove / boardSize) + ", " + (robotMove % boardSize) + "\n";
                     playedKey++;
                     nextTern();
                 }
@@ -227,4 +224,5 @@ public class RobotGame extends GameBoard {
             pause.play();
         }
     }
+
 }

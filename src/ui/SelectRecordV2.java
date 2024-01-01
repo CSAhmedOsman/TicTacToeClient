@@ -56,7 +56,7 @@ public class SelectRecordV2 extends GameBoard {
 
         btnRecordeGame.setDisable(true);
         btnRecordeGame.setOpacity(0.0);
-        
+
         labelCountNum.setText("");
 
         pane.getChildren().add(recordsListView);
@@ -159,12 +159,13 @@ public class SelectRecordV2 extends GameBoard {
     }
 
     private void simulateMovesFromRecord(String record) {
-        String[] board = record.split("::\n");
-        boardSize = Integer.valueOf(board[0]);
-        startGame(); // Clear the board before simulating moves
-        String[] moves = board[1].split("\n");
+        // String[] board = record.split("::\n");
+        // boardSize = Integer.valueOf(board[0]);
+        // startGame(); // Clear the board before simulating moves
+        // String[] moves = board[1].split("\n");
+        startGame();
+        String[] moves = record.split("\n");
         String turn = moves[moves.length - 1];
-        List<String> movesList = Arrays.asList(moves);
 
         countThread = new Thread(() -> {
             for (int i = 0; i < moves.length - 1; i++) {
