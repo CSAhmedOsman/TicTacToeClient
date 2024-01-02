@@ -9,8 +9,6 @@ import client.ClientApp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.scene.control.Button;
 import javafx.animation.PauseTransition;
 import javafx.scene.control.Alert;

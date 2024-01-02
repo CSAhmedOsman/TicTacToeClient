@@ -1,17 +1,13 @@
 package ui;
 
 import client.ClientApp;
-import data.Player;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.net.Socket;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.scene.Cursor;
@@ -155,9 +151,8 @@ public abstract class GameBoard extends BorderPane {
         ClientApp.curDisplayedScreen = this;
     }
 
-    public GameBoard(int mode) {
-        player2Name = "Robot";
-        robotLevel = mode;
+    public GameBoard(int size) {
+        boardSize = size;
         init();
     }
 
@@ -743,7 +738,7 @@ public abstract class GameBoard extends BorderPane {
         if (type.equals("win")) {
             fileName = "/src/ui/video/win.mp4";
             pane = win;
-        } else if (type.equals("lose")){
+        } else if (type.equals("lose")) {
             fileName = "/src/ui/video/lose.mp4";
             pane = lose;
         } else {
@@ -858,7 +853,7 @@ public abstract class GameBoard extends BorderPane {
 
         Date date = new Date();
         File path = new File("C:/files/");
-        if(!path.isDirectory()){
+        if (!path.isDirectory()) {
             path.mkdirs();
         }
         try (FileOutputStream outputStream = new FileOutputStream("C:/files/Game Record at "

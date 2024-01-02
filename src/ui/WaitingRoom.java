@@ -1,8 +1,6 @@
 package ui;
 
 import client.ClientApp;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.scene.Cursor;

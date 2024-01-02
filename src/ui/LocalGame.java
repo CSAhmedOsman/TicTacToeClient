@@ -6,8 +6,6 @@
 package ui;
 
 import client.ClientApp;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.scene.control.Alert;
 import utils.Util;
 
@@ -17,7 +15,8 @@ import utils.Util;
  */
 public class LocalGame extends GameBoard {
 
-    public LocalGame() {
+    public LocalGame(int boardSize) {
+        super(boardSize);
         ClientApp.curDisplayedScreen = this;
         pane.getChildren().add(win);
         addHandlers();

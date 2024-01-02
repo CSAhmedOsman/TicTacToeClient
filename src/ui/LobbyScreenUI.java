@@ -7,8 +7,6 @@ import data.Player;
 import exception.NotConnectedException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;

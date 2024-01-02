@@ -399,8 +399,8 @@ public class ModesScreenUI extends Pane {
         btnOfline.setOnAction((e) -> {
             ClientApp.soundManager.stopClickSound();
             ClientApp.soundManager.playClickSound();
-            Parent localGame = new LocalGame();
-            animateOut(localGame);
+            Parent selectGame = new SelectGameSize();
+            animateOut(selectGame);
         });
 
         btnWithPc.setOnAction((e) -> {
