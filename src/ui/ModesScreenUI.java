@@ -388,6 +388,7 @@ public class ModesScreenUI extends Pane {
             ClientApp.soundManager.stopClickSound();
             ClientApp.soundManager.playClickSound();
             ClientApp.close();
+            Platform.exit();
         });
 
         btnMin.setOnAction((e) -> {

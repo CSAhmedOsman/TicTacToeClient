@@ -106,12 +106,14 @@ public class Client {
             try {
                 while (mySocket != null && !(mySocket.isClosed())) {
                     String gsonResponse = in.readLine();
-                    if (!gsonResponse.isEmpty()) {
+                    if (gsonResponse != null && !gsonResponse.isEmpty()) {
                         handleResponse(gsonResponse);
                     }
                 }
             } catch (IOException ex) {
-                Util.showAlertDialog(Alert.AlertType.ERROR, "Connection fail", "Error While connecting to server");
+                Platform.runLater(() -> {
+                    Util.showAlertDialog(Alert.AlertType.ERROR, "Connection fail", "Error While connecting to server");
+                });
             }
         });
         thread.start();

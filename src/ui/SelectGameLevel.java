@@ -289,6 +289,7 @@ public class SelectGameLevel extends AnchorPane {
             ClientApp.soundManager.stopClickSound();
             ClientApp.soundManager.playClickSound();
             ClientApp.close();
+            Platform.exit();
         });
 
         btnMin.setOnAction((e) -> {

@@ -305,6 +305,7 @@ public class WaitingRoom extends AnchorPane {
             ClientApp.soundManager.playClickSound();
             isRunning = false;
             ClientApp.close();
+            Platform.exit();
         });
 
         btnMin.setOnAction((e) -> {

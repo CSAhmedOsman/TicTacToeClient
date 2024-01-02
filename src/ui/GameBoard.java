@@ -769,6 +769,7 @@ public abstract class GameBoard extends BorderPane {
             ClientApp.soundManager.playClickSound();
             isRunning = false;
             ClientApp.close();
+            Platform.exit();
         });
 
         btnMin.setOnAction((e) -> {
