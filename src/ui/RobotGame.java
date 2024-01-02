@@ -224,7 +224,7 @@ public class RobotGame extends GameBoard {
                 if (robotMove != -1) {
                     position[robotMove / boardSize][robotMove % boardSize].setText("O");
                     position[robotMove / boardSize][robotMove % boardSize].setDisable(true);
-                    recordedGame += player2Name + " O" + " cell: " + (robotMove / 3) + ", " + (robotMove % 3) + "\n";
+                    recordedGame += player2Name + ", O, cell: " + (robotMove / 3) + ", " + (robotMove % 3) + "\n";
                     playedKey++;
                     nextTern();
                 }
