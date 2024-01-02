@@ -7,6 +7,7 @@ package client;
 
 import utils.PlayerStorage;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -42,12 +43,16 @@ public class ClientApp extends Application {
         playerId = savedUserId;
 
     }
-
+    
+    public static void close() {
+        Client.getClient().closeConnection();
+        Platform.exit();
+    }
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         launch(args);
     }
-
 }

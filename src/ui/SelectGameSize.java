@@ -289,7 +289,7 @@ public class SelectGameSize extends AnchorPane {
         btnClose.setOnAction((e) -> {
             ClientApp.soundManager.stopClickSound();
             ClientApp.soundManager.playClickSound();
-            Platform.exit();
+            ClientApp.close();
         });
 
         btnMin.setOnAction((e) -> {
