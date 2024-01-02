@@ -5,6 +5,7 @@
  */
 package ui;
 
+import client.ClientApp;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -12,10 +13,12 @@ import java.io.IOException;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import utils.Util;
 
 /**
  *
@@ -31,8 +34,7 @@ public class SelectRecord extends GameBoard {
         labelCount.setLayoutY(25);
         labelCount.setPrefWidth(300);
         labelCount.setAlignment(Pos.BASELINE_CENTER);
-        
-        
+
         recordsListView = new ListView<>();
 
         recordsListView.setLayoutX(385.0);
@@ -65,6 +67,7 @@ public class SelectRecord extends GameBoard {
         String directoryPath = "C:\\files";
         addTextFilesToListView(directoryPath);
 
+        ClientApp.curDisplayedScreen = this;
         startGame();
     }
 
@@ -115,33 +118,32 @@ public class SelectRecord extends GameBoard {
     private void addTextFilesToListView(String path) {
         File directory = new File(path);
 
-        if (directory.exists() && directory.isDirectory()) {
-            File[] files = directory.listFiles((dir, name) -> name.toLowerCase().endsWith(".bin"));
-            if (files != null) {
-                for (File file : files) {
-                    String fileNameWithExtension = file.getName();
-                    int lastDotIndex = fileNameWithExtension.lastIndexOf('.');
-                    String fileNameWithoutExtension;
-                    if (lastDotIndex > 0) {
-                        fileNameWithoutExtension = fileNameWithExtension.substring(0, lastDotIndex);
-                    } else {
-                        fileNameWithoutExtension = fileNameWithExtension;
-                    }
-                    Button button = new Button(fileNameWithoutExtension);
-                    button.setStyle("-fx-background-radius: 100; -fx-background-color: #EAD3D7;");
-                    button.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
-                    button.setFont(new Font("Franklin Gothic Demi Cond", 18.0));
-                    button.setCursor(Cursor.HAND);
-                    button.setOnAction((event) -> {
-                        displayFileContent(file.getAbsolutePath());
-                        int index = recordsListView.getItems().indexOf(button);
-                        recordsListView.getSelectionModel().select(index);
-                    });
-                    recordsListView.getItems().add(button);
+        if (!(directory.exists() && directory.isDirectory())) {
+            directory.mkdirs();
+        }
+        File[] files = directory.listFiles((dir, name) -> name.toLowerCase().endsWith(".bin"));
+        if (files != null) {
+            for (File file : files) {
+                String fileNameWithExtension = file.getName();
+                int lastDotIndex = fileNameWithExtension.lastIndexOf('.');
+                String fileNameWithoutExtension;
+                if (lastDotIndex > 0) {
+                    fileNameWithoutExtension = fileNameWithExtension.substring(0, lastDotIndex);
+                } else {
+                    fileNameWithoutExtension = fileNameWithExtension;
                 }
+                Button button = new Button(fileNameWithoutExtension);
+                button.setStyle("-fx-background-radius: 100; -fx-background-color: #EAD3D7;");
+                button.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
+                button.setFont(new Font("Franklin Gothic Demi Cond", 18.0));
+                button.setCursor(Cursor.HAND);
+                button.setOnAction((event) -> {
+                    displayFileContent(file.getAbsolutePath());
+                    int index = recordsListView.getItems().indexOf(button);
+                    recordsListView.getSelectionModel().select(index);
+                });
+                recordsListView.getItems().add(button);
             }
-        } else {
-            System.out.println("The specified path either doesn't exist or is not a directory.");
         }
     }
 
@@ -171,7 +173,7 @@ public class SelectRecord extends GameBoard {
             }
             simulateMovesFromRecord(content.toString());
         } catch (IOException e) {
-            System.out.println("Error reading file: " + e.getMessage());
+            Util.showAlertDialog(Alert.AlertType.ERROR, "Show Record Error", "Error While reading Record file");
         }
     }
 
@@ -201,8 +203,9 @@ public class SelectRecord extends GameBoard {
                 try {
                     Thread.sleep(1000); // Sleep for 2 seconds between moves
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    Thread.currentThread().interrupt();
+                    Platform.runLater(() -> recordsListView.setDisable(false));
+                    Util.showAlertDialog(Alert.AlertType.ERROR, "Show Record Error", "Error While reading Record file");
+                    Thread.currentThread().stop();
                 }
             }
             Platform.runLater(() -> {

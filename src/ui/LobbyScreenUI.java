@@ -315,8 +315,7 @@ public class LobbyScreenUI extends AnchorPane {
                     // Sleep for 10 seconds
 
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    Thread.currentThread().stop();
+                    Util.showAlertDialog(Alert.AlertType.ERROR, "Fail to get Available Players", "Error While connecting to server");
                 }
             }
         });
@@ -411,7 +410,7 @@ public class LobbyScreenUI extends AnchorPane {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
-                Util.showAlertDialog(Alert.AlertType.ERROR, "Prodcast Message Error", "Error While connecting to server");
+            Util.showAlertDialog(Alert.AlertType.ERROR, "Broadcast Message Error", "Error While connecting to server");
         }
     }
 
@@ -426,8 +425,7 @@ public class LobbyScreenUI extends AnchorPane {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
-            System.out.println(ex.getMessage());
-            ex.printStackTrace();
+            Util.showAlertDialog(Alert.AlertType.ERROR, "Add Friend Error", "Error While connecting to server");
         }
     }
 
@@ -442,8 +440,7 @@ public class LobbyScreenUI extends AnchorPane {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
-            System.out.println(ex.getMessage());
-            ex.printStackTrace();
+            Util.showAlertDialog(Alert.AlertType.ERROR, "Remove Friend Error", "Error While connecting to server");
         }
     }
 
@@ -458,8 +455,7 @@ public class LobbyScreenUI extends AnchorPane {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
-            System.out.println(ex.getMessage());
-            ex.printStackTrace();
+            Util.showAlertDialog(Alert.AlertType.ERROR, "Block Player Error", "Error While connecting to server");
         }
     }
 
@@ -474,8 +470,7 @@ public class LobbyScreenUI extends AnchorPane {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
-            System.out.println(ex.getMessage());
-            ex.printStackTrace();
+            Util.showAlertDialog(Alert.AlertType.ERROR, "un Block Player Error", "Error While connecting to server");
         }
     }
 
@@ -489,7 +484,7 @@ public class LobbyScreenUI extends AnchorPane {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
-            System.out.println(ex.getMessage());
+            Util.showAlertDialog(Alert.AlertType.ERROR, "Online Error", "Error While connecting to server");
         }
     }
 
@@ -523,8 +518,7 @@ public class LobbyScreenUI extends AnchorPane {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
-            System.out.println(ex.getMessage());
-            ex.printStackTrace();
+            Util.showAlertDialog(Alert.AlertType.ERROR, "get Available Players Error", "Error While connecting to server");
         }
     }
 
@@ -659,13 +653,6 @@ public class LobbyScreenUI extends AnchorPane {
         return playerBox;
     }
 
-    public void desplayMessage(String srcPlayerName, String message) {
-        Platform.runLater(() -> {
-            System.out.println("Desplay Message");
-            Util.showAlertDialog(Alert.AlertType.CONFIRMATION, srcPlayerName, message);
-        });
-    }
-
     public static void sendInvit(int myId, int detsId, int type) {
         Gson gson = new Gson();
         ArrayList jsonRequest = new ArrayList();
@@ -678,7 +665,7 @@ public class LobbyScreenUI extends AnchorPane {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
-            Logger.getLogger(ModesScreenUI.class.getName()).log(Level.SEVERE, null, ex);
+            Util.showAlertDialog(Alert.AlertType.ERROR, "send Invitation Error", "Error While connecting to server");
         }
 
     }

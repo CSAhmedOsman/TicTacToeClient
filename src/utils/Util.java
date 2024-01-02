@@ -194,7 +194,7 @@ public class Util {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
-            Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+                Util.showAlertDialog(Alert.AlertType.ERROR, "Fail to send accept Invitation", "Error While connecting to server");
         }
     }
 
@@ -209,7 +209,7 @@ public class Util {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
-            Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+                Util.showAlertDialog(Alert.AlertType.ERROR, "Fail to send reject Invitation", "Error While connecting to server");
         }
     }
 
@@ -222,7 +222,7 @@ public class Util {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
-            Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+                Util.showAlertDialog(Alert.AlertType.ERROR, "Fail to send Player exit", "Error While connecting to server");
         }
     }
 }

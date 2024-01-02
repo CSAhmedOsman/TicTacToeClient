@@ -8,6 +8,8 @@ package ui;
 import client.ClientApp;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.control.Alert;
+import utils.Util;
 
 /**
  *
@@ -53,7 +55,7 @@ public class LocalGame extends GameBoard {
                     }
                     Thread.sleep(1000);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(GameBoard.class.getName()).log(Level.SEVERE, null, ex);
+                    Util.showAlertDialog(Alert.AlertType.ERROR, "CountDown Error", "Error While Draw CountDown");
                 }
             }
         });

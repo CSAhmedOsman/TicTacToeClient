@@ -13,7 +13,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.control.Button;
 import javafx.animation.PauseTransition;
+import javafx.scene.control.Alert;
 import javafx.util.Duration;
+import utils.Util;
 
 /**
  *
@@ -151,8 +153,7 @@ public class RobotGame extends GameBoard {
                     }
                     Thread.sleep(1000);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(GameBoard.class
-                            .getName()).log(Level.SEVERE, null, ex);
+                    Util.showAlertDialog(Alert.AlertType.ERROR, "CountDown Error", "Error While Draw CountDown");
                 }
             }
         });

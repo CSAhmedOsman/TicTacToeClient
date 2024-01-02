@@ -7,6 +7,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
@@ -280,7 +281,7 @@ public class WaitingRoom extends AnchorPane {
                         Thread.sleep(10);
                     }
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(WaitingRoom.class.getName()).log(Level.SEVERE, null, ex);
+                    Util.showAlertDialog(Alert.AlertType.ERROR, "CountDown Error", "Error While Draw CountDown");
                 }
             }
         });

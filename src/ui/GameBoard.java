@@ -16,6 +16,7 @@ import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
@@ -856,6 +857,10 @@ public abstract class GameBoard extends BorderPane {
     protected void saveRecordFile() {
 
         Date date = new Date();
+        File path = new File("C:/files/");
+        if(!path.isDirectory()){
+            path.mkdirs();
+        }
         try (FileOutputStream outputStream = new FileOutputStream("C:/files/Game Record at "
                 + date.getDate() + "-" + (date.getMonth() + 1) + "-" + (date.getYear() + 1900) + "-" + date.getHours() + "=" + date.getMinutes() + ".bin", true)) {
             try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream))) {
@@ -863,9 +868,9 @@ public abstract class GameBoard extends BorderPane {
                 writer.flush();
             }
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            Util.showAlertDialog(Alert.AlertType.ERROR, "Save Record Error", "Error While Save Record file");
         } catch (IOException ex) {
-            Logger.getLogger(OnlineGame.class.getName()).log(Level.SEVERE, null, ex);
+            Util.showAlertDialog(Alert.AlertType.ERROR, "Save Record Error", "Error While Save Record file");
         }
     }
 }

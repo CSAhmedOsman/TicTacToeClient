@@ -92,7 +92,7 @@ public class Client {
             thread.destroy();
             thread = null;
         } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            Util.showAlertDialog(Alert.AlertType.ERROR, "close Connection", "Error While closeing the Connection");
         }
     }
 
@@ -113,7 +113,7 @@ public class Client {
                     }
                 }
             } catch (IOException ex) {
-                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                Util.showAlertDialog(Alert.AlertType.ERROR, "Connection fail", "Error While connecting to server");
             }
         });
         thread.start();
@@ -188,11 +188,12 @@ public class Client {
 
         Player player = new Player(name, email, (int) score);
 
-        System.out.println(name + " " + email + " " + score);
-        UserProfileUI userProfileUI = (UserProfileUI) ClientApp.curDisplayedScreen;
-        Platform.runLater(() -> {
-            userProfileUI.setData(player);
-        });
+        if (ClientApp.curDisplayedScreen instanceof UserProfileUI) {
+            UserProfileUI userProfileUI = (UserProfileUI) ClientApp.curDisplayedScreen;
+            Platform.runLater(() -> {
+                userProfileUI.setData(player);
+            });
+        }
     }
 
     private void logout() {
@@ -246,7 +247,6 @@ public class Client {
     }
 
     private void getAvailablePlayers() {
-        System.out.println("getAvailablePlayers in client");
         ArrayList<Player> getAvailablePlayers = new ArrayList<>();
         ArrayList<String> isFriend = new ArrayList<>();
         Player player;
@@ -260,57 +260,53 @@ public class Client {
             score = (double) responceData.get(i + 3);
             player = new Player((int) id, name, (int) score);
             getAvailablePlayers.add(player);
-            System.out.println("player Data :" + player.getId() + " " + player.getName() + " " + player.getScore());
         }
 
         if (ClientApp.curDisplayedScreen instanceof LobbyScreenUI) {
             LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.curDisplayedScreen;
             Platform.runLater(() -> lobbyScreen.displayAvailablePlayers(isFriend, getAvailablePlayers));
-        } else {
-            System.out.println("Current Display Screen is not LobbyScreenUi");
         }
 
     }
 
     private void getBlockPlayers() {
-        System.out.println("getBlockPlayers in client");
         ArrayList<Player> getBlockPlayers = new ArrayList<>();
         Player player;
         double id, score;
         String name;
         if (responceData.size() >= 3) {
-
             for (int i = 1; i < responceData.size(); i += 3) {
                 id = (double) responceData.get(i);
                 name = (String) responceData.get(i + 1);
                 score = (double) responceData.get(i + 2);
                 player = new Player((int) id, name, (int) score);
                 getBlockPlayers.add(player);
-                System.out.println("BlockPlayers Data in client :" + player.getId() + " " + player.getName() + " " + player.getScore());
             }
-        } else {
-            System.out.println("Response data is empty");
         }
-        UnBlockUI blockUI = (UnBlockUI) ClientApp.curDisplayedScreen;
-        Platform.runLater(() -> {
-            blockUI.displayBlockPlayers(getBlockPlayers);
-        });
+        if (ClientApp.curDisplayedScreen instanceof UnBlockUI) {
+            UnBlockUI blockUI = (UnBlockUI) ClientApp.curDisplayedScreen;
+            Platform.runLater(() -> {
+                blockUI.displayBlockPlayers(getBlockPlayers);
+            });
+        }
     }
 
     private void recieveBroadcastMessage() {
         String srcPlayerName = (String) responceData.get(1);
         String message = (String) responceData.get(2);
-        System.out.println("RecieveBroadCastMessage");
-        LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.curDisplayedScreen;
-        lobbyScreen.displayMessage(srcPlayerName, message);
+        if (ClientApp.curDisplayedScreen instanceof LobbyScreenUI) {
+            LobbyScreenUI lobbyScreen = (LobbyScreenUI) ClientApp.curDisplayedScreen;
+            lobbyScreen.displayMessage(srcPlayerName, message);
+        }
     }
 
     private void recieveMessage() {
         String message = (String) responceData.get(1);
         String sourceplayerName = (String) responceData.get(2);
-
-        OnlineGame onlineGame = (OnlineGame) ClientApp.curDisplayedScreen;
-        onlineGame.displayMessage(sourceplayerName, message);
+        if (ClientApp.curDisplayedScreen instanceof OnlineGame) {
+            OnlineGame onlineGame = (OnlineGame) ClientApp.curDisplayedScreen;
+            onlineGame.displayMessage(sourceplayerName, message);
+        }
     }
 //---------------------------Abdelrhman------------------------------
 
@@ -349,14 +345,14 @@ public class Client {
             Parent onlineGame = new OnlineGame(info, myTurn);
             Platform.runLater(() -> Util.displayScreen(onlineGame));
         } else if ((int) type == AlertContstants.INVITE_TO_NEW_GAME) {
-            OnlineGame game = (OnlineGame) ClientApp.curDisplayedScreen;
-            Platform.runLater(() -> game.startGame());
+            if (ClientApp.curDisplayedScreen instanceof OnlineGame) {
+                OnlineGame game = (OnlineGame) ClientApp.curDisplayedScreen;
+                Platform.runLater(() -> game.startGame());
+            }
         } else {
             if (ClientApp.curDisplayedScreen instanceof OnlineGame) {
                 OnlineGame game = (OnlineGame) ClientApp.curDisplayedScreen;
                 Platform.runLater(() -> game.exitGame());
-            } else {
-                System.out.println("Current Display Screen is not OnlineGame");
             }
         }
     }
@@ -365,12 +361,12 @@ public class Client {
         String playable = (String) responceData.get(1);
         double x = (double) responceData.get(2);
         double y = (double) responceData.get(3);
-        System.out.println("playable=" + playable + "x=" + x + "y=" + y);
-        Platform.runLater(() -> {
-            OnlineGame onlineGame = (OnlineGame) ClientApp.curDisplayedScreen;
-            onlineGame.setMove(playable, (int) x, (int) y);
-        });
-
+        if (ClientApp.curDisplayedScreen instanceof OnlineGame) {
+            Platform.runLater(() -> {
+                OnlineGame onlineGame = (OnlineGame) ClientApp.curDisplayedScreen;
+                onlineGame.setMove(playable, (int) x, (int) y);
+            });
+        }
     }
 
     private void handleExit() {

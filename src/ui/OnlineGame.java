@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -127,7 +128,6 @@ public class OnlineGame extends GameBoard {
             }
 
         }
-        System.out.println("myId=" + myId + "x=" + destPlayerId + "y=" + myTurn);
         //---------------ahmed work------------
         playedKey = 0;
         isRunning = true;
@@ -153,7 +153,7 @@ public class OnlineGame extends GameBoard {
                     }
                     Thread.sleep(1000);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(OnlineGame.class.getName()).log(Level.SEVERE, null, ex);
+                    Util.showAlertDialog(Alert.AlertType.ERROR, "CountDown Error", "Error While Draw CountDown");
                 }
             }
         });
@@ -256,7 +256,7 @@ public class OnlineGame extends GameBoard {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
-            Logger.getLogger(OnlineGame.class.getName()).log(Level.SEVERE, null, ex);
+                Util.showAlertDialog(Alert.AlertType.ERROR, "Send Move Fail", "Error While connecting to server");
         }
 
     }
@@ -309,7 +309,7 @@ public class OnlineGame extends GameBoard {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
-            Logger.getLogger(GameBoard.class.getName()).log(Level.SEVERE, null, ex);
+                Util.showAlertDialog(Alert.AlertType.ERROR, "Send Message Fail", "Error While connecting to server");
         }
     }
 
@@ -329,7 +329,7 @@ public class OnlineGame extends GameBoard {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
-            Logger.getLogger(ModesScreenUI.class.getName()).log(Level.SEVERE, null, ex);
+                Util.showAlertDialog(Alert.AlertType.ERROR, "Send New Game Fail", "Error While connecting to server");
         }
 
     }
@@ -346,7 +346,7 @@ public class OnlineGame extends GameBoard {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
-            Logger.getLogger(ModesScreenUI.class.getName()).log(Level.SEVERE, null, ex);
+                Util.showAlertDialog(Alert.AlertType.ERROR, "Send Exit Game Fail", "Error While connecting to server");
         }
 
     }
@@ -368,7 +368,7 @@ public class OnlineGame extends GameBoard {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
-            Logger.getLogger(ModesScreenUI.class.getName()).log(Level.SEVERE, null, ex);
+                Util.showAlertDialog(Alert.AlertType.ERROR, "Update Score Fail", "Error While connecting to server");
         }
     }
 }

@@ -183,8 +183,7 @@ public class UnBlockUI extends BorderPane {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
-            System.out.println(ex.getMessage());
-            ex.printStackTrace();
+            Util.showAlertDialog(Alert.AlertType.ERROR, "un Block Player Error", "Error While connecting to server");
         }
     }
 
@@ -201,8 +200,7 @@ public class UnBlockUI extends BorderPane {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
-            System.out.println(ex.getMessage());
-            ex.printStackTrace();
+            Util.showAlertDialog(Alert.AlertType.ERROR, "get Blocked Players Error", "Error While connecting to server");
         }
     }
 

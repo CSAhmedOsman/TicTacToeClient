@@ -12,6 +12,7 @@ package utils;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import javafx.scene.control.Alert;
 
 public class PasswordEncryptor {
 
@@ -21,7 +22,7 @@ public class PasswordEncryptor {
             byte[] hashedBytes = md.digest(password.getBytes());
             return Base64.getEncoder().encodeToString(hashedBytes);
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            Util.showAlertDialog(Alert.AlertType.ERROR, "Encrypt Password Error", "Error While encrypting the Password");
             return null;
         }
     }

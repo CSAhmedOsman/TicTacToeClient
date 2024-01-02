@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import javafx.event.ActionEvent;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -253,15 +254,13 @@ public class UserProfileUI extends BorderPane {
         pane.getChildren().add(password);
         pane.getChildren().add(email);
         pane.getChildren().add(name);
-        ClientApp.curDisplayedScreen = this;
     }
 
     public UserProfileUI(int playerId) {
-      
+        ClientApp.curDisplayedScreen = this;
         player = new Player(playerId, null, 0);
         getData();
         setListeners();
-        System.out.println("User Profile UI");
     }
 
     private void getData() {
@@ -275,13 +274,11 @@ public class UserProfileUI extends BorderPane {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
-            System.out.println(ex.getMessage());
-            ex.printStackTrace();
+            Util.showAlertDialog(Alert.AlertType.ERROR, "get user Data Error", "Error While connecting to server");
         }
     }
 
     public void setData(Player p) {
-        System.out.println(p.getName() + " " + p.getEmail() + " " + p.getScore());
         player.setName(p.getName());
         player.setEmail(p.getEmail());
         player.setScore(p.getScore());
@@ -323,7 +320,7 @@ public class UserProfileUI extends BorderPane {
             try {
                 Client.getClient().sendRequest(gsonRequest);
             } catch (NotConnectedException ex) {
-                Logger.getLogger(LobbyScreenUI.class.getName()).log(Level.SEVERE, null, ex);
+                Util.showAlertDialog(Alert.AlertType.ERROR, "Edit Fail", "Error While connecting to server");
             }
         });*/
     }
