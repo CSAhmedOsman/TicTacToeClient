@@ -309,7 +309,7 @@ public class LobbyScreenUI extends AnchorPane {
                     Platform.runLater(() -> {
                         getAvailablePlayers();
                     });
-                    Thread.sleep(20000);
+                    Thread.sleep(5000);
                     // Sleep for 10 seconds
 
                 } catch (InterruptedException e) {
@@ -620,7 +620,7 @@ public class LobbyScreenUI extends AnchorPane {
         imageView.setFitWidth(70.0);
         imageView.setLayoutX(133.0);
         imageView.setLayoutY(353.0);
-        imageView.setImage(new Image(getClass().getResource("images/" + ((player.getId()) % 3) + ".png").toExternalForm()));
+        imageView.setImage(new Image(getClass().getResource("images/" + ((player.getId()) % 10) + ".png").toExternalForm()));
 
         requestButton.setOnAction((e) -> {
             isRunning = false;
