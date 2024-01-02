@@ -228,14 +228,14 @@ public class WaitingRoom extends AnchorPane {
         btnMin.setEffect(dropShadow1);
 
         pane0.setLayoutX(200.0);
-        pane0.setLayoutY(200.0);
-        pane0.setPrefHeight(200.0);
+        pane0.setLayoutY(225.0);
+        pane0.setPrefHeight(250.0);
         pane0.setPrefWidth(300.0);
-
-        imageView0.setFitHeight(200.0);
+        
+        imageView0.setFitHeight(250.0);
         imageView0.setFitWidth(300.0);
-        imageView0.setImage(new Image(getClass().getResource("images/gif/loading-loader.gif").toExternalForm()));
-
+        imageView0.setImage(new Image(getClass().getResource("images/gif/loading.gif").toExternalForm()));
+        
         labelCount.setAlignment(javafx.geometry.Pos.CENTER);
         labelCount.setContentDisplay(javafx.scene.control.ContentDisplay.CENTER);
         labelCount.setLayoutX(201.0);
