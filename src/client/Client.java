@@ -84,10 +84,10 @@ public class Client {
 
     public void closeConnection() {
         try {
+            isConnected = false;
             in.close();
             out.close();
             mySocket.close();
-            thread.destroy();
             thread = null;
         } catch (IOException ex) {
             Util.showAlertDialog(Alert.AlertType.ERROR, "close Connection", "Error While closeing the Connection");
@@ -104,7 +104,7 @@ public class Client {
     private void startListening() {
         thread = new Thread(() -> {
             try {
-                while (mySocket != null && !(mySocket.isClosed())) {
+                while (isConnected && (mySocket != null && !(mySocket.isClosed()))) {
                     String gsonResponse = in.readLine();
                     if (gsonResponse != null && !gsonResponse.isEmpty()) {
                         handleResponse(gsonResponse);
