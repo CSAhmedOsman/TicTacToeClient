@@ -2,12 +2,10 @@
 This is a desktop-based Tic Tac Toe game that allows two players to compete against each other over a network connection. Players take turns marking spaces on a 3x3 grid. The player who succeeds in placing three of their marks in a horizontal, vertical, or diagonal row wins the game.
 
 <h2>Team Members</h2>
-<ul>
-  <li>Abdelrhman mamdouh Ismail.</li>
+  <li>Abdelrhman mamdouh Ismail.[GitHub Pages](https://pages.github.com/)</li>
   <li>AbdulHameed Mohamed Hassan.</li>
   <li>Ahmed Osman ElHarbi.</li>
   <li>Elham mohamed Abd el rshed.</li>
-</ul>
 
 <h2>Client Side Features</h2>
 <ul>
