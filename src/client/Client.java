@@ -84,13 +84,15 @@ public class Client {
 
     public void closeConnection() {
         try {
-            in.close();
-            out.close();
-            mySocket.close();
-            isConnected = false;
-            if (thread != null) {
-                thread.stop();
-                thread = null;
+            if (isConnected) {
+                in.close();
+                out.close();
+                mySocket.close();
+                isConnected = false;
+                if (thread != null) {
+                    thread.stop();
+                    thread = null;
+                }
             }
         } catch (IOException ex) {
             Util.showAlertDialog(Alert.AlertType.ERROR, "close Connection", "Error While closeing the Connection");
