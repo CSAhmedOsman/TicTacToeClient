@@ -54,6 +54,7 @@ public class LocalGame extends GameBoard {
                     }
                     Thread.sleep(1000);
                 } catch (InterruptedException ex) {
+                    isRunning = false;
                     Util.showAlertDialog(Alert.AlertType.ERROR, "CountDown Error", "Error While Draw CountDown");
                 }
             }

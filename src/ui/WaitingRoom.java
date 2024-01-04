@@ -279,6 +279,7 @@ public class WaitingRoom extends AnchorPane {
                         Thread.sleep(10);
                     }
                 } catch (InterruptedException ex) {
+                    isRunning = false;
                     Util.showAlertDialog(Alert.AlertType.ERROR, "CountDown Error", "Error While Draw CountDown");
                 }
             }

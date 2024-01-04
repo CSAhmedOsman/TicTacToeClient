@@ -29,6 +29,7 @@ public class ClientApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
+        playerId = -1;
         soundManager = SoundManager.getInstance();
         soundManager.playBackgroundMusic();
         ClientApp.stage = stage;
@@ -38,10 +39,10 @@ public class ClientApp extends Application {
         stage.initStyle(StageStyle.UNDECORATED);
 
         Util.displayScreen(splashScreen);
-
+/*
         int savedUserId = PlayerStorage.loadUserId();
         playerId = savedUserId;
-
+*/
     }
     
     public static void close() {

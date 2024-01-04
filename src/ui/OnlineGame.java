@@ -151,6 +151,7 @@ public class OnlineGame extends GameBoard {
                     }
                     Thread.sleep(1000);
                 } catch (InterruptedException ex) {
+                    isRunning = false;
                     Util.showAlertDialog(Alert.AlertType.ERROR, "CountDown Error", "Error While Draw CountDown");
                 }
             }
@@ -238,6 +239,13 @@ public class OnlineGame extends GameBoard {
             isRunning = false;
             exitGameAlert(AlertContstants.INVITE_TO_EXIT_GAME);
         });
+        btnClose.setOnAction((e) -> {
+            ClientApp.soundManager.stopClickSound();
+            ClientApp.soundManager.playClickSound();
+            isRunning = false;
+            exitGameAlert(AlertContstants.INVITE_TO_EXIT_GAME);
+            ClientApp.close();
+        });
     }
 
     private void sendMove(String playable, int indexi, int indexj) {
@@ -254,7 +262,7 @@ public class OnlineGame extends GameBoard {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
-                Util.showAlertDialog(Alert.AlertType.ERROR, "Send Move Fail", "Error While connecting to server");
+            Util.showAlertDialog(Alert.AlertType.ERROR, "Send Move Fail", "Error While connecting to server");
         }
 
     }
@@ -307,7 +315,7 @@ public class OnlineGame extends GameBoard {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
-                Util.showAlertDialog(Alert.AlertType.ERROR, "Send Message Fail", "Error While connecting to server");
+            Util.showAlertDialog(Alert.AlertType.ERROR, "Send Message Fail", "Error While connecting to server");
         }
     }
 
@@ -327,7 +335,7 @@ public class OnlineGame extends GameBoard {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
-                Util.showAlertDialog(Alert.AlertType.ERROR, "Send New Game Fail", "Error While connecting to server");
+            Util.showAlertDialog(Alert.AlertType.ERROR, "Send New Game Fail", "Error While connecting to server");
         }
 
     }
@@ -344,7 +352,7 @@ public class OnlineGame extends GameBoard {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
-                Util.showAlertDialog(Alert.AlertType.ERROR, "Send Exit Game Fail", "Error While connecting to server");
+            Util.showAlertDialog(Alert.AlertType.ERROR, "Send Exit Game Fail", "Error While connecting to server");
         }
 
     }
@@ -366,7 +374,7 @@ public class OnlineGame extends GameBoard {
         try {
             Client.getClient().sendRequest(gsonRequest);
         } catch (NotConnectedException ex) {
-                Util.showAlertDialog(Alert.AlertType.ERROR, "Update Score Fail", "Error While connecting to server");
+            Util.showAlertDialog(Alert.AlertType.ERROR, "Update Score Fail", "Error While connecting to server");
         }
     }
 }

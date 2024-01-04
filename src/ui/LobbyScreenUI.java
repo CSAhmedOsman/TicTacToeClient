@@ -313,6 +313,7 @@ public class LobbyScreenUI extends AnchorPane {
                     // Sleep for 10 seconds
 
                 } catch (InterruptedException e) {
+                    isRunning = false;
                     Util.showAlertDialog(Alert.AlertType.ERROR, "Fail to get Available Players", "Error While connecting to server");
                 }
             }
@@ -559,7 +560,7 @@ public class LobbyScreenUI extends AnchorPane {
         nameLabel.setLayoutY(27.0);
         nameLabel.setText(player.getName());
         nameLabel.setTextFill(javafx.scene.paint.Color.valueOf("#ffffff"));
-        nameLabel.setFont(new Font("Franklin Gothic Demi Cond", 21.0));
+        nameLabel.setFont(new Font("Franklin Gothic Demi Cond", 16.0));
 
         Label scoreLabel = new Label();
         scoreLabel.setPrefWidth(70.0);
