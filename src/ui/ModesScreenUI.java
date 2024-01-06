@@ -375,10 +375,6 @@ public class ModesScreenUI extends Pane {
         ClientApp.curDisplayedScreen = this;
     }
 
-    public ModesScreenUI(int playerId) {
-
-    }
-
     public ModesScreenUI() {
 
     }

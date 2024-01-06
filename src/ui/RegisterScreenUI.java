@@ -305,7 +305,7 @@ public class RegisterScreenUI extends Pane {
         btnClose.setOnAction((ActionEvent event) -> {
             ClientApp.soundManager.stopClickSound();
             ClientApp.soundManager.playClickSound();
-            stage.close();
+            ClientApp.close();
         });
 
         btnMinimize.setOnAction((ActionEvent event) -> {
@@ -332,11 +332,7 @@ public class RegisterScreenUI extends Pane {
 
         String gsonRequest = gson.toJson(jsonArr);
 
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            Util.showAlertDialog(Alert.AlertType.ERROR, "Server", "The Server is Closed");
-        }
+        Client.getClient().sendRequest(gsonRequest);
     }
 
     private Player makeNewPlayer() {

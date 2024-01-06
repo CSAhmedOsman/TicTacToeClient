@@ -271,11 +271,7 @@ public class UserProfileUI extends BorderPane {
         jsonArr.add(player.getId());
 
         String gsonRequest = gson.toJson(jsonArr);
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            Util.showAlertDialog(Alert.AlertType.ERROR, "get user Data Error", "Error While connecting to server");
-        }
+        Client.getClient().sendRequest(gsonRequest);
     }
 
     public void setData(Player p) {
@@ -292,7 +288,7 @@ public class UserProfileUI extends BorderPane {
         btnClose.setOnAction((ActionEvent event) -> {
             ClientApp.soundManager.stopClickSound();
             ClientApp.soundManager.playClickSound();
-            ClientApp.stage.close();
+            ClientApp.close();
         });
 
         btnMin.setOnAction((ActionEvent event) -> {

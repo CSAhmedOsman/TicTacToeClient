@@ -259,7 +259,6 @@ public class LoginScreenUI extends Pane {
         imageView.setImage(new Image(getClass().getResource("images/back.png").toExternalForm()));
         btnBack.setGraphic(pane);
 
-        
         getChildren().add(ellipse);
         getChildren().add(ellipse0);
         getChildren().add(rectangle);
@@ -289,8 +288,8 @@ public class LoginScreenUI extends Pane {
         Animation.setAnimatedNodeIn(btnMinimize);
 
         ClientApp.curDisplayedScreen = this;
-      //  tfEmail.setText("a@gmail.com");
-     //   pfPassword.setText("Aa#123456");
+        tfEmail.setText("a@a.com");
+        pfPassword.setText("Aa#123456");
     }
 
     private void setListeners() {
@@ -313,17 +312,13 @@ public class LoginScreenUI extends Pane {
             jsonRequest.add(Constants.LOGIN);
             jsonRequest.add((String) gson.toJson(player));
             String gsonRequest = gson.toJson(jsonRequest);
-            try {
-                Client.getClient().sendRequest(gsonRequest);
-            } catch (NotConnectedException ex) {
-                Util.showAlertDialog(Alert.AlertType.ERROR, "Server", "The Server is Closed\n" + ex.getMessage());
-            }
+            Client.getClient().sendRequest(gsonRequest);
         });
 
         btnClose.setOnAction((ActionEvent event) -> {
             ClientApp.soundManager.stopClickSound();
             ClientApp.soundManager.playClickSound();
-            ClientApp.stage.close();
+            ClientApp.close();
         });
 
         btnMinimize.setOnAction((ActionEvent event) -> {

@@ -19,6 +19,8 @@ public class LocalGame extends GameBoard {
         super(boardSize);
         ClientApp.curDisplayedScreen = this;
         pane.getChildren().add(win);
+        pane.getChildren().add(lose);
+        pane.getChildren().add(draw);
         addHandlers();
         startGame();
     }
@@ -41,11 +43,13 @@ public class LocalGame extends GameBoard {
         countDownLimit = 30;
         isRecord = false;
         btnRecordeGame.setDisable(false);
+        recordedGame = boardSize + "::\n";
 
         //------------Handlers------
         //----------Game Limits countDownLimit thread
         countThread = new Thread(() -> {
             while (isRunning && (winIndex()[boardSize - 1][1] == -1)) {
+                System.err.println("Local Game Thread");
                 try {
                     if (countDownLimit > 1) {
                         drawCount();
@@ -68,15 +72,15 @@ public class LocalGame extends GameBoard {
         if ((playedKey < boardSize * boardSize) && winIndexes[boardSize - 1][1] == -1) {
             changeTern();
         } else {
-             for (int i = 0; i < boardSize; i++) {
-                    for (int j = 0; j < boardSize; j++) {
-                        position[i][j].setDisable(true);
-                    }
+            for (int i = 0; i < boardSize; i++) {
+                for (int j = 0; j < boardSize; j++) {
+                    position[i][j].setDisable(true);
                 }
+            }
             if (winIndexes[boardSize - 1][1] != -1) {
                 winner(winIndexes);
                 playVideo("win");
-                
+
             } else {
                 drawer();
                 playVideo("draw");

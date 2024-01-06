@@ -9,10 +9,7 @@ import client.Client;
 import client.ClientApp;
 import com.google.gson.Gson;
 import data.GameInfo;
-import exception.NotConnectedException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -44,71 +41,83 @@ public class Util {
     public static boolean accept;
 
     public static void showAlertDialog(Alert.AlertType alertType, String title, String message) {
-        Stage dialogStage = new Stage();
-        dialogStage.initModality(Modality.APPLICATION_MODAL);
-        // Customize the appearance of the dialog
-        VBox dialogPane = new VBox();
-        dialogPane.setBackground(new Background(new BackgroundFill(Color.web("#ffbdbd"), new CornerRadii(10), Insets.EMPTY)));
-        dialogPane.setStyle("-fx-text-fill: white;");
-        dialogPane.setSpacing(10);
-        dialogPane.setPadding(new Insets(10));
+        Platform.runLater(() -> {
+            Stage dialogStage = new Stage();
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            // Customize the appearance of the dialog
+            VBox dialogPane = new VBox();
+            dialogPane.setBackground(new Background(new BackgroundFill(Color.web("#ffbdbd"), new CornerRadii(10), Insets.EMPTY)));
+            dialogPane.setStyle(
+                    "-fx-background-color: #F05F76; "
+                    + "-fx-font-family: 'Franklin Gothic Demi Cond'; "
+                    + "-fx-font-size: 16px; "
+                    + "-fx-text-fill: #FFFFFF;"
+                    + "-fx-border-color: #8400CC; "
+                    + "-fx-border-width: 2px; "
+                    + "-fx-border-radius: 5px;");
 
-        // Add content to the dialog
-        javafx.scene.control.Label titleLabel = new javafx.scene.control.Label(title);
-        titleLabel.setStyle("-fx-font-weight: bold;");
+            dialogPane.setSpacing(10);
+            dialogPane.setPadding(new Insets(10));
 
-        javafx.scene.control.Label messageLabel = new javafx.scene.control.Label(message);
-        Button okButton = new Button("OK");
-        okButton.setOnAction(event -> dismissDialog(dialogStage));
+            // Add content to the dialog
+            javafx.scene.control.Label titleLabel = new javafx.scene.control.Label(title);
+            titleLabel.setStyle("-fx-font-weight: bold;");
 
-        dialogPane.getChildren().addAll(
-                titleLabel,
-                messageLabel,
-                okButton
-        );
-        // Make the dialog draggable
-        dialogPane.setOnMousePressed((MouseEvent event) -> {
-            xOffset = event.getSceneX();
-            yOffset = event.getSceneY();
+            javafx.scene.control.Label messageLabel = new javafx.scene.control.Label(message);
+            Button okButton = new Button("OK");
+            okButton.setOnAction(event -> dismissDialog(dialogStage));
+
+            dialogPane.getChildren().addAll(
+                    titleLabel,
+                    messageLabel,
+                    okButton
+            );
+            // Make the dialog draggable
+            dialogPane.setOnMousePressed((MouseEvent event) -> {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
+            });
+
+            dialogPane.setOnMouseDragged((MouseEvent event) -> {
+                dialogStage.setX(event.getScreenX() - xOffset);
+                dialogStage.setY(event.getScreenY() - yOffset);
+            });
+
+            dialogPane.setOnMousePressed((MouseEvent event) -> {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
+            });
+
+            dialogPane.setOnMouseDragged((MouseEvent event) -> {
+                dialogStage.setX(event.getScreenX() - xOffset);
+                dialogStage.setY(event.getScreenY() - yOffset);
+            });
+
+            // Apply fade-in animation
+            dialogPane.setOpacity(0.0);
+            dialogStage.setWidth(300);
+            dialogStage.setHeight(150);
+
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(500), dialogPane);
+            fadeIn.setFromValue(0.0);
+            fadeIn.setToValue(1.0);
+
+            fadeIn.play();
+            dialogStage.setScene(new Scene(dialogPane));
+            dialogStage.initStyle(StageStyle.UNDECORATED); // Hide top bar
+            dialogStage.show();
         });
-
-        dialogPane.setOnMouseDragged((MouseEvent event) -> {
-            dialogStage.setX(event.getScreenX() - xOffset);
-            dialogStage.setY(event.getScreenY() - yOffset);
-        });
-
-        dialogPane.setOnMousePressed((MouseEvent event) -> {
-            xOffset = event.getSceneX();
-            yOffset = event.getSceneY();
-        });
-
-        dialogPane.setOnMouseDragged((MouseEvent event) -> {
-            dialogStage.setX(event.getScreenX() - xOffset);
-            dialogStage.setY(event.getScreenY() - yOffset);
-        });
-
-        // Apply fade-in animation
-        dialogPane.setOpacity(0.0);
-        dialogStage.setWidth(300);
-        dialogStage.setHeight(150);
-
-        FadeTransition fadeIn = new FadeTransition(Duration.millis(500), dialogPane);
-        fadeIn.setFromValue(0.0);
-        fadeIn.setToValue(1.0);
-
-        fadeIn.play();
-        dialogStage.setScene(new Scene(dialogPane));
-        dialogStage.initStyle(StageStyle.UNDECORATED); // Hide top bar
-        dialogStage.showAndWait();
     }
 
     private static void dismissDialog(Stage dialogStage) {
-        FadeTransition fadeOut = new FadeTransition(Duration.millis(500), dialogStage.getScene().getRoot());
-        fadeOut.setFromValue(1.0);
-        fadeOut.setToValue(0.0);
+        Platform.runLater(() -> {
+            FadeTransition fadeOut = new FadeTransition(Duration.millis(500), dialogStage.getScene().getRoot());
+            fadeOut.setFromValue(1.0);
+            fadeOut.setToValue(0.0);
 
-        fadeOut.setOnFinished(event -> dialogStage.close());
-        fadeOut.play();
+            fadeOut.setOnFinished(event -> dialogStage.close());
+            fadeOut.play();
+        });
     }
 
     public static void displayScreen(Parent root) {
@@ -117,69 +126,68 @@ public class Util {
             ClientApp.stage.setScene(scene);
             ClientApp.stage.show();
             Animation.setAnimatedRootIn(root);
-        });
 
-        root.setOnMousePressed(event -> {
-            xOffset = event.getSceneX();
-            yOffset = event.getSceneY();
-        });
+            root.setOnMousePressed(event -> {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
+            });
 
-        root.setOnMouseDragged(event -> {
-            ClientApp.stage.setX(event.getScreenX() - xOffset);
-            ClientApp.stage.setY(event.getScreenY() - yOffset);
+            root.setOnMouseDragged(event -> {
+                ClientApp.stage.setX(event.getScreenX() - xOffset);
+                ClientApp.stage.setY(event.getScreenY() - yOffset);
+            });
         });
-
     }
 
     public static void invitationAlert(Alert.AlertType alertType, GameInfo info, String message, int type) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(message + " Request");
-        alert.setHeaderText("You've received an " + message + ".");
-        alert.setContentText("From : " + info.getSrcPlayerName() + " and has Score : " + info.getSrcPlayerScore());
+        Platform.runLater(() -> {
+            Alert alert = new Alert(alertType);
+            alert.setTitle(message + " Request");
+            alert.setHeaderText("You've received an " + message + ".");
+            alert.setContentText("From : " + info.getSrcPlayerName() + " and has Score : " + info.getSrcPlayerScore());
 
-        // Add accept and reject buttons to the alert
-        ButtonType acceptButton = new ButtonType("Accept");
-        ButtonType rejectButton = new ButtonType("Decline");
-        alert.getButtonTypes().setAll(acceptButton, rejectButton);
-        alert.getDialogPane().setStyle(
-                "-fx-background-color: #F05F76; "
-                + "-fx-font-family: 'Franklin Gothic Demi Cond'; "
-                + "-fx-font-size: 16px; "
-                + "-fx-text-fill: #612D63; "
-                + "-fx-border-color: #8400CC; "
-                + "-fx-border-width: 2px; "
-                + "-fx-border-radius: 5px;"
-                + "-fx-text-fill: #FFFFFF;");
+            // Add accept and reject buttons to the alert
+            ButtonType acceptButton = new ButtonType("Accept");
+            ButtonType rejectButton = new ButtonType("Decline");
+            alert.getButtonTypes().setAll(acceptButton, rejectButton);
+            alert.getDialogPane().setStyle(
+                    "-fx-background-color: #F05F76; "
+                    + "-fx-font-family: 'Franklin Gothic Demi Cond'; "
+                    + "-fx-font-size: 16px; "
+                    + "-fx-text-fill: #612D63; "
+                    + "-fx-border-color: #8400CC; "
+                    + "-fx-border-width: 2px; "
+                    + "-fx-border-radius: 5px;"
+                    + "-fx-text-fill: #FFFFFF;");
 
-        alert.getDialogPane().lookup(".header-panel").setStyle(
-                "-fx-background-color: #A500CC; "
-                + "-fx-font-weight: bold;"
-                + "-fx-font-size: 16px;"
-                + "-fx-text-fill: #FFFFFF;");
+            alert.getDialogPane().lookup(".header-panel").setStyle(
+                    "-fx-background-color: #A500CC; "
+                    + "-fx-font-weight: bold;"
+                    + "-fx-font-size: 16px;"
+                    + "-fx-text-fill: #FFFFFF;");
 
-        alert.getDialogPane().lookup(".content.label").setStyle(
-                "-fx-font-style: italic;"
-                + "-fx-font-weight: bold;"
-                + "-fx-font-size: 16px;"
-                + "-fx-text-fill: #FFFFFF;");
-        alert.showAndWait().ifPresent(buttonType -> {
-            if (buttonType == acceptButton) {
-                acceptInvite(info.getSrcPlayerId(), info.getDestPlayerId(), type);
-            } else if (buttonType == rejectButton) {
-                rejectInvite(info.getSrcPlayerId(), info.getDestPlayerId(), type);
-                if (ClientApp.curDisplayedScreen instanceof OnlineGame) {
-                    OnlineGame game = (OnlineGame) ClientApp.curDisplayedScreen;
-                    Platform.runLater(() -> {
-                        game.playWinVideo();
-                        game.updateMyScore(AlertContstants.WIN_UPDATE_SCORE);
-                        exitPlayerGame(info.getSrcPlayerId());
-                        Platform.runLater(() -> game.exitGame());
-                    });
-                       
+            alert.getDialogPane().lookup(".content.label").setStyle(
+                    "-fx-font-style: italic;"
+                    + "-fx-font-weight: bold;"
+                    + "-fx-font-size: 16px;"
+                    + "-fx-text-fill: #FFFFFF;");
+            alert.showAndWait().ifPresent(buttonType -> {
+                if (buttonType == acceptButton) {
+                    acceptInvite(info.getSrcPlayerId(), info.getDestPlayerId(), type);
+                } else if (buttonType == rejectButton) {
+                    rejectInvite(info.getSrcPlayerId(), info.getDestPlayerId(), type);
+                    if (ClientApp.curDisplayedScreen instanceof OnlineGame) {
+                        OnlineGame game = (OnlineGame) ClientApp.curDisplayedScreen;
+                        Platform.runLater(() -> {
+                            game.playWinVideo();
+                            game.updateMyScore(AlertContstants.WIN_UPDATE_SCORE);
+                            exitPlayerGame(info.getSrcPlayerId());
+                            Platform.runLater(() -> game.exitGame());
+                        });
 
-                } 
-            }
-
+                    }
+                }
+            });
         });
     }
 
@@ -191,11 +199,7 @@ public class Util {
         jsonRequest.add(destPlayerId);
         jsonRequest.add(type);
         String gsonRequest = gson.toJson(jsonRequest);
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-                Util.showAlertDialog(Alert.AlertType.ERROR, "Fail to send accept Invitation", "Error While connecting to server");
-        }
+        Client.getClient().sendRequest(gsonRequest);
     }
 
     private static void rejectInvite(int srcPlayerId, int destPlayerId, int type) {
@@ -206,11 +210,7 @@ public class Util {
         jsonRequest.add(destPlayerId);
         jsonRequest.add(type);
         String gsonRequest = gson.toJson(jsonRequest);
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-                Util.showAlertDialog(Alert.AlertType.ERROR, "Fail to send reject Invitation", "Error While connecting to server");
-        }
+        Client.getClient().sendRequest(gsonRequest);
     }
 
     private static void exitPlayerGame(int srcPlayerId) {
@@ -219,10 +219,6 @@ public class Util {
         jsonRequest.add(Constants.EXIT_PLAYER_GAME);
         jsonRequest.add(srcPlayerId);
         String gsonRequest = gson.toJson(jsonRequest);
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-                Util.showAlertDialog(Alert.AlertType.ERROR, "Fail to send Player exit", "Error While connecting to server");
-        }
+        Client.getClient().sendRequest(gsonRequest);
     }
 }

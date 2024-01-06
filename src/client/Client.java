@@ -50,12 +50,6 @@ public class Client {
         getClient();
     }
 
-    {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            closeConnection();
-        }));
-    }
-
     private Client() {
 
     }
@@ -71,27 +65,46 @@ public class Client {
     }
 
     public void connect() {
-        try {
-            mySocket = new Socket(Constants.IP_ADDRESS, Constants.PORT);
-            in = new DataInputStream(mySocket.getInputStream());
-            out = new PrintStream(mySocket.getOutputStream());
-            isConnected = true;
-        } catch (IOException ex) {
-            System.err.println(ex.getMessage());
+        if (!isConnected) {
+            try {
+                mySocket = new Socket(Constants.IP_ADDRESS, Constants.PORT);
+                in = new DataInputStream(mySocket.getInputStream());
+                out = new PrintStream(mySocket.getOutputStream());
+                isConnected = true;
+            } catch (IOException ex) {
+                System.err.println(ex.getMessage());
+            }
+            startListening();
         }
-        startListening();
     }
 
     public void closeConnection() {
         try {
             if (isConnected) {
+                isConnected = false;
                 in.close();
                 out.close();
                 mySocket.close();
-                isConnected = false;
-                if (thread != null) {
-                    thread.stop();
-                    thread = null;
+                Util.showAlertDialog(Alert.AlertType.ERROR, "close Connection", "Sorry, your connection to the server is closed.");
+                ClientApp.playerId = -1;
+                PlayerStorage.saveUserId(-1);
+                if (ClientApp.curDisplayedScreen instanceof OnlineGame) {
+                    Platform.runLater(() -> {
+                        OnlineGame online = (OnlineGame) ClientApp.curDisplayedScreen;
+                        online.closeGame();
+                    });
+                }
+                if (ClientApp.curDisplayedScreen instanceof LobbyScreenUI) {
+                    Platform.runLater(() -> {
+                        LobbyScreenUI lobby = (LobbyScreenUI) ClientApp.curDisplayedScreen;
+                        lobby.closeLobby();
+                    });
+                }
+                if (!(ClientApp.curDisplayedScreen instanceof ModesScreenUI)) {
+                    Platform.runLater(() -> {
+                        Parent root = new ModesScreenUI();
+                        Util.displayScreen(root);
+                    });
                 }
             }
         } catch (IOException ex) {
@@ -99,29 +112,38 @@ public class Client {
         }
     }
 
-    public void sendRequest(String gson) throws NotConnectedException {
+    public boolean sendRequest(String gson) {
+        connect();
         if (!isConnected) {
-            throw new NotConnectedException("Client is not connected to the server");
+            Util.showAlertDialog(Alert.AlertType.ERROR, "Connection Error", "Error While connecting to server");
+            return false;
+        } else {
+            out.println(gson);
+            return true;
         }
-        out.println(gson);
     }
 
     private void startListening() {
         thread = new Thread(() -> {
             try {
-                while (isConnected && (mySocket != null && !(mySocket.isClosed()))) {
-                    String gsonResponse = in.readLine();
-                    if (gsonResponse != null) {
-                        if (!gsonResponse.isEmpty()) {
+                while (isConnected) {
+                    System.err.println("Client Thread");
+                    if (mySocket != null && !(mySocket.isClosed()) || !mySocket.isConnected()) {
+                        System.err.println("mySocket");
+                        String gsonResponse = in.readLine();
+                        if (gsonResponse != null && !gsonResponse.isEmpty()) {
+                            System.err.println("gsonResponse");
                             handleResponse(gsonResponse);
+                        } else {
+                            closeConnection();
+                            System.err.println("else gsonResponse");
                         }
                     } else {
-                        isConnected = false;
                         closeConnection();
+                        System.err.println("else closeConnection");
                     }
                 }
             } catch (IOException ex) {
-                isConnected = false;
                 closeConnection();
                 Util.showAlertDialog(Alert.AlertType.ERROR, "Connection fail", "Error While connecting to server");
             }
@@ -211,11 +233,18 @@ public class Client {
         boolean logout = (boolean) responceData.get(1);
 
         if (logout) {
+            ClientApp.playerId = -1;
             PlayerStorage.saveUserId(-1);
-            Parent modesScreenUI = new ModesScreenUI();
-            Util.displayScreen(modesScreenUI);
+            Platform.runLater(() -> {
+                if (ClientApp.curDisplayedScreen instanceof LobbyScreenUI) {
+                    LobbyScreenUI lobby = (LobbyScreenUI) ClientApp.curDisplayedScreen;
+                    lobby.closeLobby();
+                } else {
+                    Parent modesScreenUI = new ModesScreenUI();
+                    Util.displayScreen(modesScreenUI);
+                }
+            });
         } else {
-
             Platform.runLater(() -> {
                 Util.showAlertDialog(Alert.AlertType.ERROR, "Logout Error", "SomeThing Wrong Happen. Check For The Network.");
             });
@@ -353,6 +382,10 @@ public class Client {
         boolean myTurn = (boolean) responceData.get(2);
         double type = (double) responceData.get(3);
         if ((int) type == AlertContstants.INVITE_TO_PLAY) {
+            if (ClientApp.curDisplayedScreen instanceof LobbyScreenUI) {
+                LobbyScreenUI lobby = (LobbyScreenUI) ClientApp.curDisplayedScreen;
+                lobby.closeLobby();
+            }
             Parent onlineGame = new OnlineGame(info, myTurn);
             Platform.runLater(() -> Util.displayScreen(onlineGame));
         } else if ((int) type == AlertContstants.INVITE_TO_NEW_GAME) {
@@ -381,8 +414,10 @@ public class Client {
     }
 
     private void handleExit() {
-        OnlineGame game = (OnlineGame) ClientApp.curDisplayedScreen;
-        Platform.runLater(() -> game.exitGame());
+        if (ClientApp.curDisplayedScreen instanceof OnlineGame) {
+            OnlineGame game = (OnlineGame) ClientApp.curDisplayedScreen;
+            Platform.runLater(() -> game.exitGame());
+        }
     }
 
     private void addFriend() {

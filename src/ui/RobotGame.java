@@ -24,9 +24,10 @@ public class RobotGame extends GameBoard {
     protected int level;
 
     public RobotGame(int level) {
-        super("Robot");
+        super("Robot", level);
         pane.getChildren().add(win);
         pane.getChildren().add(lose);
+        pane.getChildren().add(draw);
         this.level = level;
         addHandlers();
         startGame();
@@ -138,11 +139,13 @@ public class RobotGame extends GameBoard {
         countDownLimit = 30;
         isRecord = false;
         btnRecordeGame.setDisable(false);
+        recordedGame = boardSize + "::\n";
 
         //------------Handlers------
         //----------Game Limits counter thread
         countThread = new Thread(() -> {
             while (isRunning && winIndex()[boardSize - 1][1] == -1) {
+                System.err.println("Robot Game Thread");
                 try {
                     if (countDownLimit > 1) {
                         drawCount();
@@ -185,10 +188,10 @@ public class RobotGame extends GameBoard {
                     }
                 }
             } else {
-                drawer();
                 playVideo("draw");
+                drawer();
             }
-            recordedGame += isXTurn ? "X" : "O";
+            recordedGame += "X";
             if (isRecord) {
                 saveRecordFile();
             }

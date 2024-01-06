@@ -12,6 +12,7 @@ import data.GameInfo;
 import data.Message;
 import exception.NotConnectedException;
 import java.util.ArrayList;
+import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -134,7 +135,7 @@ public class OnlineGame extends GameBoard {
         countDownLimit = 30;
         isRecord = false;
         btnRecordeGame.setDisable(false);
-        recordedGame = "";
+        recordedGame = boardSize + "::\n";
 
         //----------Game Limits countDownLimit thread
         if (countThread != null) {
@@ -142,6 +143,7 @@ public class OnlineGame extends GameBoard {
         }
         countThread = new Thread(() -> {
             while (isRunning && (winIndex()[boardSize - 1][1] == -1)) {
+                System.err.println("Online Game Thread");
                 try {
                     if (countDownLimit > 1) {
                         drawCount();
@@ -259,11 +261,7 @@ public class OnlineGame extends GameBoard {
 
         String gsonRequest = gson.toJson(jsonRequest);
 
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            Util.showAlertDialog(Alert.AlertType.ERROR, "Send Move Fail", "Error While connecting to server");
-        }
+        Client.getClient().sendRequest(gsonRequest);
 
     }
 
@@ -312,11 +310,7 @@ public class OnlineGame extends GameBoard {
         jsonRequest.add(Constants.SEND_MESSAGE);
         jsonRequest.add(message);
         String gsonRequest = gson.toJson(jsonRequest);
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            Util.showAlertDialog(Alert.AlertType.ERROR, "Send Message Fail", "Error While connecting to server");
-        }
+        Client.getClient().sendRequest(gsonRequest);
     }
 
     public void displayMessage(String srcPlayerName, String message) {
@@ -332,11 +326,7 @@ public class OnlineGame extends GameBoard {
         jsonRequest.add(type);
         String gsonRequest = gson.toJson(jsonRequest);
 
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            Util.showAlertDialog(Alert.AlertType.ERROR, "Send New Game Fail", "Error While connecting to server");
-        }
+        Client.getClient().sendRequest(gsonRequest);
 
     }
 
@@ -349,18 +339,19 @@ public class OnlineGame extends GameBoard {
         jsonRequest.add(type);
         String gsonRequest = gson.toJson(jsonRequest);
 
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            Util.showAlertDialog(Alert.AlertType.ERROR, "Send Exit Game Fail", "Error While connecting to server");
-        }
+        Client.getClient().sendRequest(gsonRequest);
 
     }
 
     public void exitGame() {
         isRunning = false;
-        countThread.stop();
         Parent root = new LobbyScreenUI(info.getSrcPlayerId());
+        Util.displayScreen(root);
+    }
+
+    public void closeGame() {
+        isRunning = false;
+        Parent root = new ModesScreenUI();
         Util.displayScreen(root);
     }
 
@@ -371,10 +362,26 @@ public class OnlineGame extends GameBoard {
         jsonRequest.add(info);
         jsonRequest.add(type);
         String gsonRequest = gson.toJson(jsonRequest);
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            Util.showAlertDialog(Alert.AlertType.ERROR, "Update Score Fail", "Error While connecting to server");
+        Client.getClient().sendRequest(gsonRequest);
+    }
+
+    @Override
+    protected void drawCount() {
+        if (myTurn) {
+            Platform.runLater(() -> labelCount.setText("Your Turn"));
+        } else {
+            Platform.runLater(() -> labelCount.setText(player2Name + " Turn"));
+        }
+        if (countDownLimit > 10) {
+            Platform.runLater(() -> {
+                labelCountNum.setTextFill(javafx.scene.paint.Color.valueOf("#515151"));
+                labelCountNum.setText("00:" + (--countDownLimit));
+            });
+        } else {
+            Platform.runLater(() -> {
+                labelCountNum.setTextFill(javafx.scene.paint.Color.valueOf("#a05c58"));
+                labelCountNum.setText("00:0" + (--countDownLimit));
+            });
         }
     }
 }

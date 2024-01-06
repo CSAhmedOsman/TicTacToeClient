@@ -4,7 +4,6 @@ import client.Client;
 import client.ClientApp;
 import com.google.gson.Gson;
 import data.Player;
-import exception.NotConnectedException;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.application.Platform;
@@ -305,6 +304,7 @@ public class LobbyScreenUI extends AnchorPane {
 
         thread = new Thread(() -> {
             while (isRunning) {
+                System.err.println("Lobby Thread");
                 try {
                     Platform.runLater(() -> {
                         getAvailablePlayers();
@@ -335,7 +335,7 @@ public class LobbyScreenUI extends AnchorPane {
             ClientApp.soundManager.stopClickSound();
             ClientApp.soundManager.playClickSound();
             isRunning = false;
-            ClientApp.stage.close();
+            ClientApp.close();
         });
 
         btnMin.setOnAction((ActionEvent event) -> {
@@ -343,9 +343,11 @@ public class LobbyScreenUI extends AnchorPane {
             ClientApp.soundManager.playClickSound();
             ClientApp.stage.setIconified(true);
         });
+
         btnBack.setOnAction((ActionEvent event) -> {
             ClientApp.soundManager.stopClickSound();
             ClientApp.soundManager.playClickSound();
+            isRunning = false;
             Parent root = new ModesScreenUI();
             Util.displayScreen(root);
         });
@@ -361,6 +363,7 @@ public class LobbyScreenUI extends AnchorPane {
             tfMessage.clear();
 
         });
+
         profile.setOnAction((ActionEvent e) -> {
             ClientApp.soundManager.stopClickSound();
             ClientApp.soundManager.playClickSound();
@@ -369,6 +372,7 @@ public class LobbyScreenUI extends AnchorPane {
             Util.displayScreen(root);
             //thread.stop();
         });
+
         unBlock.setOnAction((e) -> {
             ClientApp.soundManager.stopClickSound();
             ClientApp.soundManager.playClickSound();
@@ -378,9 +382,8 @@ public class LobbyScreenUI extends AnchorPane {
                 isRunning = false;
             });
         });
+
         logout.setOnAction((e) -> {
-            ClientApp.playerId = -1;
-            PlayerStorage.saveUserId(-1);
             ClientApp.soundManager.stopClickSound();
             ClientApp.soundManager.playClickSound();
             Gson gson = new Gson();
@@ -389,13 +392,8 @@ public class LobbyScreenUI extends AnchorPane {
             jsonRequest.add(playerId);
 
             String gsonRequest = gson.toJson(jsonRequest);
-            try {
-                Client.getClient().sendRequest(gsonRequest);
-            } catch (NotConnectedException ex) {
-                Util.showAlertDialog(Alert.AlertType.ERROR, "Logout Error", "Error While connecting to server");
-            }
+            Client.getClient().sendRequest(gsonRequest);
         });
-
     }
 
     private void sendMessageToAll(int sourceId, String broadcastMessage) {
@@ -406,11 +404,7 @@ public class LobbyScreenUI extends AnchorPane {
         jsonRequest.add(broadcastMessage);
 
         String gsonRequest = gson.toJson(jsonRequest);
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            Util.showAlertDialog(Alert.AlertType.ERROR, "Broadcast Message Error", "Error While connecting to server");
-        }
+        Client.getClient().sendRequest(gsonRequest);
     }
 
     private void addFriend(int playerId, int friendId) {
@@ -421,11 +415,7 @@ public class LobbyScreenUI extends AnchorPane {
         jsonRequest.add(friendId);
 
         String gsonRequest = gson.toJson(jsonRequest);
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            Util.showAlertDialog(Alert.AlertType.ERROR, "Add Friend Error", "Error While connecting to server");
-        }
+        Client.getClient().sendRequest(gsonRequest);
     }
 
     private void removeFriend(int playerId, int friendId) {
@@ -436,11 +426,7 @@ public class LobbyScreenUI extends AnchorPane {
         jsonRequest.add(friendId);
 
         String gsonRequest = gson.toJson(jsonRequest);
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            Util.showAlertDialog(Alert.AlertType.ERROR, "Remove Friend Error", "Error While connecting to server");
-        }
+        Client.getClient().sendRequest(gsonRequest);
     }
 
     private void blockPlayer(int playerId, int blockedId) {
@@ -451,11 +437,7 @@ public class LobbyScreenUI extends AnchorPane {
         jsonRequest.add(blockedId);
 
         String gsonRequest = gson.toJson(jsonRequest);
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            Util.showAlertDialog(Alert.AlertType.ERROR, "Block Player Error", "Error While connecting to server");
-        }
+        Client.getClient().sendRequest(gsonRequest);
     }
 
     private void unBlockPlayer(int playerId, int blockedId) {
@@ -466,11 +448,7 @@ public class LobbyScreenUI extends AnchorPane {
         jsonRequest.add(blockedId);
 
         String gsonRequest = gson.toJson(jsonRequest);
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            Util.showAlertDialog(Alert.AlertType.ERROR, "un Block Player Error", "Error While connecting to server");
-        }
+        Client.getClient().sendRequest(gsonRequest);
     }
 
     private void makePlayerOnline(int playerId) {
@@ -480,11 +458,7 @@ public class LobbyScreenUI extends AnchorPane {
         jsonRequest.add(playerId);
 
         String gsonRequest = gson.toJson(jsonRequest);
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            Util.showAlertDialog(Alert.AlertType.ERROR, "Online Error", "Error While connecting to server");
-        }
+        Client.getClient().sendRequest(gsonRequest);
     }
 
     public void displayMessage(String srcPlayerName, String message) {
@@ -514,10 +488,8 @@ public class LobbyScreenUI extends AnchorPane {
         jsonRequest.add(playerId);
 
         String gsonRequest = gson.toJson(jsonRequest);
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            Util.showAlertDialog(Alert.AlertType.ERROR, "get Available Players Error", "Error While connecting to server");
+        if (!Client.getClient().sendRequest(gsonRequest)) {
+            isRunning = false;
         }
     }
 
@@ -661,11 +633,12 @@ public class LobbyScreenUI extends AnchorPane {
         jsonRequest.add(type);
         String gsonRequest = gson.toJson(jsonRequest);
 
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            Util.showAlertDialog(Alert.AlertType.ERROR, "send Invitation Error", "Error While connecting to server");
-        }
+        Client.getClient().sendRequest(gsonRequest);
+    }
 
+    public void closeLobby() {
+        isRunning = false;
+        Parent root = new ModesScreenUI();
+        Util.displayScreen(root);
     }
 }

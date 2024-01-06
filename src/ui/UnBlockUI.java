@@ -160,7 +160,7 @@ public class UnBlockUI extends BorderPane {
     private void setListeners() {
 
         btnClose.setOnAction((ActionEvent event) -> {
-            ClientApp.stage.close();
+            ClientApp.close();
         });
 
         btnMin.setOnAction((ActionEvent event) -> {
@@ -180,11 +180,7 @@ public class UnBlockUI extends BorderPane {
         jsonRequest.add(blockedId);
 
         String gsonRequest = gson.toJson(jsonRequest);
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            Util.showAlertDialog(Alert.AlertType.ERROR, "un Block Player Error", "Error While connecting to server");
-        }
+        Client.getClient().sendRequest(gsonRequest);
     }
 
     public void unBlockPlayer() {
@@ -197,11 +193,7 @@ public class UnBlockUI extends BorderPane {
         jsonRequest.add(Constants.BLOCKLIST);
 
         String gsonRequest = gson.toJson(jsonRequest);
-        try {
-            Client.getClient().sendRequest(gsonRequest);
-        } catch (NotConnectedException ex) {
-            Util.showAlertDialog(Alert.AlertType.ERROR, "get Blocked Players Error", "Error While connecting to server");
-        }
+        Client.getClient().sendRequest(gsonRequest);
     }
 
     public void displayBlockPlayers(ArrayList<Player> availablePlayers) {

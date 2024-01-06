@@ -29,11 +29,6 @@ public class SelectRecord extends GameBoard {
     private final ListView<Button> recordsListView;
 
     public SelectRecord() {
-        labelCount.setText("");
-        labelCount.setLayoutX(0);
-        labelCount.setLayoutY(25);
-        labelCount.setPrefWidth(300);
-        labelCount.setAlignment(Pos.BASELINE_CENTER);
 
         recordsListView = new ListView<>();
 
@@ -178,12 +173,12 @@ public class SelectRecord extends GameBoard {
     }
 
     private void simulateMovesFromRecord(String record) {
-        // String[] board = record.split("::\n");
-        // boardSize = Integer.valueOf(board[0]);
-        // startGame(); // Clear the board before simulating moves
-        // String[] moves = board[1].split("\n");
-        startGame();
-        String[] moves = record.split("\n");
+        String[] board = record.split("::\n");
+        boardSize = Integer.valueOf(board[0]);
+        startGame(); // Clear the board before simulating moves
+        String[] moves = board[1].split("\n");
+        //startGame();
+        //String[] moves = record.split("\n");
         String turn = moves[moves.length - 1];
 
         countThread = new Thread(() -> {
@@ -205,7 +200,7 @@ public class SelectRecord extends GameBoard {
                 } catch (InterruptedException e) {
                     Platform.runLater(() -> recordsListView.setDisable(false));
                     Util.showAlertDialog(Alert.AlertType.ERROR, "Show Record Error", "Error While reading Record file");
-                    Thread.currentThread().stop();
+                    countThread.stop();
                 }
             }
             Platform.runLater(() -> {

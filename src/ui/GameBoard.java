@@ -10,6 +10,7 @@ import java.io.OutputStreamWriter;
 import java.util.Date;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
@@ -160,8 +161,9 @@ public abstract class GameBoard extends BorderPane {
         init();
     }
 
-    public GameBoard(String p2) {
-        player2Name = p2;
+    public GameBoard(String p2, int level) {
+        player1Name = "Player";
+        player2Name = p2 + ((level == 1) ? " (Low)" : ((level == 2) ? " (Mid)" : " (High)"));
         init();
     }
 
@@ -436,9 +438,11 @@ public abstract class GameBoard extends BorderPane {
         backgroundCount.setStrokeWidth(0.0);
         backgroundCount.setWidth(300.0);
 
-        labelCount.setLayoutX(79.0);
-        labelCount.setLayoutY(14.0);
         labelCount.setText("Count Down");
+        labelCount.setLayoutX(0);
+        labelCount.setLayoutY(20);
+        labelCount.setPrefWidth(300);
+        labelCount.setAlignment(Pos.BASELINE_CENTER);
         labelCount.setTextFill(javafx.scene.paint.Color.valueOf("#515151"));
         labelCount.setFont(new Font("Arial Rounded MT Bold", 24.0));
 
@@ -469,10 +473,10 @@ public abstract class GameBoard extends BorderPane {
         lose.setDisable(true);
         lose.setStyle("-fx-background-radius: 10; -fx-background-color: #FD6D84;");
 
-        draw.setLayoutX(116.0);
-        draw.setLayoutY(115.0);
-        draw.setPrefHeight(240.0);
-        draw.setPrefWidth(320.0);
+        draw.setLayoutX(25.0);
+        draw.setLayoutY(55.0);
+        draw.setPrefHeight(490.0);
+        draw.setPrefWidth(650.0);
         draw.setOpacity(0.0);
         draw.setDisable(true);
         draw.setStyle("-fx-background-radius: 10; -fx-background-color: #FD6D84;");
@@ -595,7 +599,6 @@ public abstract class GameBoard extends BorderPane {
         pane.getChildren().add(btnClose);
         pane.getChildren().add(btnMin);
 
-// pane.getChildren().add(win);
         addEventHandlers();
 
     }
@@ -834,10 +837,13 @@ public abstract class GameBoard extends BorderPane {
             Platform.runLater(() -> labelCount.setText(player2Name + " Turn"));
         }
         if (countDownLimit > 10) {
-            Platform.runLater(() -> labelCountNum.setText("00:" + (--countDownLimit)));
+            Platform.runLater(() -> {
+                labelCountNum.setTextFill(javafx.scene.paint.Color.valueOf("#515151"));
+                labelCountNum.setText("00:" + (--countDownLimit));
+            });
         } else {
             Platform.runLater(() -> {
-                //---------------------- red
+                labelCountNum.setTextFill(javafx.scene.paint.Color.valueOf("#a05c58"));
                 labelCountNum.setText("00:0" + (--countDownLimit));
             });
         }
@@ -856,8 +862,8 @@ public abstract class GameBoard extends BorderPane {
         if (!path.isDirectory()) {
             path.mkdirs();
         }
-        try (FileOutputStream outputStream = new FileOutputStream("C:/files/Game Record at "
-                + date.getDate() + "-" + (date.getMonth() + 1) + "-" + (date.getYear() + 1900) + "-" + date.getHours() + "=" + date.getMinutes() + ".bin", true)) {
+        try (FileOutputStream outputStream = new FileOutputStream("C:/files/You VS " + player2Name + " at "
+                + date.getDate() + "-" + (date.getMonth() + 1) + "-" + (date.getYear() + 1900) + " " + date.getHours() + ";" + date.getMinutes() + ".bin", true)) {
             try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream))) {
                 writer.write(recordedGame);
                 writer.flush();

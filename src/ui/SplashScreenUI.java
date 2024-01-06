@@ -240,7 +240,7 @@ public class SplashScreenUI extends AnchorPane {
         btnClose.setOnAction((ActionEvent event) -> {
             ClientApp.soundManager.stopClickSound();
             ClientApp.soundManager.playClickSound();
-            stage.close();
+            ClientApp.close();
         });
 
         btnMinimize.setOnAction((ActionEvent event) -> {

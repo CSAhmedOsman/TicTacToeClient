@@ -5,7 +5,6 @@
  */
 package client;
 
-import utils.PlayerStorage;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Parent;

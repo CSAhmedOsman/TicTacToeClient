@@ -264,6 +264,7 @@ public class WaitingRoom extends AnchorPane {
         btnBack.setDisable(true);
         Thread thread = new Thread(() -> {
             while (isRunning) {
+                System.err.println("Waiting Room Thread");
                 try {
                     if (countDownMSec <= 0 && countDownSec <= 0) {
                         isRunning = false;
