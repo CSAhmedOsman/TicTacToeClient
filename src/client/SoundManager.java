@@ -7,8 +7,8 @@ import java.io.File;
 public class SoundManager {
 
     private static SoundManager instance = null;
-    private MediaPlayer bgMusicPlayer;
-    private MediaPlayer clickSoundPlayer;
+    private final MediaPlayer bgMusicPlayer;
+    private final MediaPlayer clickSoundPlayer;
 
     private SoundManager() {
         String pathSound = "/src/Audio/bgm 2.mp3"; // Replace with your background music file path

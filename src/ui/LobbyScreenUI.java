@@ -32,7 +32,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import utils.Constants;
 import utils.AlertContstants;
-import utils.PlayerStorage;
 import utils.Util;
 
 public class LobbyScreenUI extends AnchorPane {
@@ -478,7 +477,7 @@ public class LobbyScreenUI extends AnchorPane {
     }
 
     public void unBlockPlayer() {
-        Util.showAlertDialog(Alert.AlertType.CONFIRMATION, "Friends Area", "Now You Can Play With Him !");
+        Util.showAlertDialog(Alert.AlertType.CONFIRMATION, "Friends Area", "Now You Can Play With Him!");
     }
 
     private void getAvailablePlayers() {

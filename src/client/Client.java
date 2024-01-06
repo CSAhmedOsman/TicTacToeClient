@@ -10,7 +10,6 @@ import com.google.gson.reflect.TypeToken;
 import data.Player;
 import data.GameInfo;
 import utils.PlayerStorage;
-import exception.NotConnectedException;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.PrintStream;

@@ -1,7 +1,6 @@
 package ui;
 
 import client.ClientApp;
-import javafx.application.Platform;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;

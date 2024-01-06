@@ -4,7 +4,6 @@ import client.Client;
 import client.ClientApp;
 import com.google.gson.Gson;
 import data.Player;
-import exception.NotConnectedException;
 import java.util.ArrayList;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;

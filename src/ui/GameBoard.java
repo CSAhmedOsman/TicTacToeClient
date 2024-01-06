@@ -19,7 +19,6 @@ import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import static javafx.scene.layout.Region.USE_PREF_SIZE;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -173,7 +172,7 @@ public abstract class GameBoard extends BorderPane {
         init();
     }
 
-    public void init() {
+    private void init() {
 
         setMaxHeight(USE_PREF_SIZE);
         setMaxWidth(USE_PREF_SIZE);
@@ -600,7 +599,6 @@ public abstract class GameBoard extends BorderPane {
         pane.getChildren().add(btnMin);
 
         addEventHandlers();
-
     }
 
     protected abstract void startGame();

@@ -10,7 +10,6 @@ import client.Client;
 import com.google.gson.Gson;
 import data.GameInfo;
 import data.Message;
-import exception.NotConnectedException;
 import java.util.ArrayList;
 import javafx.application.Platform;
 import javafx.scene.Parent;

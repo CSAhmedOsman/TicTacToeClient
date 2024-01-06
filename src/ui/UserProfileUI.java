@@ -4,12 +4,10 @@ import client.Client;
 import client.ClientApp;
 import com.google.gson.Gson;
 import data.Player;
-import exception.NotConnectedException;
 import java.util.ArrayList;
 import javafx.event.ActionEvent;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -207,7 +205,7 @@ public class UserProfileUI extends BorderPane {
         text0.setFont(new Font("Franklin Gothic Demi Cond", 30.0));
 
         text1.setFill(javafx.scene.paint.Color.WHITE);
-        text1.setLayoutX(65.0);
+        text1.setLayoutX(95.0);
         text1.setLayoutY(456.0);
         text1.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);
         text1.setStrokeWidth(0.0);

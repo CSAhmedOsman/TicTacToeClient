@@ -4,12 +4,10 @@ import client.Client;
 import client.ClientApp;
 import data.Player;
 import com.google.gson.Gson;
-import exception.NotConnectedException;
 import java.util.ArrayList;
 import javafx.event.ActionEvent;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -267,7 +265,6 @@ public class RegisterScreenUI extends Pane {
         imageView.setImage(new Image(getClass().getResource("images/back.png").toExternalForm()));
         btnBack.setGraphic(pane);
 
-        getChildren().add(btnBack);
         getChildren().add(ellipse);
         getChildren().add(ellipse0);
         getChildren().add(rectangle);
@@ -278,11 +275,12 @@ public class RegisterScreenUI extends Pane {
         getChildren().add(rectangle2);
         getChildren().add(ellipse1);
         getChildren().add(tfEmail);
-        getChildren().add(btnRegister);
         getChildren().add(pfPassword);
         getChildren().add(pfConfirmPassword);
-        getChildren().add(btnClose);
+        getChildren().add(btnRegister);
+        getChildren().add(btnBack);
         getChildren().add(btnMinimize);
+        getChildren().add(btnClose);
         pane.getChildren().add(imageView);
         setListeners(ClientApp.stage);
 

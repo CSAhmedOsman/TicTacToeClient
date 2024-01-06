@@ -13,11 +13,9 @@ import client.ClientApp;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 public class Animation {
