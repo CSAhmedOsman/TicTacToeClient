@@ -151,11 +151,11 @@ public class LobbyScreenUI extends AnchorPane {
 
         label0.setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
         label0.setContentDisplay(javafx.scene.control.ContentDisplay.TOP);
-        label0.setLayoutX(129.0);
+        label0.setLayoutX(140.0);
         label0.setLayoutY(25.0);
         label0.setLineSpacing(1.0);
         label0.setPrefHeight(95.0);
-        label0.setPrefWidth(399.0);
+        label0.setPrefWidth(395.0);
         label0.setText("Select from available players");
         label0.setTextFill(javafx.scene.paint.Color.valueOf("#43115b"));
         label0.setTextOverrun(javafx.scene.control.OverrunStyle.CLIP);

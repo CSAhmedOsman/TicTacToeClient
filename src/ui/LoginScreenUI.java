@@ -286,8 +286,6 @@ public class LoginScreenUI extends Pane {
         Animation.setAnimatedNodeIn(btnMinimize);
 
         ClientApp.curDisplayedScreen = this;
-        tfEmail.setText("a@a.com");
-        pfPassword.setText("Aa#123456");
     }
 
     private void setListeners() {

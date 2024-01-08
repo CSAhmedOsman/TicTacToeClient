@@ -171,7 +171,6 @@ public class UserProfileUI extends BorderPane {
         imageView0.setFitWidth(102.0);
         imageView0.setLayoutX(279.0);
         imageView0.setLayoutY(46.0);
-        imageView0.setImage(new Image(getClass().getResource("images/boy.jpg").toExternalForm()));
 
         /*btnEdit.setLayoutX(279.0);
         btnEdit.setLayoutY(524.0);
@@ -257,6 +256,7 @@ public class UserProfileUI extends BorderPane {
     public UserProfileUI(int playerId) {
         ClientApp.curDisplayedScreen = this;
         player = new Player(playerId, null, 0);
+        imageView0.setImage(new Image(getClass().getResource("images/" + ((player.getId()) % 10) + ".png").toExternalForm()));
         getData();
         setListeners();
     }
