@@ -7,6 +7,9 @@ This is a desktop-based Tic Tac Toe game that allows two players to compete agai
   <li>Ahmed Osman ElHarbi.</li>
   <li>Elham mohamed Abd el rshed.</li>
 
+<h2>Watch the video</h2>
+  [![Watch the video](https://github.com/AbdulHameedMohamed/TicTacToeClient/blob/master/Thumbnail.jpg)](https://youtu.be/KWHhzDXMA5I)
+
 <h2>Client Side Features</h2>
 <ul>
   <li>Simple Interface : Easy-to-use graphical user interface for gameplay.</li>
